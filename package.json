@@ -11,7 +11,8 @@
     "test": "npm run clean-build && node_modules/.bin/mocha --recursive 'build/tests/**/*Test.js'",
     "coverage": "npm run clean-build && node_modules/.bin/nyc node_modules/.bin/mocha --full-trace --recursive 'build/manager/api/tests/**/*Test.js'",
     "coveralls": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls",
-    "lint": "tslint -p ."
+    "lint": "tslint -p .",
+    "cli": "npm run clean-build && node build/main.js"
   },
   "author": "remipassmoilesel",
   "license": "GPL3.0",

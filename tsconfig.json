@@ -13,8 +13,6 @@
     "experimentalDecorators": true
   },
   "include": [
-    "api/**/*",
-    "cli-client/**/*",
-    "../infrastructure/**/*"
+    "src/**/*"
   ]
 }
