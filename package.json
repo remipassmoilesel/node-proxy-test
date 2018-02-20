@@ -1,21 +1,19 @@
 {
-  "name": "generator",
-  "version": "1.0.0",
-  "description": "",
-  "main": "generator.js",
+  "name": "template",
+  "version": "0.0.1",
+  "description": "Some useful things, maybe :)",
+  "main": "./build/main.js",
   "scripts": {
     "clean": "node_modules/.bin/rimraf build",
     "build": "node_modules/.bin/tsc --pretty",
     "build-watch": "node_modules/.bin/tsc --pretty -w",
     "clean-build": "npm run clean && npm run build",
-    "test": "npm run clean-build && node_modules/.bin/mocha --recursive 'build/manager/api/tests/**/*Test.js'",
+    "test": "npm run clean-build && node_modules/.bin/mocha --recursive 'build/tests/**/*Test.js'",
     "coverage": "npm run clean-build && node_modules/.bin/nyc node_modules/.bin/mocha --full-trace --recursive 'build/manager/api/tests/**/*Test.js'",
     "coveralls": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls",
-    "lint": "tslint -p .",
-    "start-server": "node ./build/manager/api/lib/main.js",
-    "cli": "npm run clean-build && node build/manager/cli-client/main.js"
+    "lint": "tslint -p ."
   },
-  "author": "",
+  "author": "remipassmoilesel",
   "license": "GPL3.0",
   "repository": "https://github.com/remipassmoilesel/IaC-high-availability-load-balancing.git",
   "dependencies": {
