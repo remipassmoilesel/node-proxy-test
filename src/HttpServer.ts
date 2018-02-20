@@ -4,6 +4,8 @@ import * as express from 'express';
 import {Express} from 'express';
 import * as http from 'http';
 
+const proxy: any = require('express-http-proxy');
+
 function printInfo(msg: string, data?: any) {
     console.log(msg);
     if (data) {
@@ -14,11 +16,21 @@ function printInfo(msg: string, data?: any) {
 export class HttpServer {
 
     private SERVER_PORT = 3000;
-    private expressApp: Express;
+    private app: Express;
     private server: http.Server;
 
     constructor() {
-        this.expressApp = express();
+        this.app = express();
+        this.setupProxyFilter();
+    }
+
+    public setupProxyFilter() {
+        this.app.use('/proxy', proxy('www.google.com', {
+            filter: function (req: express.Request, res: express.Response) {
+                printInfo(req.baseUrl + ' ' + req.method);
+                return req.method == 'GET';
+            }
+        }));
     }
 
     /**
@@ -26,7 +38,7 @@ export class HttpServer {
      */
     public listen() {
 
-        this.server = this.expressApp.listen(this.SERVER_PORT, () => {
+        this.server = this.app.listen(this.SERVER_PORT, () => {
             printInfo(`Application available on port ${this.SERVER_PORT}`);
         });
 
@@ -37,7 +49,7 @@ export class HttpServer {
     }
 
     public getExpressApp() {
-        return this.expressApp;
+        return this.app;
     }
 
     private logReq(req: express.Request) {

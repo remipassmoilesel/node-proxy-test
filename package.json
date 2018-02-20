@@ -23,6 +23,7 @@
     "@types/node": "^8.0.32",
     "colors": "^1.1.2",
     "express": "^4.16.1",
+    "express-http-proxy": "^1.1.0",
     "lodash": "^4.17.4",
     "materialize-css": "^0.100.2",
     "netaddr": "^1.1.0",
