@@ -6,8 +6,8 @@ import * as http from 'http';
 
 const proxy: any = require('express-http-proxy');
 
-function printInfo(msg: string, data?: any) {
-    console.log(msg);
+function printInfo(msg: any, data?: any) {
+    console.log(`[${new Date()}] ${msg}`);
     if (data) {
         console.log(data);
     }
@@ -25,12 +25,27 @@ export class HttpServer {
     }
 
     public setupProxyFilter() {
-        this.app.use('/proxy', proxy('www.google.com', {
-            filter: function (req: express.Request, res: express.Response) {
-                printInfo(req.baseUrl + ' ' + req.method);
-                return req.method == 'GET';
-            }
-        }));
+        this.app.use('/', proxy(
+            (incomingMessage: any) => {
+                printInfo('');
+                printInfo('');
+                printInfo('');
+                printInfo(incomingMessage);
+                printInfo('', incomingMessage.headers);
+                printInfo('', incomingMessage.method);
+                printInfo('', incomingMessage.originalUrl);
+
+                return incomingMessage.originalUrl;
+            }, {
+                proxyReqPathResolver: (req: express.Request) => {
+                    printInfo('Resolving: ' + req.baseUrl + ' ' + req.method);
+                    return req.protocol + '://' + req.get('host') + req.originalUrl;
+                },
+                // filter: (req: express.Request, res: express.Response) => {
+                //     printInfo('Filtering: ' + req.baseUrl + ' ' + req.method);
+                //     return true;
+                // }
+            }));
     }
 
     /**
