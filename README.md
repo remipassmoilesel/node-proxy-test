@@ -1,4 +1,4 @@
-# Title
+# node-proxy-test
 
 [![Build Status](https://travis-ci.org/remipassmoilesel/IaC-high-availability-load-balancing.svg?branch=master)](https://travis-ci.org/remipassmoilesel/IaC-high-availability-load-balancing)
 
