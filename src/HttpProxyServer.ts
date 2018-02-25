@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+import {printInfo} from "./common";
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
@@ -8,13 +8,6 @@ import * as fs from 'fs';
 import * as https from "https";
 
 const httpProxy = require('http-proxy');
-
-function printInfo(msg: any, data?: any) {
-    console.log(`[${new Date()}] ${msg}`);
-    if (data) {
-        console.log(data);
-    }
-}
 
 export class HttpProxyServer {
 

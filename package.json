@@ -30,6 +30,7 @@
     "netinterfaces": "0.0.2",
     "node-sass": "^4.5.3",
     "rimraf": "^2.6.2",
+    "socksv5": "0.0.6",
     "source-map-support": "^0.5.0",
     "ts-loader": "^3.0.5",
     "typescript": "^2.5.3",
