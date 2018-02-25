@@ -4,7 +4,7 @@
 
 # See: https://www.chromium.org/developers/design-documents/network-settings
 
-chromium-browser --proxy-server="127.0.0.1:3000"
+chromium-browser --proxy-server="http=127.0.0.1:3000;https=127.0.0.1:3001"
 
 
 

@@ -18,12 +18,11 @@
   "license": "GPL3.0",
   "repository": "https://github.com/remipassmoilesel/IaC-high-availability-load-balancing.git",
   "dependencies": {
-    "@types/express": "^4.0.39",
     "@types/fs-extra": "^4.0.3",
     "@types/node": "^8.0.32",
     "colors": "^1.1.2",
-    "express": "^4.16.1",
-    "express-http-proxy": "^1.1.0",
+    "express": "^4.16.2",
+    "http-proxy": "^1.16.2",
     "lodash": "^4.17.4",
     "materialize-css": "^0.100.2",
     "netaddr": "^1.1.0",
@@ -38,13 +37,14 @@
   },
   "devDependencies": {
     "@types/chai": "^4.0.4",
+    "@types/express": "^4.11.1",
     "@types/mocha": "^2.2.43",
     "@types/sinon": "^2.3.6",
     "chai": "^4.1.2",
+    "coveralls": "^3.0.0",
     "mocha": "^3.5.3",
     "nyc": "^11.2.1",
-    "sinon": "^4.0.1",
-    "coveralls": "^3.0.0"
+    "sinon": "^4.0.1"
   },
   "nyc": {
     "reporter": [

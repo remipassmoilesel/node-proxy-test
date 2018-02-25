@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import {HttpServer} from "./HttpServer";
+import {ProxyServer} from "./ProxyServer";
 
-const http = new HttpServer();
+const http = new ProxyServer();
 http.listen();
