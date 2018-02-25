@@ -4,6 +4,8 @@
   "description": "Some useful things, maybe :)",
   "main": "./build/main.js",
   "scripts": {
+    "cli": "npm run clean-build && node build/main.js",
+    "cli-debug": "npm run clean-build && DEBUG=express:* node build/main.js",
     "clean": "node_modules/.bin/rimraf build",
     "build": "node_modules/.bin/tsc --pretty",
     "build-watch": "node_modules/.bin/tsc --pretty -w",
@@ -11,8 +13,7 @@
     "test": "npm run clean-build && node_modules/.bin/mocha --recursive 'build/tests/**/*Test.js'",
     "coverage": "npm run clean-build && node_modules/.bin/nyc node_modules/.bin/mocha --full-trace --recursive 'build/manager/api/tests/**/*Test.js'",
     "coveralls": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls",
-    "lint": "tslint -p .",
-    "cli": "npm run clean-build && node build/main.js"
+    "lint": "tslint -p ."
   },
   "author": "remipassmoilesel",
   "license": "GPL3.0",
