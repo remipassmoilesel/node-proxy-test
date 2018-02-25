@@ -1,4 +1,4 @@
-import {HttpMethod, HttpRequest} from "./HttpRequest";
+import {HttpMethod, HttpRequest} from "../proxy-server/HttpRequest";
 
 import * as chai from 'chai';
 
@@ -8,6 +8,7 @@ export class HttpSequenceStub {
 
     public post_nominatim_openstreetmap_org_search_query_params(bearer: string, arg2?: any, arg3?: any): HttpRequest {
         return {
+            url: 'eee',
             protocol: 'https://',
             path: '/search/',
             query: '?<params>',
@@ -27,6 +28,7 @@ export class HttpSequenceStub {
 
     public get_nominatim_openstreetmap_org_search_query_params(arg1?: any, arg2?: any, arg3?: any): HttpRequest {
         return {
+            url: 'eee',
             protocol: 'https://',
             path: '/search/',
             query: '?<params>',

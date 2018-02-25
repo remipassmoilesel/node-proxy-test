@@ -11,6 +11,7 @@ export class Response {
 
 export class HttpRequest {
 
+    public url: string;
     public host: string;
     public protocol: string;
     public path: string;

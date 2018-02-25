@@ -1,5 +1,5 @@
 import * as _ from "lodash";
-import {HttpRequest} from "../test-generator/HttpRequest";
+import {HttpRequest} from "../proxy-server/HttpRequest";
 
 export interface ITestGeneratorHook {
     beforeRender(request: HttpRequest): IMethodArgument[] | void;

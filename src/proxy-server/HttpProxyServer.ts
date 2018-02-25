@@ -1,11 +1,20 @@
+///<reference path="HttpRecorder.ts"/>
 import {printInfo} from "../common";
+import * as express from 'express';
+import {Express} from 'express';
+import * as fs from "fs";
+import * as https from "https";
+import {HttpRecorder} from "./HttpRecorder";
+import {IncomingMessage, ServerResponse} from "http";
+import {Url} from "url";
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
-import * as express from "express";
-import {Express} from "express";
-import * as fs from "fs";
-import * as https from "https";
+interface IHandlerOptions {
+    target: Url;
+    secure: boolean;
+    prependPath: boolean;
+}
 
 const httpProxy = require("http-proxy");
 
@@ -17,6 +26,7 @@ export class HttpProxyServer {
     private proxy: any;
     private httpsApp: Express;
     private httpApp: Express;
+    private recorder = new HttpRecorder();
 
     constructor() {
         this.setupProxy();
@@ -25,7 +35,7 @@ export class HttpProxyServer {
     }
 
     public getRequests() {
-        return [];
+        return this.recorder.getRequests();
     }
 
     public setupProxy() {
@@ -82,12 +92,15 @@ export class HttpProxyServer {
         printInfo("===== Proxy error: " + e.message, e);
     }
 
-    private onProxyRequest(proxyReq: any, req: any, res: any, options: any) {
-        printInfo("onProxyRequest: " + req.originalUrl);
+
+    private onProxyRequest(proxyReq: IncomingMessage, req: IncomingMessage, res: ServerResponse) {
+        printInfo("onProxyRequest: " + req.url);
+        this.recorder.registerRequest(req);
     }
 
-    private onProxyResponse(proxyRes: any, req: any, res: any, options: any) {
-        printInfo("onProxyResponse: " + req.originalUrl);
+    private onProxyResponse(proxyRes: IncomingMessage, req: express.Request, res: express.Response) {
+        printInfo("onProxyResponse: " + req.url);
+        this.recorder.registerResponse(res);
     }
 
 }
