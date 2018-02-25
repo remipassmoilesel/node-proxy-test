@@ -8,5 +8,8 @@
     "max-classes-per-file": false,
     "no-consecutive-blank-lines": false
   },
-  "rulesDirectory": []
+  "rulesDirectory": [],
+  "include": [
+    "src/**/*"
+  ]
 }
