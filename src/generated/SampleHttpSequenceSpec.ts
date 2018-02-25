@@ -1,10 +1,10 @@
 import * as chai from 'chai';
-import {HttpSequenceStub} from "../test-generator/HttpSequenceStub";
+import {SampleHttpSequenceStub} from "./SampleHttpSequenceStub";
 import {runRequest} from "../test-generator/testUtils";
 
 const assert = chai.assert;
 
-const httpSequence = new HttpSequenceStub();
+const httpSequence = new SampleHttpSequenceStub();
 
 describe(' > Some interesting module', () => {
 

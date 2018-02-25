@@ -4,7 +4,7 @@ import * as chai from 'chai';
 
 const assert = chai.assert;
 
-export class HttpSequenceStub {
+export class SampleHttpSequenceStub {
 
     public post_nominatim_openstreetmap_org_search_query_params(bearer: string, arg2?: any, arg3?: any): HttpRequest {
         return {
