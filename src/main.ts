@@ -9,6 +9,13 @@ import {HttpRequest} from "./proxy-server/HttpRequest";
 const sourceMapSupport = require('source-map-support');
 sourceMapSupport.install();
 
+const versionNumber = Number(process.versions.node.substr(0, 1));
+if (versionNumber < 8) {
+    console.log('You must use node 8 to run this project.');
+    console.log(`Current version: ${process.versions.node}`);
+    process.exit(1);
+}
+
 const cleanArgs = _.map(process.argv.slice(2), (arg: string) => arg.trim());
 
 function printHelp() {
