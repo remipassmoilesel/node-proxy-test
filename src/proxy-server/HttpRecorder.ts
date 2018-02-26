@@ -1,24 +1,27 @@
-import * as _ from "lodash";
-import * as express from "express";
-import {HttpMethod, HttpRequest} from "./HttpRequest";
-import {IncomingMessage} from "http";
+import * as _ from 'lodash';
+import * as express from 'express';
+import { getMethodFromString, HttpMethod, HttpRequest } from './HttpRequest';
+import { IncomingMessage } from 'http';
+import { URL } from 'url';
 
 export class HttpRecorder {
 
     private requests: HttpRequest[] = [];
 
     public registerRequest(req: IncomingMessage) {
+        if (!req.url) {
+            throw new Error('Url is undefined');
+        }
+        const url = new URL(req.url);
+        const httpMethod: HttpMethod = getMethodFromString(req.method);
+
         this.requests.push({
-            url: req.url as string,
-            protocol: 'https://',
-            path: '/search/',
-            query: '?<params>',
-            host: 'nominatim.openstreetmap.org',
-            headers: [],
-            method: HttpMethod.GET,
-            expectedResponse: {
-                code: 302,
-            },
+            url: req.url,
+            protocol: url.protocol,
+            host: url.host,
+            headers: req.headers,
+            method: httpMethod,
+            expectedResponse: {} as any, // response will be valorized later
         });
     }
 
@@ -36,7 +39,7 @@ export class HttpRecorder {
             return this.isResponseOfRequest(res, req);
         });
         if (!req) {
-            throw new Error('Not found !')
+            throw new Error('Not found !');
         }
         return req;
     }
