@@ -1,21 +1,29 @@
 import * as _ from "lodash";
+import * as fs from "fs";
 import * as express from "express";
-import {HttpMethod, HttpRequest} from "./HttpRequest";
+import {HttpRequest} from "./HttpRequest";
 import {IncomingMessage} from "http";
+import {URL} from 'url';
 
 export class HttpRecorder {
 
     private requests: HttpRequest[] = [];
 
     public registerRequest(req: IncomingMessage) {
+
+        if (!req.url) {
+            console.log("Warning, URL is not defined");
+            return;
+        }
+
+        const url = new URL(req.url);
+
         this.requests.push({
-            url: req.url as string,
-            protocol: 'https://',
-            path: '/search/',
-            query: '?<params>',
-            host: 'nominatim.openstreetmap.org',
-            headers: [],
-            method: HttpMethod.GET,
+            url: req.url,
+            protocol: url.protocol,
+            host: url.host,
+            headers: req.headers,
+            method: req.method as any,
             expectedResponse: {
                 code: 302,
             },
@@ -43,5 +51,9 @@ export class HttpRecorder {
 
     private isResponseOfRequest(res: any, req: HttpRequest): boolean {
         return res.req.url === req.url;
+    }
+
+    public persistRequests(path: string) {
+        fs.writeFileSync(path, JSON.stringify(this.requests, null, 2));
     }
 }

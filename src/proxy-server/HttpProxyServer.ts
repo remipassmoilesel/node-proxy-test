@@ -34,10 +34,6 @@ export class HttpProxyServer {
         this.setupHttpsServer();
     }
 
-    public getRequests() {
-        return this.recorder.getRequests();
-    }
-
     public setupProxy() {
 
         this.proxy = httpProxy.createProxyServer({
@@ -103,4 +99,7 @@ export class HttpProxyServer {
         this.recorder.registerResponse(res);
     }
 
+    public persistRequests(path: string) {
+        this.recorder.persistRequests(path);
+    }
 }

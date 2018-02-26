@@ -14,7 +14,7 @@ const cleanArgs = _.map(process.argv.slice(2), (arg: string) => arg.trim());
 
     try {
         if (_.includes(cleanArgs, "record")) {
-            cliActions.recordHttpRequests();
+            await cliActions.recordHttpRequests();
         }
 
         else if (_.includes(cleanArgs, "generate-tests")) {

@@ -1,6 +1,4 @@
-export enum HttpMethod {
-    GET, POST, DELETE, PUT, OPTION, CONNECT, TRACE, PATH
-}
+export type HttpMethod = 'GET' | 'POST' | 'DELETE' | 'PUT' | ' OPTION' | 'CONNECT' | ' TRACE' | ' PATH';
 
 export type AssertHandler = (request: HttpRequest) => void;
 
@@ -14,8 +12,6 @@ export class HttpRequest {
     public url: string;
     public host: string;
     public protocol: string;
-    public path: string;
-    public query: string;
     public headers: any;
     public method: HttpMethod;
     public body?: any;
