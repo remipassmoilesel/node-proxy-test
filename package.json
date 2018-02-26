@@ -22,11 +22,13 @@
   "dependencies": {
     "colors": "^1.1.2",
     "express": "^4.16.2",
+    "f-promise": "^1.2.11",
     "http-proxy": "^1.16.2",
     "materialize-css": "^0.100.2",
     "netaddr": "^1.1.0",
     "netinterfaces": "0.0.2",
     "node-sass": "^4.5.3",
+    "prompts": "^0.1.0",
     "rimraf": "^2.6.2",
     "socksv5": "0.0.6",
     "source-map-support": "^0.5.3",
