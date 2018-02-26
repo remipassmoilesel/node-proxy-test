@@ -11,7 +11,7 @@ describe(' > Some interesting module', () => {
         // Example:
         // runRequest(httpSequence.post_nominatim_openstreetmap_org_search_query_params('Add bearer here !'));
 
-        /*::requestsList::*/
+        /*<requestsList>*/
 
     });
 
