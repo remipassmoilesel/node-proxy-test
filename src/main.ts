@@ -17,8 +17,12 @@ const cleanArgs = _.map(process.argv.slice(2), (arg: string) => arg.trim());
             await cliActions.recordHttpRequests();
         }
 
-        else if (_.includes(cleanArgs, "generate-tests")) {
-            cliActions.generateTests();
+        else if (_.includes(cleanArgs, "generate")) {
+            const fileName = cleanArgs[1];
+            if (!fileName) {
+                throw new Error('File name or file path is mandatory');
+            }
+            cliActions.generateTests(fileName);
         }
 
         else if (_.includes(cleanArgs, "play")) {

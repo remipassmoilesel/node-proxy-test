@@ -3,6 +3,7 @@ import {MochaGenerator} from "./test-generator/MochaGenerator";
 import {HttpRequest} from "./proxy-server/HttpRequest";
 import * as path from "path";
 import * as readline from 'readline';
+import * as fs from "fs";
 
 const {prompt} = require("prompts");
 
@@ -16,9 +17,9 @@ export class CliActions {
         this.httpServer.listen();
     }
 
-    public generateTests() {
+    public generateTests(fileName: string) {
         const generator = new MochaGenerator();
-        generator.generate(this.readRequests('path/to/json'));
+        generator.generate(this.readRequests(fileName));
     }
 
     public playTests() {
@@ -26,13 +27,14 @@ export class CliActions {
     }
 
     private readRequests(path: string): HttpRequest[] {
-        throw new Error('Not implemented yet !');
+        return JSON.parse(fs.readFileSync(path).toString());
     }
 
 
     public printHelp() {
-        console.log('record:    Open a proxy and record http requests, then generate tests');
-        console.log('play:      Play tests');
+        console.log('record:        Open a proxy and record http requests, then generate tests');
+        console.log('generate:      Generate Typescript/Mocha tests');
+        console.log('play:          Play tests');
     }
 
     public async showPrompt() {
@@ -43,7 +45,7 @@ export class CliActions {
             message:
                 `What do you want to do ?
     - 1 > Launch a proxy to record your activity (http only)
-    - 2 > Generate tests with recorded activity
+    - 2 > Generate Typescript/Mocha tests with recorded activity
     - 3 > Execute these tests
     `
         });
