@@ -6,7 +6,6 @@
 *.retry
 node_modules
 package-lock.json
-generated-*
 bower_components
 *.lock
 build/
