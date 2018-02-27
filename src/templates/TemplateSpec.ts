@@ -1,6 +1,8 @@
 // tslint:disable
 import * as chai from "chai";
-/*<&requestsImport>*/
+/*<#requestsImports>*/
+/*<&importLine>*/
+/*</requestsImports>*/
 
 const assert = chai.assert;
 

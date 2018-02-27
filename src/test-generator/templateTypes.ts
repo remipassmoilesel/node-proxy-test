@@ -16,8 +16,12 @@ export interface IMethodCall {
     methodCall: string;
 }
 
+export interface IImportLine {
+    importLine: string;
+}
+
 export interface ISpecView {
+    requestsImports: IImportLine[];
     requestsInstantiation: string;
     requestsMethodCalls: IMethodCall[];
-    requestsImport: string;
 }
