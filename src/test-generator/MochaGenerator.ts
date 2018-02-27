@@ -86,35 +86,8 @@ export class MochaGenerator {
 
         return _.map(requests, (req) => {
 
-            const customParams: string[] = [];
-            const defaultValues: string[] = [];
-            const defaultParams = "defaultArg0?: any, defaultArg1?: any, defaultArg2?: any";
-
-            _.forEach(this.hooks, (hook) => {
-                const args = hook.beforeRender(req);
-                if (args && args.length > 0) {
-                    _.forEach(args, (methodArg) => {
-                        customParams.push(`${methodArg.name}: ${methodArg.type}`);
-                        defaultValues.push(methodArg.defaultValue);
-                    });
-                }
-            });
-
-            let allParams = "";
-            if (customParams.length > 0) {
-                allParams = customParams.join(", ") + ", ";
-            }
-            allParams += defaultParams;
-
-            const methodBaseSuffix: string = camel(req.url);
-            let methodNameSuffix;
-            let i = 0;
-            do {
-                methodNameSuffix = `${methodBaseSuffix}_${i}`;
-                i++;
-            } while (methodSuffixArray.indexOf(methodNameSuffix) !== -1);
-            methodSuffixArray.push(methodNameSuffix);
-
+            const { defaultValues, allParams } = this.applyHooks(req);
+            const methodNameSuffix = this.getMethodSuffix(req, methodSuffixArray);
 
             return {
                 defaultValues,
@@ -167,5 +140,44 @@ export class MochaGenerator {
         const customTags = ["/*<", ">*/"];
         Mustache.parse(Templates.TemplateSpec, customTags);
         Mustache.parse(Templates.TemplateRequests, customTags);
+    }
+
+    private getMethodSuffix(req: HttpRequest, methodSuffixArray: string[]) {
+        const methodBaseSuffix: string = camel(req.url);
+        let methodNameSuffix;
+        let i = 0;
+        do {
+            methodNameSuffix = `${methodBaseSuffix}_${i}`;
+            i++;
+        } while (methodSuffixArray.indexOf(methodNameSuffix) !== -1);
+        methodSuffixArray.push(methodNameSuffix);
+
+        return methodNameSuffix;
+    }
+
+    private applyHooks(req: HttpRequest) {
+        const customParams: string[] = [];
+        const defaultValues: string[] = [];
+        const defaultParams = "defaultArg0?: any, defaultArg1?: any, defaultArg2?: any";
+
+        _.forEach(this.hooks, (hook) => {
+            const args = hook.beforeRender(req);
+            if (args && args.length > 0) {
+                _.forEach(args, (methodArg) => {
+                    customParams.push(`${methodArg.name}: ${methodArg.type}`);
+                    defaultValues.push(methodArg.defaultValue);
+                });
+            }
+        });
+
+        let allParams = "";
+        if (customParams.length > 0) {
+            allParams = customParams.join(", ") + ", ";
+        }
+        allParams += defaultParams;
+
+        return {
+            defaultValues, allParams,
+        };
     }
 }
