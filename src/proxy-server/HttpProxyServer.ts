@@ -80,11 +80,19 @@ export class HttpProxyServer {
     }
 
     private onProxyRequest(proxyReq: IncomingMessage, req: IncomingMessage, res: ServerResponse) {
-        this.recorder.registerRequest(proxyReq, req);
+        try {
+            this.recorder.registerRequest(proxyReq, req);
+        } catch (e) {
+            printInfo('Recording error:', e);
+        }
     }
 
     private onProxyResponse(proxyRes: IncomingMessage, req: IncomingMessage, res: ServerResponse) {
-        this.recorder.registerResponse(proxyRes, res);
+        try {
+            this.recorder.registerResponse(proxyRes, res);
+        } catch (e) {
+            printInfo('Recording error:', e);
+        }
     }
 
     public persistRequests(path: string) {

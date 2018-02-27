@@ -3,7 +3,8 @@ import {IncomingMessage, ServerResponse} from "http";
 import * as _ from "lodash";
 import {URL} from "url";
 import {printInfo} from "../common/common";
-import {HttpRequest} from "./HttpRequest";
+import {HttpRequest, RequestDetails, ResponseDetails} from "./HttpRequest";
+import {Utils} from "../common/Utils";
 
 export class HttpRecorder {
 
@@ -34,12 +35,14 @@ export class HttpRecorder {
         };
         this.requests.push(httpReq);
 
-        if (!this.isBodyIgnored(httpReq)) {
-            proxyReq.on('data', (dataBuffer) => {
-                httpReq.request.body = dataBuffer.toString();
-                console.log(httpReq.request.body);
-            });
-        }
+        proxyReq.on('data', (dataBuffer: Buffer) => {
+            const body: string = dataBuffer.toString();
+            if (!Utils.isBinaryBody(httpReq.request, body)) {
+                httpReq.request.body = body;
+            } else if (body) {
+                httpReq.request.body = 'Body was ignored';
+            }
+        });
 
     }
 
@@ -48,11 +51,15 @@ export class HttpRecorder {
         httpReq.statusCode = res.statusCode;
         httpReq.response.headers = proxyRes.headers;
 
-        if (!this.isBodyIgnored(httpReq)) {
-            proxyRes.on('data', (dataBuffer) => {
-                httpReq.response.body = dataBuffer.toString();
-            });
-        }
+        proxyRes.on('data', (dataBuffer) => {
+            const body: string = dataBuffer.toString();
+            if (!Utils.isBinaryBody(httpReq.response, body)) {
+                httpReq.response.body = body;
+            } else if (body) {
+                httpReq.request.body = 'Body was ignored';
+            }
+        });
+
     }
 
     public getRequests() {
@@ -69,6 +76,7 @@ export class HttpRecorder {
         return correspondingReq;
     }
 
+
     private isResponseOfRequest(res: ServerResponse, req: HttpRequest): boolean {
         // type error
         return (res as any).req.url === req.url;
@@ -78,7 +86,5 @@ export class HttpRecorder {
         fs.writeFileSync(path, JSON.stringify(this.requests, null, 2));
     }
 
-    private isBodyIgnored(httpReq: HttpRequest) {
-        return false; // FIXME: "accept": "image/webp,image/apng,image/*,*/*;q=0.8",
-    }
+
 }

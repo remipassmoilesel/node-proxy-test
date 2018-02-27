@@ -2,7 +2,7 @@ import * as fs from "fs";
 import * as _ from "lodash";
 import * as Mustache from "mustache";
 import * as path from "path";
-import {NamingUtils} from "../common/NamingUtils";
+import {Utils} from "../common/Utils";
 import {ITestGeneratorHook} from "../hooks/hookTypes";
 import {HttpRequest} from "../proxy-server/HttpRequest";
 import {IMethodCall, IRequestsMethod, IRequestsView, ISpecView} from "./templateTypes";
@@ -38,7 +38,7 @@ export class MochaGenerator {
         const methods = this.generateMethodsFromRequests(requests);
 
         const classPrefix = this.generateClassPrefix();
-        const className = NamingUtils.getRequestsClassName(classPrefix);
+        const className = Utils.getRequestsClassName(classPrefix);
         const fileName = `${className}.ts`;
 
         const requestsView: IRequestsView = {
@@ -54,7 +54,7 @@ export class MochaGenerator {
     private generateRequestSpec(requestsView: IRequestsView) {
 
         const requestsMethodCalls = this.generateMethodsCall(requestsView);
-        const fileName = `${NamingUtils.getSpecClassName(this.generateClassPrefix())}.ts`;
+        const fileName = `${Utils.getSpecClassName(this.generateClassPrefix())}.ts`;
         const requestsImports = [
             {importLine: `import {${requestsView.className}} from "./${requestsView.className}";`},
             {importLine: `import { runRequest } from '../common/testUtils';`},
@@ -104,7 +104,7 @@ export class MochaGenerator {
         const methodCalls: IMethodCall[] = [];
         _.forEach(requestsView.requestsMethods, (method: IRequestsMethod) => {
             methodCalls.push({
-                methodCall: NamingUtils.getRequestsMethodCall(method.nameSuffix, method.defaultValues),
+                methodCall: Utils.getRequestsMethodCall(method.nameSuffix, method.defaultValues),
             });
         });
         return methodCalls;
