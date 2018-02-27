@@ -3,7 +3,8 @@ import * as _ from 'lodash';
 import { HttpRequest } from '../proxy-server/HttpRequest';
 import * as fs from 'fs';
 import * as path from 'path';
-import { IStubMethod, IStubView } from './stubTypes';
+import { IMethodCall, ISpecView, IStubMethod, IStubView } from './templateTypes';
+
 
 const dockerNames = require('docker-names');
 
@@ -26,34 +27,39 @@ export class MochaGenerator {
     public generate(requests: HttpRequest[]) {
         // console.log(requests);
 
-        this.generateRequestStub(requests);
-        this.generateRequestSpec(requests);
+        const stubView = this.generateRequestStub(requests);
+        this.generateRequestSpec(stubView);
     }
 
-    private generateRequestStub(requests: HttpRequest[]) {
+    private generateRequestStub(requests: HttpRequest[]): IStubView {
 
         const methods = this.generateMethodsFromRequests(requests);
 
         const classPrefix = this.generateClassPrefix();
-        const fileName =  classPrefix + 'Stub.ts';
+        const fileName = classPrefix + 'Stub.ts';
 
-        this.render(fileName, Templates.TemplateStub, {
+        const stubView: IStubView = {
             classPrefix,
             stubMethods: methods,
-        } as IStubView);
+        };
+        this.render(fileName, Templates.TemplateStub, stubView);
+
+        return stubView;
     }
 
-    private generateRequestSpec(requests: HttpRequest[]) {
+    private generateRequestSpec(stubView: IStubView) {
 
-        const methods = this.generateMethodsFromRequests(requests);
+        const stubMethodCalls = this.generateMethodsCall(stubView);
+        const fileName = this.generateClassPrefix() + 'Spec.ts';
+        const stubImport = `import {${stubView.classPrefix}Stub} from "./${stubView.classPrefix}Stub";`;
 
-        const classPrefix = this.generateClassPrefix();
-        const fileName =  classPrefix + 'Spec.ts';
+        const specView: ISpecView = {
+            stubInstantiation: `const stub = new ${stubView.classPrefix}Stub();`,
+            stubImport,
+            stubMethodCalls,
+        };
 
-        this.render(fileName, Templates.TemplateSpec, {
-            classPrefix,
-            stubMethods: methods,
-        } as IStubView);
+        this.render(fileName, Templates.TemplateSpec, specView);
 
     }
 
@@ -62,7 +68,7 @@ export class MochaGenerator {
         fs.writeFileSync(path.join(outputDirPath, fileName), output);
     }
 
-    private generateClassPrefix(){
+    private generateClassPrefix() {
         const raw = camel(dockerNames.getRandomName());
         return raw.charAt(0).toLocaleUpperCase() + raw.slice(1);
     }
@@ -71,7 +77,7 @@ export class MochaGenerator {
         return _.map(requests, (req) => {
             return {
                 name: camel(req.url),
-                params: 'arg0: any, arg1: any, arg2: any',
+                params: 'arg0?: any, arg1?: any, arg2?: any',
                 returnType: ': HttpRequest', // : is mandatory
                 returnValue: JSON.stringify(req, null, 2),
             };
@@ -82,5 +88,13 @@ export class MochaGenerator {
         const customTags = ['/*<', '>*/'];
         Mustache.parse(Templates.TemplateSpec, customTags);
         Mustache.parse(Templates.TemplateStub, customTags);
+    }
+
+    private generateMethodsCall(stubView: IStubView): IMethodCall[] {
+        const methodCalls: IMethodCall[] = [];
+        _.forEach(stubView.stubMethods, (method) => {
+            methodCalls.push({ methodCall: `stub.request_${method.name}();` });
+        });
+        return methodCalls;
     }
 }

@@ -1,6 +1,9 @@
 import * as chai from 'chai';
+/*<&stubImport>*/
 
 const assert = chai.assert;
+
+/*<&stubInstantiation>*/
 
 describe(' > Some interesting module', () => {
 
@@ -8,9 +11,9 @@ describe(' > Some interesting module', () => {
         // Example:
         // runRequest(httpSequence.post_nominatim_openstreetmap_org_search_query_params('Add bearer here !'));
 
-        /*<#requestsList}}>*/
-            /*<method>*/
-        /*</requestsList}}>*/
+        /*<#stubMethodCalls>*/
+        /*<&methodCall>*/
+        /*</stubMethodCalls>*/
 
     });
 

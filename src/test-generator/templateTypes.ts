@@ -9,3 +9,13 @@ export interface IStubView {
     classPrefix: string;
     stubMethods: IStubMethod[];
 }
+
+export interface IMethodCall{
+    methodCall: string;
+}
+
+export interface ISpecView {
+    stubInstantiation: string;
+    stubMethodCalls: IMethodCall[];
+    stubImport: string;
+}
