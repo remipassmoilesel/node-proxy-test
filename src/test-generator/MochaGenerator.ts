@@ -1,11 +1,13 @@
 import * as Mustache from 'mustache';
-import {HttpRequest} from "../proxy-server/HttpRequest";
-import * as fs from "fs";
-import * as path from "path";
+import { HttpRequest } from '../proxy-server/HttpRequest';
+import * as fs from 'fs';
+import * as path from 'path';
+
+const templateDirPath = path.resolve(__dirname, '..', '..', 'src', 'templates');
 
 class Templates {
-    public static TemplateStub = fs.readFileSync(path.join(__dirname, '../generated-test/TemplateStub.ts')).toString();
-    public static TemplateSpec = fs.readFileSync(path.join(__dirname, '../generated-test/TemplateSpec.ts')).toString();
+    public static TemplateStub = fs.readFileSync(path.join(templateDirPath, 'TemplateStub.ts')).toString();
+    public static TemplateSpec = fs.readFileSync(path.join(templateDirPath, 'TemplateSpec.ts')).toString();
 }
 
 export class MochaGenerator {
@@ -20,7 +22,7 @@ export class MochaGenerator {
     private generateRequestStub(requests: HttpRequest[]) {
         const view = {};
         const output = Mustache.render(Templates.TemplateStub, view);
-        fs.writeFileSync(path.join(__dirname, '../generated-test/FirstStub.ts'), output)
+        fs.writeFileSync(path.join(__dirname, '../generated-test/FirstStub.ts'), output);
     }
 
     private generateRequestSpec(requests: HttpRequest[]) {

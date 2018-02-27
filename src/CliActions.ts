@@ -5,7 +5,7 @@ import * as path from "path";
 import * as readline from 'readline';
 import * as fs from "fs";
 
-const {prompt} = require("prompts");
+const {prompt} = require("prompt");
 
 export class CliActions {
 
@@ -47,10 +47,13 @@ export class CliActions {
     - 1 > Launch a proxy to record your activity (http only)
     - 2 > Generate Typescript/Mocha tests with recorded activity
     - 3 > Execute these tests
+    - 4 > Quit
     `
         });
 
-        console.log(response);
+        if(response === 4){
+            process.exit(0);
+        }
     }
 
     private listenQuitSequence() {
