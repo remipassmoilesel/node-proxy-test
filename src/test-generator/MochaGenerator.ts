@@ -1,7 +1,9 @@
 import * as Mustache from 'mustache';
+import * as _ from 'lodash';
 import { HttpRequest } from '../proxy-server/HttpRequest';
 import * as fs from 'fs';
 import * as path from 'path';
+import { IStubMethod, IStubView } from './stubTypes';
 
 const dockerNames = require('docker-names');
 
@@ -17,6 +19,10 @@ class Templates {
 
 export class MochaGenerator {
 
+    constructor() {
+        this.initMustacheTemplates();
+    }
+
     public generate(requests: HttpRequest[]) {
         // console.log(requests);
 
@@ -25,29 +31,56 @@ export class MochaGenerator {
     }
 
     private generateRequestStub(requests: HttpRequest[]) {
-        const fileName = this.generateStubName();
-        this.render(fileName, Templates.TemplateStub, {});
+
+        const methods = this.generateMethodsFromRequests(requests);
+
+        const classPrefix = this.generateClassPrefix();
+        const fileName =  classPrefix + 'Stub.ts';
+
+        this.render(fileName, Templates.TemplateStub, {
+            classPrefix,
+            stubMethods: methods,
+        } as IStubView);
     }
 
     private generateRequestSpec(requests: HttpRequest[]) {
-        const fileName = this.generateSpecName();
-        this.render(fileName, Templates.TemplateSpec, {});
+
+        const methods = this.generateMethodsFromRequests(requests);
+
+        const classPrefix = this.generateClassPrefix();
+        const fileName =  classPrefix + 'Spec.ts';
+
+        this.render(fileName, Templates.TemplateSpec, {
+            classPrefix,
+            stubMethods: methods,
+        } as IStubView);
+
     }
 
-    private render(fileName: string, template: string, variables: any){
-        const customTags = [ '/*<', '>*/' ];
-        const output = Mustache.render(template, variables, customTags);
-
+    private render(fileName: string, template: string, variables: any) {
+        const output = Mustache.render(template, variables);
         fs.writeFileSync(path.join(outputDirPath, fileName), output);
     }
 
-    private generateSpecName(){
-        const raw = camel(dockerNames.getRandomName()) + 'Spec.ts';
+    private generateClassPrefix(){
+        const raw = camel(dockerNames.getRandomName());
         return raw.charAt(0).toLocaleUpperCase() + raw.slice(1);
     }
 
-    private generateStubName(){
-        const raw = camel(dockerNames.getRandomName()) + 'Stub.ts';
-        return raw.charAt(0).toLocaleUpperCase() + raw.slice(1);
+    private generateMethodsFromRequests(requests: HttpRequest[]): IStubMethod[] {
+        return _.map(requests, (req) => {
+            return {
+                name: camel(req.url),
+                params: 'arg0: any, arg1: any, arg2: any',
+                returnType: ': HttpRequest', // : is mandatory
+                returnValue: JSON.stringify(req, null, 2),
+            };
+        });
+    }
+
+    private initMustacheTemplates() {
+        const customTags = ['/*<', '>*/'];
+        Mustache.parse(Templates.TemplateSpec, customTags);
+        Mustache.parse(Templates.TemplateStub, customTags);
     }
 }

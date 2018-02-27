@@ -24,13 +24,13 @@ export class HttpRecorder {
             host: url.host,
             headers: req.headers,
             method: req.method as any,
-            expectedResponse: {} as any,
+            expectedResponse: null,
         });
     }
 
     public registerResponse(res: express.Response) {
         const req: HttpRequest = this.findRequestForResponse(res);
-        req.expectedResponse.code = res.statusCode;
+        req.expectedResponse = { code: res.statusCode };
     }
 
     public getRequests() {

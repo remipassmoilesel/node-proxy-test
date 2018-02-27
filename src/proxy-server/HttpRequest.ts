@@ -1,5 +1,5 @@
 
-export type HttpMethod = 'GET' | 'POST' | 'DELETE' | 'PUT' | ' OPTION' | 'CONNECT' | ' TRACE' | ' PATH';
+export type HttpMethod = 'GET' |  'HEAD' | 'POST' | 'DELETE' | 'PUT' | ' OPTION' | 'CONNECT' | ' TRACE' | ' PATH';
 
 export type AssertHandler = (request: HttpRequest) => void;
 
@@ -17,7 +17,7 @@ export class HttpRequest {
     public method: HttpMethod;
     public body?: any;
 
-    public expectedResponse: Response;
+    public expectedResponse: Response | null;
     public assert?: AssertHandler;
 
 }

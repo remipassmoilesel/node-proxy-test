@@ -1,9 +1,6 @@
 import * as chai from 'chai';
-import {TemplateStub} from "./TemplateStub";
 
 const assert = chai.assert;
-
-const httpSequence = new TemplateStub();
 
 describe(' > Some interesting module', () => {
 
@@ -11,7 +8,9 @@ describe(' > Some interesting module', () => {
         // Example:
         // runRequest(httpSequence.post_nominatim_openstreetmap_org_search_query_params('Add bearer here !'));
 
-        /*<requestsList>*/
+        /*<#requestsList}}>*/
+            /*<method>*/
+        /*</requestsList}}>*/
 
     });
 
