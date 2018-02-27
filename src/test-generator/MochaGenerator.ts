@@ -81,6 +81,9 @@ export class MochaGenerator {
     }
 
     private generateMethodsFromRequests(requests: HttpRequest[]): IRequestsMethod[] {
+
+        const methodSuffixArray: string[] = [];
+
         return _.map(requests, (req) => {
 
             const customParams: string[] = [];
@@ -103,9 +106,19 @@ export class MochaGenerator {
             }
             allParams += defaultParams;
 
+            const methodBaseSuffix: string = camel(req.url);
+            let methodNameSuffix;
+            let i = 0;
+            do {
+                methodNameSuffix = `${methodBaseSuffix}_${i}`;
+                i++;
+            } while (methodSuffixArray.indexOf(methodNameSuffix) !== -1);
+            methodSuffixArray.push(methodNameSuffix);
+
+
             return {
                 defaultValues,
-                nameSuffix: camel(req.url),
+                nameSuffix: methodNameSuffix,
                 params: allParams,
                 returnType: ": HttpRequest", // : is mandatory
                 returnValue: this.stringifyReq(req),
@@ -114,6 +127,7 @@ export class MochaGenerator {
     }
 
     private generateMethodsCall(requestsView: IRequestsView): IMethodCall[] {
+
         const methodCalls: IMethodCall[] = [];
         _.forEach(requestsView.requestsMethods, (method: IRequestsMethod) => {
             methodCalls.push({
