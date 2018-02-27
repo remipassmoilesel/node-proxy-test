@@ -1,22 +1,5 @@
-export enum HttpMethod {
-    GET = 'GET',
-    HEAD = 'HEAD',
-    POST = 'POST',
-    DELETE = 'DELETE',
-    PUT = 'PUT',
-    OPTION = 'OPTION',
-    CONNECT = 'CONNECT',
-    TRACE = 'TRACE',
-    PATH = 'PATH'
-}
 
-export function getMethodFromString(methodStr: any): HttpMethod {
-    const method: HttpMethod = <HttpMethod>HttpMethod[methodStr];
-    if(!method){
-        throw new Error('Method not found: ' + methodStr);
-    }
-    return method;
-}
+export type HttpMethod = 'GET' | 'POST' | 'DELETE' | 'PUT' | ' OPTION' | 'CONNECT' | ' TRACE' | ' PATH';
 
 export type AssertHandler = (request: HttpRequest) => void;
 

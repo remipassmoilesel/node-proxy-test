@@ -1,27 +1,30 @@
 import * as _ from 'lodash';
 import * as express from 'express';
-import { getMethodFromString, HttpMethod, HttpRequest } from './HttpRequest';
+import { HttpRequest } from './HttpRequest';
 import { IncomingMessage } from 'http';
 import { URL } from 'url';
+import * as fs from 'fs';
 
 export class HttpRecorder {
 
     private requests: HttpRequest[] = [];
 
     public registerRequest(req: IncomingMessage) {
+
         if (!req.url) {
-            throw new Error('Url is undefined');
+            console.log('Warning, URL is not defined');
+            return;
         }
+
         const url = new URL(req.url);
-        const httpMethod: HttpMethod = getMethodFromString(req.method);
 
         this.requests.push({
             url: req.url,
             protocol: url.protocol,
             host: url.host,
             headers: req.headers,
-            method: httpMethod,
-            expectedResponse: {} as any, // response will be valorized later
+            method: req.method as any,
+            expectedResponse: {} as any,
         });
     }
 
@@ -46,5 +49,9 @@ export class HttpRecorder {
 
     private isResponseOfRequest(res: any, req: HttpRequest): boolean {
         return res.req.url === req.url;
+    }
+
+    public persistRequests(path: string) {
+        fs.writeFileSync(path, JSON.stringify(this.requests, null, 2));
     }
 }

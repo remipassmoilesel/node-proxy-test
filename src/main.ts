@@ -2,9 +2,7 @@
 
 import * as _ from "lodash";
 import {printInfo} from "./common";
-import {HttpProxyServer} from "./proxy-server/HttpProxyServer";
-import {MochaGenerator} from "./test-generator/MochaGenerator";
-import {HttpRequest} from "./proxy-server/HttpRequest";
+import {CliActions} from "./CliActions";
 
 const sourceMapSupport = require('source-map-support');
 sourceMapSupport.install();
@@ -16,38 +14,41 @@ if (versionNumber < 8) {
     process.exit(1);
 }
 
+const cliActions = new CliActions();
 const cleanArgs = _.map(process.argv.slice(2), (arg: string) => arg.trim());
 
-function printHelp() {
-    console.log('record:    Open a proxy and record http requests, then generate tests');
-    console.log('play:      Play tests');
-}
+(async () => {
 
-if (_.includes(cleanArgs, "record")) {
+    try {
+        if (_.includes(cleanArgs, "record")) {
+            await cliActions.recordHttpRequests();
+        }
 
-    const http = new HttpProxyServer();
-    http.listen();
+        else if (_.includes(cleanArgs, "generate")) {
+            const fileName = cleanArgs[1];
+            if (!fileName) {
+                throw new Error('File name or file path is mandatory');
+            }
+            cliActions.generateTests(fileName);
+        }
 
-    // const socks = new SocksProxyServer();
-    // socks.listen();
+        else if (_.includes(cleanArgs, "play")) {
+            cliActions.playTests();
+        }
 
-}
+        else if (_.includes(cleanArgs, "help")) {
+            cliActions.printHelp();
+        }
 
-else if (_.includes(cleanArgs, "generate-tests")) {
-    const generator = new MochaGenerator();
-    generator.generate(readRequests('path/to/json'));
-}
+        else {
+            printInfo("Bad command");
+            await cliActions.showPrompt();
+            // process.exit(1);
+        }
 
-else if (_.includes(cleanArgs, "play")) {
-    throw new Error("Not implemented");
-}
+    } catch (e) {
+        console.error(e);
+        process.exit(1);
+    }
 
-else {
-    printInfo("Bad command");
-    printHelp();
-    process.exit(1);
-}
-
-function readRequests(path: string): HttpRequest[] {
-    throw new Error('Not implemented yet !');
-}
+})();
