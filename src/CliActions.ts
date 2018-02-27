@@ -4,15 +4,13 @@ import * as fs from "fs";
 import * as path from "path";
 import * as readline from "readline";
 import { printInfo } from "./common/common";
-import { AcceptEncodingHook } from "./hooks/AcceptEncodingHook";
-import { UserAgentHook } from "./hooks/UserAgentHook";
+import { ITestGeneratorHook } from "./hooks/hookTypes";
 import { HttpProxyServer } from "./proxy-server/HttpProxyServer";
 import { HttpRequest } from "./proxy-server/HttpRequest";
 import { MochaGenerator } from "./test-generator/MochaGenerator";
-
 const { prompt } = require("prompts");
 
-const allHooks = [new UserAgentHook(), new AcceptEncodingHook()];
+const allHooks: ITestGeneratorHook[] = []; // [new UserAgentHook(), new AcceptEncodingHook()];
 
 export class CliActions {
 
