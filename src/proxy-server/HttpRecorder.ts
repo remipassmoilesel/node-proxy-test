@@ -1,10 +1,9 @@
-import * as express from "express";
 import * as fs from "fs";
-import { IncomingMessage } from "http";
+import {IncomingMessage, ServerResponse} from "http";
 import * as _ from "lodash";
-import { URL } from "url";
-import { printInfo } from "../common/common";
-import { HttpRequest } from "./HttpRequest";
+import {URL} from "url";
+import {printInfo} from "../common/common";
+import {HttpRequest} from "./HttpRequest";
 
 export class HttpRecorder {
 
@@ -29,16 +28,22 @@ export class HttpRecorder {
         });
     }
 
-    public registerResponse(res: express.Response) {
+    public registerResponse(proxyRes: IncomingMessage, res: ServerResponse) {
         const req: HttpRequest = this.findRequestForResponse(res);
-        req.expectedResponse = { code: res.statusCode };
+        req.expectedResponse = {code: res.statusCode};
+
+        // TODO: skip binary data with headers, e.g: accept "image/webp,image/apng,image/*,*/*;q=0.8",
+        proxyRes.on('data', function (dataBuffer) {
+            req.body = dataBuffer.toString();
+        });
+
     }
 
     public getRequests() {
         return this.requests;
     }
 
-    private findRequestForResponse(res: express.Response): HttpRequest {
+    private findRequestForResponse(res: ServerResponse): HttpRequest {
         const correspondingReq = _.find(this.requests, (req: HttpRequest) => {
             return this.isResponseOfRequest(res, req);
         });

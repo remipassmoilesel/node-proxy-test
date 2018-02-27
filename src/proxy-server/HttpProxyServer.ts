@@ -1,10 +1,11 @@
 import * as express from "express";
-import { Express } from "express";
+import {Express} from "express";
 import * as fs from "fs";
-import { IncomingMessage, ServerResponse } from "http";
+import {IncomingMessage, ServerResponse} from "http";
 import * as https from "https";
-import { printInfo } from "../common/common";
-import { HttpRecorder } from "./HttpRecorder";
+import {printInfo} from "../common/common";
+import {HttpRecorder} from "./HttpRecorder";
+
 const httpProxy = require("http-proxy");
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
@@ -71,7 +72,7 @@ export class HttpProxyServer {
         const target = req.protocol + "://" + req.get("host");
         printInfo("Handling request: " + target);
 
-        this.proxy.web(req, res, { target });
+        this.proxy.web(req, res, {target});
     }
 
     private onProxyError(e: Error) {
@@ -82,8 +83,8 @@ export class HttpProxyServer {
         this.recorder.registerRequest(req);
     }
 
-    private onProxyResponse(proxyRes: IncomingMessage, req: express.Request, res: express.Response) {
-        this.recorder.registerResponse(res);
+    private onProxyResponse(proxyRes: IncomingMessage, req: IncomingMessage, res: ServerResponse) {
+        this.recorder.registerResponse(proxyRes, res);
     }
 
     public persistRequests(path: string) {
