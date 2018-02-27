@@ -21,6 +21,7 @@
   "repository": "https://github.com/remipassmoilesel/IaC-high-availability-load-balancing.git",
   "dependencies": {
     "colors": "^1.1.2",
+    "docker-names": "^1.0.3",
     "express": "^4.16.2",
     "f-promise": "^1.2.11",
     "http-proxy": "^1.16.2",
@@ -33,6 +34,7 @@
     "rimraf": "^2.6.2",
     "socksv5": "0.0.6",
     "source-map-support": "^0.5.3",
+    "to-camel-case": "^1.0.0",
     "ts-loader": "^3.0.5",
     "typescript": "^2.5.3",
     "yargs": "^10.0.3",

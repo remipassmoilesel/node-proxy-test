@@ -1,11 +1,11 @@
-import {HttpProxyServer} from "./proxy-server/HttpProxyServer";
-import {MochaGenerator} from "./test-generator/MochaGenerator";
-import {HttpRequest} from "./proxy-server/HttpRequest";
-import * as path from "path";
+import { HttpProxyServer } from './proxy-server/HttpProxyServer';
+import { MochaGenerator } from './test-generator/MochaGenerator';
+import { HttpRequest } from './proxy-server/HttpRequest';
+import * as path from 'path';
 import * as readline from 'readline';
-import * as fs from "fs";
+import * as fs from 'fs';
 
-const {prompt} = require("prompt");
+const { prompt } = require('prompts');
 
 export class CliActions {
 
@@ -23,7 +23,7 @@ export class CliActions {
     }
 
     public playTests() {
-        throw new Error("Not implemented");
+        throw new Error('Not implemented');
     }
 
     private readRequests(path: string): HttpRequest[] {
@@ -39,6 +39,7 @@ export class CliActions {
 
     public async showPrompt() {
 
+        // TODO: use prompt (and not prompts)
         let response = await prompt({
             type: 'number',
             name: 'choice',
@@ -51,7 +52,7 @@ export class CliActions {
     `
         });
 
-        if(response === 4){
+        if (response === 4) {
             process.exit(0);
         }
     }
