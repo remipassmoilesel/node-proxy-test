@@ -5,7 +5,7 @@ import * as path from "path";
 import { NamingUtils } from "../common/NamingUtils";
 import { ITestGeneratorHook } from "../hooks/hookTypes";
 import { HttpRequest } from "../proxy-server/HttpRequest";
-import { IMethodCall, ISpecView, IStubMethod, IStubView } from "./templateTypes";
+import { IMethodCall, IRequestsMethod, IRequestsView, ISpecView } from "./templateTypes";
 
 
 const dockerNames = require("docker-names");
@@ -16,7 +16,7 @@ const outputDirPath = path.resolve(__dirname, "..", "..", "src", "generated-test
 const camel = require("to-camel-case");
 
 class Templates {
-    public static TemplateStub = fs.readFileSync(path.join(templateDirPath, "TemplateStub.ts")).toString();
+    public static TemplateRequests = fs.readFileSync(path.join(templateDirPath, "TemplateRequests.ts")).toString();
     public static TemplateSpec = fs.readFileSync(path.join(templateDirPath, "TemplateSpec.ts")).toString();
 }
 
@@ -29,40 +29,38 @@ export class MochaGenerator {
     }
 
     public generate(requests: HttpRequest[]) {
-        // console.log(requests);
-
-        const stubView = this.generateRequestStub(requests);
-        this.generateRequestSpec(stubView);
+        const requestsView = this.generateRequestsClass(requests);
+        this.generateRequestSpec(requestsView);
     }
 
-    private generateRequestStub(requests: HttpRequest[]): IStubView {
+    private generateRequestsClass(requests: HttpRequest[]): IRequestsView {
 
         const methods = this.generateMethodsFromRequests(requests);
 
         const classPrefix = this.generateClassPrefix();
-        const className = NamingUtils.getStubClassName(classPrefix);
+        const className = NamingUtils.getRequestsClassName(classPrefix);
         const fileName = `${className}.ts`;
 
-        const stubView: IStubView = {
+        const requestsView: IRequestsView = {
             classPrefix,
             className,
-            stubMethods: methods,
+            requestsMethods: methods,
         };
-        this.render(fileName, Templates.TemplateStub, stubView);
+        this.render(fileName, Templates.TemplateRequests, requestsView);
 
-        return stubView;
+        return requestsView;
     }
 
-    private generateRequestSpec(stubView: IStubView) {
+    private generateRequestSpec(requestsView: IRequestsView) {
 
-        const stubMethodCalls = this.generateMethodsCall(stubView);
+        const requestsMethodCalls = this.generateMethodsCall(requestsView);
         const fileName = `${NamingUtils.getSpecClassName(this.generateClassPrefix())}.ts`;
-        const stubImport = `import {${stubView.className}} from "./${stubView.className}";`;
+        const requestsImport = `import {${requestsView.className}} from "./${requestsView.className}";`;
 
         const specView: ISpecView = {
-            stubInstantiation: `const stub = new ${stubView.className}();`,
-            stubImport,
-            stubMethodCalls,
+            requestsInstantiation: `const requests = new ${requestsView.className}();`,
+            requestsImport,
+            requestsMethodCalls,
         };
 
         this.render(fileName, Templates.TemplateSpec, specView);
@@ -79,7 +77,7 @@ export class MochaGenerator {
         return raw.charAt(0).toLocaleUpperCase() + raw.slice(1);
     }
 
-    private generateMethodsFromRequests(requests: HttpRequest[]): IStubMethod[] {
+    private generateMethodsFromRequests(requests: HttpRequest[]): IRequestsMethod[] {
         return _.map(requests, (req) => {
 
             const customParams: string[] = [];
@@ -96,7 +94,7 @@ export class MochaGenerator {
                 }
             });
 
-            let allParams = '';
+            let allParams = "";
             if (customParams.length > 0) {
                 allParams = customParams.join(", ") + ", ";
             }
@@ -108,14 +106,16 @@ export class MochaGenerator {
                 params: allParams,
                 returnType: ": HttpRequest", // : is mandatory
                 returnValue: this.stringifyReq(req),
-            } as IStubMethod;
+            } as IRequestsMethod;
         });
     }
 
-    private generateMethodsCall(stubView: IStubView): IMethodCall[] {
+    private generateMethodsCall(requestsView: IRequestsView): IMethodCall[] {
         const methodCalls: IMethodCall[] = [];
-        _.forEach(stubView.stubMethods, (method: IStubMethod) => {
-            methodCalls.push({ methodCall: NamingUtils.getMethodCall(method.nameSuffix, method.defaultValues) });
+        _.forEach(requestsView.requestsMethods, (method: IRequestsMethod) => {
+            methodCalls.push({
+                methodCall: NamingUtils.getRequestsMethodCall(method.nameSuffix, method.defaultValues),
+            });
         });
         return methodCalls;
     }
@@ -138,6 +138,6 @@ export class MochaGenerator {
     private initMustacheTemplates() {
         const customTags = ["/*<", ">*/"];
         Mustache.parse(Templates.TemplateSpec, customTags);
-        Mustache.parse(Templates.TemplateStub, customTags);
+        Mustache.parse(Templates.TemplateRequests, customTags);
     }
 }

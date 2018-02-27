@@ -1,4 +1,4 @@
-export interface IStubMethod {
+export interface IRequestsMethod {
     nameSuffix: string;
     defaultValues: string[];
     params: string;
@@ -6,10 +6,10 @@ export interface IStubMethod {
     returnValue: string;
 }
 
-export interface IStubView {
+export interface IRequestsView {
     classPrefix: string;
     className: string;
-    stubMethods: IStubMethod[];
+    requestsMethods: IRequestsMethod[];
 }
 
 export interface IMethodCall {
@@ -17,7 +17,7 @@ export interface IMethodCall {
 }
 
 export interface ISpecView {
-    stubInstantiation: string;
-    stubMethodCalls: IMethodCall[];
-    stubImport: string;
+    requestsInstantiation: string;
+    requestsMethodCalls: IMethodCall[];
+    requestsImport: string;
 }
