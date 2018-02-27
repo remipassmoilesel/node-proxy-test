@@ -2,7 +2,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import * as readline from "readline";
-import { printInfo } from "./common";
+import { printInfo } from "./common/common";
 import { AcceptEncodingHook } from "./hooks/AcceptEncodingHook";
 import { UserAgentHook } from "./hooks/UserAgentHook";
 import { HttpProxyServer } from "./proxy-server/HttpProxyServer";

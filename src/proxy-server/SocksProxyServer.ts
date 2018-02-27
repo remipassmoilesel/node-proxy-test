@@ -1,4 +1,4 @@
-import {printInfo} from "../common";
+import {printInfo} from "../common/common";
 
 const socks = require("socksv5");
 

@@ -4,7 +4,7 @@ import * as fs from "fs";
 import {IncomingMessage, ServerResponse} from "http";
 import * as https from "https";
 import {Url} from "url";
-import {printInfo} from "../common";
+import {printInfo} from "../common/common";
 import {HttpRecorder} from "./HttpRecorder";
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";

@@ -2,7 +2,7 @@
 
 import * as _ from "lodash";
 import {CliActions} from "./CliActions";
-import {printInfo} from "./common";
+import {printInfo} from "./common/common";
 
 const sourceMapSupport = require("source-map-support");
 sourceMapSupport.install();

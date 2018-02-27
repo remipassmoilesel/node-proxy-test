@@ -3,7 +3,7 @@ import * as fs from "fs";
 import { IncomingMessage } from "http";
 import * as _ from "lodash";
 import { URL } from "url";
-import { printInfo } from "../common";
+import { printInfo } from "../common/common";
 import { HttpRequest } from "./HttpRequest";
 
 export class HttpRecorder {

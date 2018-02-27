@@ -4,7 +4,7 @@ import * as Mustache from "mustache";
 import * as path from "path";
 import { ITestGeneratorHook } from "../hooks/hookTypes";
 import { HttpRequest } from "../proxy-server/HttpRequest";
-import { NamingUtils } from "./NamingUtils";
+import { NamingUtils } from "../common/NamingUtils";
 import { IMethodCall, ISpecView, IStubMethod, IStubView } from "./templateTypes";
 
 
