@@ -2,9 +2,9 @@ import * as fs from "fs";
 import * as _ from "lodash";
 import * as Mustache from "mustache";
 import * as path from "path";
+import { NamingUtils } from "../common/NamingUtils";
 import { ITestGeneratorHook } from "../hooks/hookTypes";
 import { HttpRequest } from "../proxy-server/HttpRequest";
-import { NamingUtils } from "../common/NamingUtils";
 import { IMethodCall, ISpecView, IStubMethod, IStubView } from "./templateTypes";
 
 
@@ -82,24 +82,28 @@ export class MochaGenerator {
     private generateMethodsFromRequests(requests: HttpRequest[]): IStubMethod[] {
         return _.map(requests, (req) => {
 
-            const customParamsStr: string[] = [];
-            const defaultValuesStr: string[] = [];
+            const customParams: string[] = [];
+            const defaultValues: string[] = [];
             const defaultParams = "defaultArg0?: any, defaultArg1?: any, defaultArg2?: any";
 
             _.forEach(this.hooks, (hook) => {
                 const args = hook.beforeRender(req);
                 if (args && args.length > 0) {
                     _.forEach(args, (methodArg) => {
-                        customParamsStr.push(`${methodArg.name}: ${methodArg.type}`);
-                        defaultValuesStr.push(methodArg.defaultValue);
+                        customParams.push(`${methodArg.name}: ${methodArg.type}`);
+                        defaultValues.push(methodArg.defaultValue);
                     });
                 }
             });
 
-            const allParams = customParamsStr.join(", ") + ", " + defaultParams;
+            let allParams = '';
+            if (customParams.length > 0) {
+                allParams = customParams.join(", ") + ", ";
+            }
+            allParams += defaultParams;
 
             return {
-                defaultValuesStr,
+                defaultValues,
                 nameSuffix: camel(req.url),
                 params: allParams,
                 returnType: ": HttpRequest", // : is mandatory
@@ -111,7 +115,7 @@ export class MochaGenerator {
     private generateMethodsCall(stubView: IStubView): IMethodCall[] {
         const methodCalls: IMethodCall[] = [];
         _.forEach(stubView.stubMethods, (method: IStubMethod) => {
-            methodCalls.push({ methodCall: NamingUtils.getMethodCall(method.nameSuffix, method.defaultValuesStr) });
+            methodCalls.push({ methodCall: NamingUtils.getMethodCall(method.nameSuffix, method.defaultValues) });
         });
         return methodCalls;
     }
