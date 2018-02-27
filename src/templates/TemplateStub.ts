@@ -7,7 +7,7 @@ const assert = chai.assert;
 export class /*<classPrefix>*/Stub {
 
     /*<#stubMethods>*/
-    public request_/*<&name>*/(/*<&params>*/) /*<&returnType>*/ {
+    public request_/*<&nameSuffix>*/(/*<&params>*/) /*<&returnType>*/ {
         return /*<&returnValue>*/;
     }
     /*</stubMethods>*/

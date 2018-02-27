@@ -1,5 +1,5 @@
 export interface IStubMethod{
-    name: string;
+    nameSuffix: string;
     params: string;
     returnType: string;
     returnValue: string;
@@ -7,6 +7,7 @@ export interface IStubMethod{
 
 export interface IStubView {
     classPrefix: string;
+    className: string;
     stubMethods: IStubMethod[];
 }
 
