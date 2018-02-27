@@ -1,12 +1,11 @@
-///<reference path="HttpRecorder.ts"/>
-import {printInfo} from "../common";
-import * as express from 'express';
-import {Express} from 'express';
+import * as express from "express";
+import {Express} from "express";
 import * as fs from "fs";
-import * as https from "https";
-import {HttpRecorder} from "./HttpRecorder";
 import {IncomingMessage, ServerResponse} from "http";
+import * as https from "https";
 import {Url} from "url";
+import {printInfo} from "../common";
+import {HttpRecorder} from "./HttpRecorder";
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 

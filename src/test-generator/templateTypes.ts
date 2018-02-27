@@ -1,4 +1,4 @@
-export interface IStubMethod{
+export interface IStubMethod {
     nameSuffix: string;
     defaultValuesStr: string[];
     params: string;
@@ -12,7 +12,7 @@ export interface IStubView {
     stubMethods: IStubMethod[];
 }
 
-export interface IMethodCall{
+export interface IMethodCall {
     methodCall: string;
 }
 

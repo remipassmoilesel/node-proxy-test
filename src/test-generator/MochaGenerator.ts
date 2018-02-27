@@ -1,23 +1,23 @@
-import * as Mustache from 'mustache';
-import * as _ from 'lodash';
-import { HttpRequest } from '../proxy-server/HttpRequest';
-import * as fs from 'fs';
-import * as path from 'path';
-import { IMethodCall, ISpecView, IStubMethod, IStubView } from './templateTypes';
-import { NamingUtils } from './NamingUtils';
-import { ITestGeneratorHook } from '../hooks/hookTypes';
+import * as fs from "fs";
+import * as _ from "lodash";
+import * as Mustache from "mustache";
+import * as path from "path";
+import { ITestGeneratorHook } from "../hooks/hookTypes";
+import { HttpRequest } from "../proxy-server/HttpRequest";
+import { NamingUtils } from "./NamingUtils";
+import { IMethodCall, ISpecView, IStubMethod, IStubView } from "./templateTypes";
 
 
-const dockerNames = require('docker-names');
+const dockerNames = require("docker-names");
 
-const templateDirPath = path.resolve(__dirname, '..', '..', 'src', 'templates');
-const outputDirPath = path.resolve(__dirname, '..', '..', 'src', 'generated-tests');
+const templateDirPath = path.resolve(__dirname, "..", "..", "src", "templates");
+const outputDirPath = path.resolve(__dirname, "..", "..", "src", "generated-tests");
 
-const camel = require('to-camel-case');
+const camel = require("to-camel-case");
 
 class Templates {
-    public static TemplateStub = fs.readFileSync(path.join(templateDirPath, 'TemplateStub.ts')).toString();
-    public static TemplateSpec = fs.readFileSync(path.join(templateDirPath, 'TemplateSpec.ts')).toString();
+    public static TemplateStub = fs.readFileSync(path.join(templateDirPath, "TemplateStub.ts")).toString();
+    public static TemplateSpec = fs.readFileSync(path.join(templateDirPath, "TemplateSpec.ts")).toString();
 }
 
 export class MochaGenerator {
@@ -84,7 +84,7 @@ export class MochaGenerator {
 
             const customParamsStr: string[] = [];
             const defaultValuesStr: string[] = [];
-            const defaultParams = 'defaultArg0?: any, defaultArg1?: any, defaultArg2?: any';
+            const defaultParams = "defaultArg0?: any, defaultArg1?: any, defaultArg2?: any";
 
             _.forEach(this.hooks, (hook) => {
                 const args = hook.beforeRender(req);
@@ -96,13 +96,13 @@ export class MochaGenerator {
                 }
             });
 
-            const allParams = customParamsStr.join(', ') + ', ' + defaultParams;
+            const allParams = customParamsStr.join(", ") + ", " + defaultParams;
 
             return {
                 defaultValuesStr,
                 nameSuffix: camel(req.url),
                 params: allParams,
-                returnType: ': HttpRequest', // : is mandatory
+                returnType: ": HttpRequest", // : is mandatory
                 returnValue: this.stringifyReq(req),
             } as IStubMethod;
         });
@@ -120,19 +120,19 @@ export class MochaGenerator {
         const rawJson = JSON.stringify(req, null, 2);
         const valueRegex = /( *"[^":]+"): ("[^":]+")/i;
 
-        const res = _.map(rawJson.split('\n'), (line) => {
+        const res = _.map(rawJson.split("\n"), (line) => {
             const lineMatch = line.match(valueRegex);
             if (lineMatch && lineMatch.length > 1) {
-                const replacedValue = lineMatch[2].replace(/"/g, '`');
+                const replacedValue = lineMatch[2].replace(/"/g, "`");
                 line = line.replace(lineMatch[2], replacedValue);
             }
             return line;
         });
-        return res.join('\n');
+        return res.join("\n");
     }
 
     private initMustacheTemplates() {
-        const customTags = ['/*<', '>*/'];
+        const customTags = ["/*<", ">*/"];
         Mustache.parse(Templates.TemplateSpec, customTags);
         Mustache.parse(Templates.TemplateStub, customTags);
     }

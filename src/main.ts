@@ -1,16 +1,16 @@
 #!/usr/bin/env node
 
 import * as _ from "lodash";
-import {printInfo} from "./common";
 import {CliActions} from "./CliActions";
+import {printInfo} from "./common";
 
-const sourceMapSupport = require('source-map-support');
+const sourceMapSupport = require("source-map-support");
 sourceMapSupport.install();
 
 const versionNumber = Number(process.versions.node.substr(0, 1));
 if (versionNumber < 8) {
-    console.log('You must use node 8 to run this project.');
-    console.log(`Current version: ${process.versions.node}`);
+    printInfo("You must use node 8 to run this project.");
+    printInfo(`Current version: ${process.versions.node}`);
     process.exit(1);
 }
 
@@ -22,32 +22,24 @@ const cleanArgs = _.map(process.argv.slice(2), (arg: string) => arg.trim());
     try {
         if (_.includes(cleanArgs, "record")) {
             await cliActions.recordHttpRequests();
-        }
-
-        else if (_.includes(cleanArgs, "generate")) {
+        } else if (_.includes(cleanArgs, "generate")) {
             const fileName = cleanArgs[1];
             if (!fileName) {
-                throw new Error('File name or file path is mandatory');
+                throw new Error("File name or file path is mandatory");
             }
             cliActions.generateTests(fileName);
-        }
-
-        else if (_.includes(cleanArgs, "play")) {
+        } else if (_.includes(cleanArgs, "play")) {
             cliActions.playTests();
-        }
-
-        else if (_.includes(cleanArgs, "help")) {
+        } else if (_.includes(cleanArgs, "help")) {
             cliActions.printHelp();
-        }
-
-        else {
+        } else {
             printInfo("Bad command");
             await cliActions.showPrompt();
             // process.exit(1);
         }
 
     } catch (e) {
-        console.error(e);
+        printInfo(e);
         process.exit(1);
     }
 

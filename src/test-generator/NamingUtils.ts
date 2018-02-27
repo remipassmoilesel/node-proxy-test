@@ -1,5 +1,5 @@
-const STUB_SUFFIX = 'Stub';
-const SPEC_SUFFIX = 'Spec';
+const STUB_SUFFIX = "Stub";
+const SPEC_SUFFIX = "Spec";
 
 export class NamingUtils {
     public static getStubClassName(classPrefix: string) {
@@ -11,9 +11,9 @@ export class NamingUtils {
     }
 
     public static getMethodCall(methodSuffix: string, defaultValuesStr?: string[]): string {
-        let values = '';
+        let values = "";
         if (defaultValuesStr && defaultValuesStr.length > 0) {
-            values += defaultValuesStr.join(', ');
+            values += defaultValuesStr.join(", ");
         }
         return `stub.request_${methodSuffix}(${values});`;
     }
