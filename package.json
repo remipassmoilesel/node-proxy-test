@@ -1,8 +1,11 @@
 {
-  "name": "template",
+  "name": "node-proxy-test",
   "version": "0.0.1",
   "description": "Some useful things, maybe :)",
   "main": "./build/main.js",
+  "author": "remipassmoilesel",
+  "license": "GPL-3.0-or-later",
+  "repository": "https://github.com/remipassmoilesel/node-proxy-test.git",
   "scripts": {
     "cli": "npm run clean-build && node build/main.js",
     "cli-debug": "npm run clean-build && DEBUG=express:* node build/main.js",
@@ -18,14 +21,12 @@
     "lint": "tslint -p .",
     "lint-fix": "tslint -p . --fix"
   },
-  "author": "remipassmoilesel",
-  "license": "GPL3.0",
-  "repository": "https://github.com/remipassmoilesel/IaC-high-availability-load-balancing.git",
   "dependencies": {
     "colors": "^1.1.2",
     "docker-names": "^1.0.3",
     "express": "^4.16.2",
     "f-promise": "^1.2.11",
+    "got": "^8.2.0",
     "http-proxy": "^1.16.2",
     "materialize-css": "^0.100.2",
     "mustache": "^2.3.0",
@@ -38,14 +39,13 @@
     "source-map-support": "^0.5.3",
     "to-camel-case": "^1.0.0",
     "ts-loader": "^3.0.5",
-    "typescript": "^2.5.3",
-    "yargs": "^10.0.3",
-    "yargs-default-command": "^1.0.2"
+    "typescript": "^2.5.3"
   },
   "devDependencies": {
     "@types/chai": "^4.0.4",
     "@types/express": "^4.11.1",
     "@types/fs-extra": "^4.0.3",
+    "@types/got": "^7.1.7",
     "@types/lodash": "^4.14.104",
     "@types/mocha": "^2.2.43",
     "@types/mustache": "^0.8.30",
