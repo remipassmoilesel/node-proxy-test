@@ -61,6 +61,7 @@ export class HttpProxyServer {
         this.httpApp.all("*", this.proxyRequestHandler.bind(this));
     }
 
+    // FIXME: not functional
     private setupHttpsServer() {
         this.httpsApp = express();
 
@@ -75,8 +76,6 @@ export class HttpProxyServer {
     }
 
     private proxyRequestHandler(req: express.Request, res: express.Response) {
-        printInfo("proxyRequestHandler: " + req.originalUrl);
-
         const target = req.protocol + "://" + req.get("host");
         printInfo("Handling request: " + target);
 
@@ -89,12 +88,10 @@ export class HttpProxyServer {
 
 
     private onProxyRequest(proxyReq: IncomingMessage, req: IncomingMessage, res: ServerResponse) {
-        printInfo("onProxyRequest: " + req.url);
         this.recorder.registerRequest(req);
     }
 
     private onProxyResponse(proxyRes: IncomingMessage, req: express.Request, res: express.Response) {
-        printInfo("onProxyResponse: " + req.url);
         this.recorder.registerResponse(res);
     }
 

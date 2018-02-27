@@ -1,6 +1,11 @@
-import {HttpRequest} from "../proxy-server/HttpRequest";
+import { wait } from "f-promise";
+import * as got from "got";
+import { HttpRequest } from "../proxy-server/HttpRequest";
 
-export function runRequest(request: HttpRequest): void {
-    throw new Error("Method not implemented.");
+export function runRequest(request: HttpRequest) {
+    const res = wait(got(request.url, {
+        headers: request.headers,
+    }));
+    return res;
 }
 

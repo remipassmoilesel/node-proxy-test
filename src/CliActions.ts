@@ -1,4 +1,5 @@
 // tslint:disable:no-console
+import { wait } from "f-promise";
 import * as fs from "fs";
 import * as path from "path";
 import * as readline from "readline";
@@ -17,7 +18,7 @@ export class CliActions {
 
     private httpServer: HttpProxyServer;
 
-    public async recordHttpRequests() {
+    public recordHttpRequests() {
         this.listenQuitSequence();
         this.httpServer = new HttpProxyServer();
         this.httpServer.listen();
@@ -38,10 +39,10 @@ export class CliActions {
         printInfo("play:          Play tests");
     }
 
-    public async showPrompt() {
+    public showPrompt() {
 
         // TODO: use prompt (and not prompts)
-        const response = await prompt({
+        const response = wait(prompt({
             type: "number",
             name: "choice",
             message:
@@ -51,7 +52,7 @@ export class CliActions {
     - 3 > Execute these tests
     - 4 > Quit
     `,
-        });
+        }));
 
         if (response === 4) {
             process.exit(0);
