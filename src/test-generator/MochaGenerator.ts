@@ -5,6 +5,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { IMethodCall, ISpecView, IStubMethod, IStubView } from './templateTypes';
 import { NamingUtils } from './NamingUtils';
+import { ITestGeneratorHook } from '../hooks/hookTypes';
 
 
 const dockerNames = require('docker-names');
@@ -20,9 +21,11 @@ class Templates {
 }
 
 export class MochaGenerator {
+    private hooks: ITestGeneratorHook[];
 
-    constructor() {
+    constructor(hooks: ITestGeneratorHook[]) {
         this.initMustacheTemplates();
+        this.hooks = hooks;
     }
 
     public generate(requests: HttpRequest[]) {
@@ -78,9 +81,27 @@ export class MochaGenerator {
 
     private generateMethodsFromRequests(requests: HttpRequest[]): IStubMethod[] {
         return _.map(requests, (req) => {
+
+            const customParamsStr: string[] = [];
+            const defaultValuesStr: string[] = [];
+            const defaultParams = 'defaultArg0?: any, defaultArg1?: any, defaultArg2?: any';
+
+            _.forEach(this.hooks, (hook) => {
+                const args = hook.beforeRender(req);
+                if (args && args.length > 0) {
+                    _.forEach(args, (methodArg) => {
+                        customParamsStr.push(`${methodArg.name}: ${methodArg.type}`);
+                        defaultValuesStr.push(methodArg.defaultValue);
+                    });
+                }
+            });
+
+            const allParams = customParamsStr.join(', ') + ', ' + defaultParams;
+
             return {
+                defaultValuesStr,
                 nameSuffix: camel(req.url),
-                params: 'arg0?: any, arg1?: any, arg2?: any',
+                params: allParams,
                 returnType: ': HttpRequest', // : is mandatory
                 returnValue: this.stringifyReq(req),
             } as IStubMethod;
@@ -90,15 +111,9 @@ export class MochaGenerator {
     private generateMethodsCall(stubView: IStubView): IMethodCall[] {
         const methodCalls: IMethodCall[] = [];
         _.forEach(stubView.stubMethods, (method: IStubMethod) => {
-            methodCalls.push({ methodCall: NamingUtils.getMethodCall(method.nameSuffix) });
+            methodCalls.push({ methodCall: NamingUtils.getMethodCall(method.nameSuffix, method.defaultValuesStr) });
         });
         return methodCalls;
-    }
-
-    private initMustacheTemplates() {
-        const customTags = ['/*<', '>*/'];
-        Mustache.parse(Templates.TemplateSpec, customTags);
-        Mustache.parse(Templates.TemplateStub, customTags);
     }
 
     private stringifyReq(req: HttpRequest): string {
@@ -114,5 +129,11 @@ export class MochaGenerator {
             return line;
         });
         return res.join('\n');
+    }
+
+    private initMustacheTemplates() {
+        const customTags = ['/*<', '>*/'];
+        Mustache.parse(Templates.TemplateSpec, customTags);
+        Mustache.parse(Templates.TemplateStub, customTags);
     }
 }

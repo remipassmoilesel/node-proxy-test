@@ -10,7 +10,11 @@ export class NamingUtils {
         return classPrefix + SPEC_SUFFIX;
     }
 
-    public static getMethodCall(methodSuffix: string) {
-        return `stub.request_${methodSuffix}();`
+    public static getMethodCall(methodSuffix: string, defaultValuesStr?: string[]): string {
+        let values = '';
+        if (defaultValuesStr && defaultValuesStr.length > 0) {
+            values += defaultValuesStr.join(', ');
+        }
+        return `stub.request_${methodSuffix}(${values});`;
     }
 }

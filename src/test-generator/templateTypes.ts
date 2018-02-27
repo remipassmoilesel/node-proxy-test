@@ -1,5 +1,6 @@
 export interface IStubMethod{
     nameSuffix: string;
+    defaultValuesStr: string[];
     params: string;
     returnType: string;
     returnValue: string;

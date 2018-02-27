@@ -4,8 +4,12 @@ import { HttpRequest } from './proxy-server/HttpRequest';
 import * as path from 'path';
 import * as readline from 'readline';
 import * as fs from 'fs';
+import { UserAgentHook } from './hooks/UserAgentHook';
+import { AcceptEncodingHook } from './hooks/AcceptEncodingHook';
 
 const { prompt } = require('prompts');
+
+const allHooks = [new UserAgentHook(), new AcceptEncodingHook()];
 
 export class CliActions {
 
@@ -18,7 +22,7 @@ export class CliActions {
     }
 
     public generateTests(fileName: string) {
-        const generator = new MochaGenerator();
+        const generator = new MochaGenerator(allHooks);
         generator.generate(this.readRequests(fileName));
     }
 
