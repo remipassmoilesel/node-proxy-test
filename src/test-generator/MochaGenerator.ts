@@ -94,7 +94,7 @@ export class MochaGenerator {
                 nameSuffix: methodNameSuffix,
                 params: allParams,
                 returnType: ": HttpRequest", // : is mandatory
-                returnValue: this.stringifyReq(req),
+                returnValue: Utils.stringifyRawRequests(req),
             } as IRequestsMethod;
         });
     }
@@ -108,32 +108,6 @@ export class MochaGenerator {
             });
         });
         return methodCalls;
-    }
-
-    /**
-     * Here we replace quotes on values by backticks, in order to use template strings.
-     * /!\ Some values contains escaped quotes
-     */
-    private stringifyReq(req: HttpRequest): string {
-        const rawJson = JSON.stringify(req, null, 2);
-        const jsonLineWithValueRegex = /( *"[^":]+"):\s+(".+)/i;
-        const jsonLines = rawJson.split("\n");
-
-        const res = _.map(jsonLines, (line) => {
-            const lineMatch = line.match(jsonLineWithValueRegex);
-
-            if (lineMatch && lineMatch.length > 1) {
-                let formattedValue: string = lineMatch[2];
-                if (formattedValue.match(/,$/)) {
-                    formattedValue = formattedValue.slice(0, -1);
-                }
-                formattedValue = "`" + JSON.parse(formattedValue) + "`,";
-
-                line = line.replace(lineMatch[2], formattedValue);
-            }
-            return line;
-        });
-        return res.join("\n");
     }
 
     private initMustacheTemplates() {

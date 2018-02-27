@@ -1,4 +1,5 @@
-import {RequestDetails, ResponseDetails} from "../proxy-server/HttpRequest";
+import {HttpRequest, RequestDetails, ResponseDetails} from "../proxy-server/HttpRequest";
+import * as _ from "lodash";
 
 const REQUESTS_SUFFIX = "Requests";
 const SPEC_SUFFIX = "Spec";
@@ -37,5 +38,33 @@ export class Utils {
         }
 
         return false;
+    }
+
+
+    /**
+     * Here we replace quotes on values by backticks, in order to use template strings.
+     * /!\ Some values contains escaped quotes
+     */
+    public static stringifyRawRequests(req: HttpRequest): string {
+        const rawJson = JSON.stringify(req, null, 2);
+        const jsonLineWithValueRegex = /( *"[^":]+"):\s+(".+)/i;
+        const jsonLines = rawJson.split("\n");
+
+        const res = _.map(jsonLines, (line) => {
+            const lineMatch = line.match(jsonLineWithValueRegex);
+
+            if (lineMatch && lineMatch.length > 1) {
+                let lineValue: string = lineMatch[2];
+                if (lineValue.match(/,$/)) {
+                    lineValue = lineValue.slice(0, -1);
+                }
+                lineValue = "`" + JSON.parse(lineValue) + "`,";
+                lineValue = lineValue.replace(/\$\{/ig, '\${');
+                line = line.replace(lineMatch[2], lineValue);
+            }
+
+            return line;
+        });
+        return res.join("\n");
     }
 }

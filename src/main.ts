@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-import {run, wait} from "f-promise";
+import {run} from "f-promise";
 import * as _ from "lodash";
-import { CliActions } from "./CliActions";
-import { printInfo } from "./common/common";
+import {CliActions} from "./CliActions";
+import {printInfo} from "./common/common";
 
 const sourceMapSupport = require("source-map-support");
 sourceMapSupport.install();
@@ -47,7 +47,7 @@ function main() {
         }
 
     } catch (e) {
-        printInfo(e);
+        printInfo('Fatal error: ', e);
         process.exit(1);
     }
 }

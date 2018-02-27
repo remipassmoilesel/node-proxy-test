@@ -23,7 +23,6 @@ export class HttpProxyServer {
     constructor() {
         this.setupProxy();
         this.setupHttpServer();
-        this.setupHttpsServer();
     }
 
     public setupProxy() {
@@ -44,9 +43,9 @@ export class HttpProxyServer {
         this.httpApp.listen(this.HTTP_PORT, () => {
             printInfo(`Listening HTTP on port ${this.HTTP_PORT}`);
         });
-        this.httpsServer.listen(this.HTTPS_PORT, () => {
-            printInfo(`Listening HTTPS on port ${this.HTTPS_PORT}`);
-        });
+        // this.httpsServer.listen(this.HTTPS_PORT, () => {
+        //     printInfo(`Listening HTTPS on port ${this.HTTPS_PORT}`);
+        // });
     }
 
     private setupHttpServer() {
@@ -54,7 +53,7 @@ export class HttpProxyServer {
         this.httpApp.all("*", this.proxyRequestHandler.bind(this));
     }
 
-    // FIXME: not functional
+    // FIXME: not functional, need non self-signed certificates ?
     private setupHttpsServer() {
         this.httpsApp = express();
 
