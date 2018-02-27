@@ -1,6 +1,14 @@
-import * as _ from "lodash";
-
-export type HttpMethod = "GET" |  "HEAD" | "POST" | "DELETE" | "PUT" | " OPTION" | "CONNECT" | " TRACE" | " PATH";
+export type HttpMethod =
+    "GET"
+    | "HEAD"
+    | "OPTIONS"
+    | "POST"
+    | "DELETE"
+    | "PUT"
+    | " OPTION"
+    | "CONNECT"
+    | " TRACE"
+    | " PATH";
 
 export type AssertHandler = (request: HttpRequest) => void;
 
