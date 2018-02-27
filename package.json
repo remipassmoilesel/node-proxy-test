@@ -6,6 +6,7 @@
   "scripts": {
     "cli": "npm run clean-build && node build/main.js",
     "cli-debug": "npm run clean-build && DEBUG=express:* node build/main.js",
+    "clean-generated": "rm src/generated-tests/*.ts",
     "clean": "node_modules/.bin/rimraf build",
     "build": "node_modules/.bin/tsc --pretty",
     "build-watch": "node_modules/.bin/tsc --pretty -w",
