@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 
 export type HttpMethod = 'GET' |  'HEAD' | 'POST' | 'DELETE' | 'PUT' | ' OPTION' | 'CONNECT' | ' TRACE' | ' PATH';
 

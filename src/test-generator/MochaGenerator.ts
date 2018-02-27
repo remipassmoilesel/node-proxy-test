@@ -82,15 +82,9 @@ export class MochaGenerator {
                 nameSuffix: camel(req.url),
                 params: 'arg0?: any, arg1?: any, arg2?: any',
                 returnType: ': HttpRequest', // : is mandatory
-                returnValue: JSON.stringify(req, null, 2),
+                returnValue: this.stringifyReq(req),
             } as IStubMethod;
         });
-    }
-
-    private initMustacheTemplates() {
-        const customTags = ['/*<', '>*/'];
-        Mustache.parse(Templates.TemplateSpec, customTags);
-        Mustache.parse(Templates.TemplateStub, customTags);
     }
 
     private generateMethodsCall(stubView: IStubView): IMethodCall[] {
@@ -99,5 +93,26 @@ export class MochaGenerator {
             methodCalls.push({ methodCall: NamingUtils.getMethodCall(method.nameSuffix) });
         });
         return methodCalls;
+    }
+
+    private initMustacheTemplates() {
+        const customTags = ['/*<', '>*/'];
+        Mustache.parse(Templates.TemplateSpec, customTags);
+        Mustache.parse(Templates.TemplateStub, customTags);
+    }
+
+    private stringifyReq(req: HttpRequest): string {
+        const rawJson = JSON.stringify(req, null, 2);
+        const valueRegex = /( *"[^":]+"): ("[^":]+")/i;
+
+        const res = _.map(rawJson.split('\n'), (line) => {
+            const lineMatch = line.match(valueRegex);
+            if (lineMatch && lineMatch.length > 1) {
+                const replacedValue = lineMatch[2].replace(/"/g, '`');
+                line = line.replace(lineMatch[2], replacedValue);
+            }
+            return line;
+        });
+        return res.join('\n');
     }
 }
