@@ -16,3 +16,5 @@ coverage
 .scannerwork
 recorded/*
 !recorded/.gitkeep
+generated-tests/*
+!generated-tests/.gitkeep
