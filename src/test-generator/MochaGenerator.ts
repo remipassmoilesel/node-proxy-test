@@ -1,23 +1,23 @@
-import * as fs from 'fs';
-import * as _ from 'lodash';
-import * as Mustache from 'mustache';
-import * as path from 'path';
-import { NamingUtils } from '../common/NamingUtils';
-import { ITestGeneratorHook } from '../hooks/hookTypes';
-import { HttpRequest } from '../proxy-server/HttpRequest';
-import { IMethodCall, IRequestsMethod, IRequestsView, ISpecView } from './templateTypes';
+import * as fs from "fs";
+import * as _ from "lodash";
+import * as Mustache from "mustache";
+import * as path from "path";
+import { NamingUtils } from "../common/NamingUtils";
+import { ITestGeneratorHook } from "../hooks/hookTypes";
+import { HttpRequest } from "../proxy-server/HttpRequest";
+import { IMethodCall, IRequestsMethod, IRequestsView, ISpecView } from "./templateTypes";
 
 
-const dockerNames = require('docker-names');
+const dockerNames = require("docker-names");
 
-const templateDirPath = path.resolve(__dirname, '..', '..', 'src', 'templates');
-const outputDirPath = path.resolve(__dirname, '..', '..', 'src', 'generated-tests');
+const templateDirPath = path.resolve(__dirname, "..", "..", "src", "templates");
+const outputDirPath = path.resolve(__dirname, "..", "..", "src", "generated-tests");
 
-const camel = require('to-camel-case');
+const camel = require("to-camel-case");
 
 class Templates {
-    public static TemplateRequests = fs.readFileSync(path.join(templateDirPath, 'TemplateRequests.ts')).toString();
-    public static TemplateSpec = fs.readFileSync(path.join(templateDirPath, 'TemplateSpec.ts')).toString();
+    public static TemplateRequests = fs.readFileSync(path.join(templateDirPath, "TemplateRequests.ts")).toString();
+    public static TemplateSpec = fs.readFileSync(path.join(templateDirPath, "TemplateSpec.ts")).toString();
 }
 
 export class MochaGenerator {
@@ -85,7 +85,7 @@ export class MochaGenerator {
 
             const customParams: string[] = [];
             const defaultValues: string[] = [];
-            const defaultParams = 'defaultArg0?: any, defaultArg1?: any, defaultArg2?: any';
+            const defaultParams = "defaultArg0?: any, defaultArg1?: any, defaultArg2?: any";
 
             _.forEach(this.hooks, (hook) => {
                 const args = hook.beforeRender(req);
@@ -97,9 +97,9 @@ export class MochaGenerator {
                 }
             });
 
-            let allParams = '';
+            let allParams = "";
             if (customParams.length > 0) {
-                allParams = customParams.join(', ') + ', ';
+                allParams = customParams.join(", ") + ", ";
             }
             allParams += defaultParams;
 
@@ -107,7 +107,7 @@ export class MochaGenerator {
                 defaultValues,
                 nameSuffix: camel(req.url),
                 params: allParams,
-                returnType: ': HttpRequest', // : is mandatory
+                returnType: ": HttpRequest", // : is mandatory
                 returnValue: this.stringifyReq(req),
             } as IRequestsMethod;
         });
@@ -123,23 +123,34 @@ export class MochaGenerator {
         return methodCalls;
     }
 
+    /**
+     * Here we replace quotes on values by backticks, in order to use template strings.
+     * /!\ Some values contains escaped quotes
+     */
     private stringifyReq(req: HttpRequest): string {
         const rawJson = JSON.stringify(req, null, 2);
-        const valueRegex = /( *"[^":]+"): ("[^":]+")/i;
+        const jsonLineWithValueRegex = /( *"[^":]+"):\s+(".+)/i;
+        const jsonLines = rawJson.split("\n");
 
-        const res = _.map(rawJson.split('\n'), (line) => {
-            const lineMatch = line.match(valueRegex);
+        const res = _.map(jsonLines, (line) => {
+            const lineMatch = line.match(jsonLineWithValueRegex);
+
             if (lineMatch && lineMatch.length > 1) {
-                const replacedValue = lineMatch[2].replace(/"/g, '`');
-                line = line.replace(lineMatch[2], replacedValue);
+                let formattedValue: string = lineMatch[2];
+                if (formattedValue.match(/,$/)) {
+                    formattedValue = formattedValue.slice(0, -1);
+                }
+                formattedValue = "`" + JSON.parse(formattedValue) + "`,";
+
+                line = line.replace(lineMatch[2], formattedValue);
             }
             return line;
         });
-        return res.join('\n');
+        return res.join("\n");
     }
 
     private initMustacheTemplates() {
-        const customTags = ['/*<', '>*/'];
+        const customTags = ["/*<", ">*/"];
         Mustache.parse(Templates.TemplateSpec, customTags);
         Mustache.parse(Templates.TemplateRequests, customTags);
     }
