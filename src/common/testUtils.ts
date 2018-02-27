@@ -13,15 +13,13 @@ export function runRequest(request: HttpRequest) {
     let response;
     try {
         response = wait(got(request.url, {
-            headers: request.headers,
+            headers: request.request.headers,
         }));
     } catch (e) {
         response = e;
     }
 
-    if (request.expectedResponse && request.expectedResponse.code) {
-        assert.equal(request.expectedResponse.code, response.statusCode);
-    }
+    assert.equal(request.statusCode, response.statusCode);
 
     return response;
 }

@@ -9,7 +9,7 @@ export class HttpRecorder {
 
     private requests: HttpRequest[] = [];
 
-    public registerRequest(req: IncomingMessage) {
+    public registerRequest(proxyReq: IncomingMessage, req: IncomingMessage) {
 
         if (!req.url) {
             printInfo("Warning, URL is not defined");
@@ -17,26 +17,42 @@ export class HttpRecorder {
         }
 
         const url = new URL(req.url);
-
-        this.requests.push({
+        const httpReq: HttpRequest = {
             url: req.url,
-            protocol: url.protocol,
             host: url.host,
-            headers: req.headers,
+            protocol: url.protocol,
             method: req.method as any,
-            expectedResponse: null,
-        });
+            statusCode: 0,
+            request: {
+                headers: req.headers,
+                body: '',
+            },
+            response: {
+                headers: {},
+                body: '',
+            }
+        };
+        this.requests.push(httpReq);
+
+        if (!this.isBodyIgnored(httpReq)) {
+            proxyReq.on('data', (dataBuffer) => {
+                httpReq.request.body = dataBuffer.toString();
+                console.log(httpReq.request.body);
+            });
+        }
+
     }
 
     public registerResponse(proxyRes: IncomingMessage, res: ServerResponse) {
-        const req: HttpRequest = this.findRequestForResponse(res);
-        req.expectedResponse = {code: res.statusCode};
+        const httpReq: HttpRequest = this.findRequestForResponse(res);
+        httpReq.statusCode = res.statusCode;
+        httpReq.response.headers = proxyRes.headers;
 
-        // TODO: skip binary data with headers, e.g: accept "image/webp,image/apng,image/*,*/*;q=0.8",
-        proxyRes.on('data', function (dataBuffer) {
-            req.body = dataBuffer.toString();
-        });
-
+        if (!this.isBodyIgnored(httpReq)) {
+            proxyRes.on('data', (dataBuffer) => {
+                httpReq.response.body = dataBuffer.toString();
+            });
+        }
     }
 
     public getRequests() {
@@ -60,5 +76,9 @@ export class HttpRecorder {
 
     public persistRequests(path: string) {
         fs.writeFileSync(path, JSON.stringify(this.requests, null, 2));
+    }
+
+    private isBodyIgnored(httpReq: HttpRequest) {
+        return false; // FIXME: "accept": "image/webp,image/apng,image/*,*/*;q=0.8",
     }
 }

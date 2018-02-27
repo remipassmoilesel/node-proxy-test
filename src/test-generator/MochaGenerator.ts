@@ -2,10 +2,10 @@ import * as fs from "fs";
 import * as _ from "lodash";
 import * as Mustache from "mustache";
 import * as path from "path";
-import { NamingUtils } from "../common/NamingUtils";
-import { ITestGeneratorHook } from "../hooks/hookTypes";
-import { HttpRequest } from "../proxy-server/HttpRequest";
-import { IMethodCall, IRequestsMethod, IRequestsView, ISpecView } from "./templateTypes";
+import {NamingUtils} from "../common/NamingUtils";
+import {ITestGeneratorHook} from "../hooks/hookTypes";
+import {HttpRequest} from "../proxy-server/HttpRequest";
+import {IMethodCall, IRequestsMethod, IRequestsView, ISpecView} from "./templateTypes";
 
 
 const dockerNames = require("docker-names");
@@ -56,8 +56,8 @@ export class MochaGenerator {
         const requestsMethodCalls = this.generateMethodsCall(requestsView);
         const fileName = `${NamingUtils.getSpecClassName(this.generateClassPrefix())}.ts`;
         const requestsImports = [
-            { importLine: `import {${requestsView.className}} from "./${requestsView.className}";` },
-            { importLine: `import { runRequest } from '../common/testUtils';` },
+            {importLine: `import {${requestsView.className}} from "./${requestsView.className}";`},
+            {importLine: `import { runRequest } from '../common/testUtils';`},
         ];
 
         const specView: ISpecView = {
@@ -86,7 +86,7 @@ export class MochaGenerator {
 
         return _.map(requests, (req) => {
 
-            const { defaultValues, allParams } = this.applyHooks(req);
+            const {defaultValues, allParams} = this.applyBeforeTestGenerationHooks(req);
             const methodNameSuffix = this.getMethodSuffix(req, methodSuffixArray);
 
             return {
@@ -155,13 +155,13 @@ export class MochaGenerator {
         return methodNameSuffix;
     }
 
-    private applyHooks(req: HttpRequest) {
+    private applyBeforeTestGenerationHooks(req: HttpRequest) {
         const customParams: string[] = [];
         const defaultValues: string[] = [];
         const defaultParams = "defaultArg0?: any, defaultArg1?: any, defaultArg2?: any";
 
-        _.forEach(this.hooks, (hook) => {
-            const args = hook.beforeRender(req);
+        _.forEach(this.hooks, (hook: ITestGeneratorHook) => {
+            const args = hook.beforeTestGeneration(req);
             if (args && args.length > 0) {
                 _.forEach(args, (methodArg) => {
                     customParams.push(`${methodArg.name}: ${methodArg.type}`);

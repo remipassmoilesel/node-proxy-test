@@ -4,10 +4,10 @@ import { IMethodArgument, ITestGeneratorHook } from "./hookTypes";
 
 export class AcceptEncodingHook implements ITestGeneratorHook {
 
-    public beforeRender(request: HttpRequest): IMethodArgument[] | void {
-        const acceptEncoding = _.find(request.headers, (val, name) => name.indexOf("accept-encoding") !== -1);
+    public beforeTestGeneration(request: HttpRequest): IMethodArgument[] | void {
+        const acceptEncoding = _.find(request.request.headers, (val, name) => name.indexOf("accept-encoding") !== -1);
         if (acceptEncoding) {
-            request.headers["accept-encoding"] = "${acceptEncoding}";
+            request.request.headers["accept-encoding"] = "${acceptEncoding}";
             return [
                 {
                     name: "acceptEncoding",

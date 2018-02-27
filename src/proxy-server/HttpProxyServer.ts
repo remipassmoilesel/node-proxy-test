@@ -80,7 +80,7 @@ export class HttpProxyServer {
     }
 
     private onProxyRequest(proxyReq: IncomingMessage, req: IncomingMessage, res: ServerResponse) {
-        this.recorder.registerRequest(req);
+        this.recorder.registerRequest(proxyReq, req);
     }
 
     private onProxyResponse(proxyRes: IncomingMessage, req: IncomingMessage, res: ServerResponse) {
