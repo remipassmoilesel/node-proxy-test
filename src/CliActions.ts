@@ -1,14 +1,15 @@
 // tslint:disable:no-console
-import { wait } from "f-promise";
+import {wait} from "f-promise";
 import * as fs from "fs";
 import * as path from "path";
 import * as readline from "readline";
-import { printInfo } from "./common/common";
-import { ITestGeneratorHook } from "./hooks/hookTypes";
-import { HttpProxyServer } from "./proxy-server/HttpProxyServer";
-import { HttpRequest } from "./proxy-server/HttpRequest";
-import { MochaGenerator } from "./test-generator/MochaGenerator";
-const { prompt } = require("prompts");
+import {printInfo} from "./common/common";
+import {ITestGeneratorHook} from "./hooks/hookTypes";
+import {HttpProxyServer} from "./proxy-server/HttpProxyServer";
+import {HttpRequest} from "./proxy-server/HttpRequest";
+import {MochaGenerator} from "./test-generator/MochaGenerator";
+
+const {prompt} = require("prompts");
 
 const allHooks: ITestGeneratorHook[] = []; // [new UserAgentHook(), new AcceptEncodingHook()];
 
@@ -77,6 +78,11 @@ export class CliActions {
     }
 
     private persistRequests() {
+
+        if (this.httpServer.getRequests().length < 1) {
+            return;
+        }
+
         const recordedRequestsJson = path.join("recorded/", new Date().toISOString() + ".json");
         this.httpServer.persistRequests(recordedRequestsJson);
         printInfo("Saved at: " + recordedRequestsJson);

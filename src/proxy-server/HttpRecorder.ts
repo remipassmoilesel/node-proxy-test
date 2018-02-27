@@ -53,8 +53,9 @@ export class HttpRecorder {
         return correspondingReq;
     }
 
-    private isResponseOfRequest(res: any, req: HttpRequest): boolean {
-        return res.req.url === req.url;
+    private isResponseOfRequest(res: ServerResponse, req: HttpRequest): boolean {
+        // type error
+        return (res as any).req.url === req.url;
     }
 
     public persistRequests(path: string) {

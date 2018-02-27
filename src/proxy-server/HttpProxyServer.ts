@@ -90,4 +90,8 @@ export class HttpProxyServer {
     public persistRequests(path: string) {
         this.recorder.persistRequests(path);
     }
+
+    public getRequests() {
+        return this.recorder.getRequests();
+    }
 }
