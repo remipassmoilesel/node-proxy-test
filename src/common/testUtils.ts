@@ -1,10 +1,7 @@
-import * as chai from 'chai';
 import { wait } from 'f-promise';
 import * as got from 'got';
 import { HttpRequest } from '../proxy-server/HttpRequest';
 import { printInfo } from './print';
-
-const assert = chai.assert;
 
 export function runRequest(request: HttpRequest) {
 
@@ -18,8 +15,6 @@ export function runRequest(request: HttpRequest) {
     } catch (e) {
         response = e;
     }
-
-    assert.equal(request.statusCode, response.statusCode);
 
     return response;
 }

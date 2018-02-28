@@ -18,5 +18,5 @@ export const httpRecordingHooks: AbstractHttpRecordingHook[] = [
 
 export const testGenerationHooks: AbstractTestGenerationHook[] = [
     new AuthorizationHeaderHook(),
-    new UserAgentHeaderHook(),
+    // new UserAgentHeaderHook(),
 ];
