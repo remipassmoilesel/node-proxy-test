@@ -1,5 +1,5 @@
-import {HttpRequest, RequestDetails, ResponseDetails} from "../proxy-server/HttpRequest";
 import * as _ from "lodash";
+import {HttpRequest, RequestDetails, ResponseDetails} from "../proxy-server/HttpRequest";
 
 const REQUESTS_SUFFIX = "Requests";
 const SPEC_SUFFIX = "Spec";
@@ -24,8 +24,8 @@ export class Utils {
 
     public static isBinaryBody(request: RequestDetails | ResponseDetails, body: string): boolean {
 
-        const contentType: string | undefined = request.headers['content-type'];
-        const contentEncoding: string | undefined = request.headers['content-encoding'];
+        const contentType: string | undefined = request.headers["content-type"];
+        const contentEncoding: string | undefined = request.headers["content-encoding"];
 
         if (contentType && contentType.match(/(image|stream)/gi)) {
             return true;
@@ -59,7 +59,7 @@ export class Utils {
                     lineValue = lineValue.slice(0, -1);
                 }
                 lineValue = "`" + JSON.parse(lineValue) + "`,";
-                lineValue = lineValue.replace(/\$\{/ig, '\${');
+                lineValue = lineValue.replace(/\$\{/ig, "\\${");
                 line = line.replace(lineMatch[2], lineValue);
             }
 
