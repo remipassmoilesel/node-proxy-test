@@ -1,6 +1,7 @@
 import { AssetsFilterHook } from "./hooks/AssetsFilterHook";
 import { AbstractHttpRecordingHook } from "./hooks/lib/AbstractHttpRecordingHook";
 import { AbstractTestGenerationHook } from "./hooks/lib/AbstractTestGenerationHook";
+import { BearerHook } from './hooks/BearerHook';
 
 /**
  * ========================================================================
@@ -12,4 +13,6 @@ export const httpRecordingHooks: AbstractHttpRecordingHook[] = [
     new AssetsFilterHook(),
 ];
 
-export const testGenerationHooks: AbstractTestGenerationHook[] = []; // [new UserAgentHook(), new AcceptEncodingHook()];
+export const testGenerationHooks: AbstractTestGenerationHook[] = [
+    new BearerHook(),
+]; // [new UserAgentHook(), new AcceptEncodingHook()];

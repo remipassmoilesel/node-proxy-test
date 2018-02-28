@@ -84,9 +84,10 @@ export class MochaGenerator {
 
         const methodSuffixArray: string[] = [];
 
-        return _.map(requests, (req) => {
+        return _.map(requests, (req: HttpRequest) => {
 
-            const {defaultValues, allParams} = this.applyBeforeTestGenerationHooks(req);
+            const safeRequest = Utils.escapeForTemplateStrings(req);
+            const {defaultValues, allParams} = this.applyBeforeTestGenerationHooks(safeRequest);
             const methodNameSuffix = this.getMethodSuffix(req, methodSuffixArray);
 
             return {
@@ -94,7 +95,7 @@ export class MochaGenerator {
                 nameSuffix: methodNameSuffix,
                 params: allParams,
                 returnType: ": HttpRequest", // : is mandatory
-                returnValue: Utils.stringifyRawRequests(req),
+                returnValue: Utils.stringifyRawRequests(safeRequest),
             } as IRequestsMethod;
         });
     }

@@ -37,6 +37,9 @@ export class Utils {
         return false;
     }
 
+    public static getObjectConstructorName(obj: any): string{
+        return obj.constructor.name;
+    }
 
     /**
      * Here we replace quotes on values by backticks, in order to use template strings.
@@ -55,9 +58,7 @@ export class Utils {
                 if (lineValue.match(/,$/)) {
                     lineValue = lineValue.slice(0, -1);
                 }
-                lineValue = JSON.parse(lineValue);
-                lineValue = lineValue.replace(/`/ig, "\\`");
-                lineValue = lineValue.replace(/\$\{/ig, "\\${");
+                lineValue = JSON.parse(lineValue); // remove quotes
                 const quotedLineValue = "`" + lineValue + "`,";
                 line = line.replace(lineMatch[2], quotedLineValue);
             }
@@ -67,7 +68,11 @@ export class Utils {
         return res.join("\n");
     }
 
-    public static getObjectConstructorName(obj: any): string{
-        return obj.constructor.name;
+    public static escapeForTemplateStrings(obj: any){
+        let strObj: string = JSON.stringify(obj);
+        strObj = strObj.replace(/\$\{/ig, "\\${");
+        strObj = strObj.replace(/`/ig, "\\`");
+        return JSON.parse(strObj);
     }
+
 }

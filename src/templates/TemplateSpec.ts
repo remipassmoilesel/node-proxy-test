@@ -15,8 +15,6 @@ describe(" > Some interesting module", function() {
     this.timeout(10000);
 
     it(" > All requests", () => {
-        // Example:
-        // runRequest(httpSequence.post_nominatim_openstreetmap_org_search_query_params('Add bearer here !'));
 
         /*<#requestsMethodCalls>*/
         /*<&methodCall>*/
