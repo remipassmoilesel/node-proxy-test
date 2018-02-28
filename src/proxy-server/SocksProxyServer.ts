@@ -1,6 +1,6 @@
-import {printInfo} from "../common/common";
+import {printInfo} from '../common/common';
 
-const socks = require("socksv5");
+const socks = require('socksv5');
 
 
 export class SocksProxyServer {
@@ -11,7 +11,7 @@ export class SocksProxyServer {
     constructor() {
 
         this.socksServer = socks.createServer((info: any, accept: any, deny: any) => {
-            printInfo("Request received ", info);
+            printInfo('Request received ', info);
             accept();
         });
 
@@ -19,8 +19,8 @@ export class SocksProxyServer {
     }
 
     public listen() {
-        this.socksServer.listen(3000, "localhost", () => {
-            printInfo("SOCKS server listening on port " + this.SOCKS_PORT);
+        this.socksServer.listen(3000, 'localhost', () => {
+            printInfo('SOCKS server listening on port ' + this.SOCKS_PORT);
         });
     }
 

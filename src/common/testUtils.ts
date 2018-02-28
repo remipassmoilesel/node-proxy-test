@@ -1,8 +1,8 @@
-import * as chai from "chai";
-import { wait } from "f-promise";
-import * as got from "got";
-import { HttpRequest } from "../proxy-server/HttpRequest";
-import { printInfo } from "./common";
+import * as chai from 'chai';
+import { wait } from 'f-promise';
+import * as got from 'got';
+import { HttpRequest } from '../proxy-server/HttpRequest';
+import { printInfo } from './common';
 
 const assert = chai.assert;
 

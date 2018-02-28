@@ -1,9 +1,9 @@
-import { AssetsFilterHook } from "./hooks/AssetsFilterHook";
-import { AuthorizationHeaderHook } from "./hooks/AuthorizationHeaderHook";
-import { ContentTypeFilterHook } from "./hooks/ContentTypeFilterHook";
-import { AbstractHttpRecordingHook } from "./hooks/lib/AbstractHttpRecordingHook";
-import { AbstractTestGenerationHook } from "./hooks/lib/AbstractTestGenerationHook";
-import { UserAgentHeaderHook } from "./hooks/UserAgentHeaderHook";
+import { AssetsFilterHook } from './hooks/AssetsFilterHook';
+import { AuthorizationHeaderHook } from './hooks/AuthorizationHeaderHook';
+import { ContentTypeFilterHook } from './hooks/ContentTypeFilterHook';
+import { AbstractHttpRecordingHook } from './hooks/lib/AbstractHttpRecordingHook';
+import { AbstractTestGenerationHook } from './hooks/lib/AbstractTestGenerationHook';
+import { UserAgentHeaderHook } from './hooks/UserAgentHeaderHook';
 
 /**
  * ========================================================================

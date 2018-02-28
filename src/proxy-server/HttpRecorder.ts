@@ -1,11 +1,11 @@
-import * as fs from "fs";
-import { IncomingMessage, ServerResponse } from "http";
-import * as _ from "lodash";
-import { URL } from "url";
-import { printInfo } from "../common/common";
-import { Utils } from "../common/Utils";
-import { AbstractHttpRecordingHook } from "../hooks/lib/AbstractHttpRecordingHook";
-import { HttpRequest } from "./HttpRequest";
+import * as fs from 'fs';
+import { IncomingMessage, ServerResponse } from 'http';
+import * as _ from 'lodash';
+import { URL } from 'url';
+import { printInfo } from '../common/common';
+import { Utils } from '../common/Utils';
+import { AbstractHttpRecordingHook } from '../hooks/lib/AbstractHttpRecordingHook';
+import { HttpRequest } from './HttpRequest';
 
 export class HttpRecorder {
 
@@ -20,7 +20,7 @@ export class HttpRecorder {
     public registerRequest(proxyReq: IncomingMessage, req: IncomingMessage): void {
 
         if (!req.url) {
-            printInfo("Warning, URL is not defined");
+            printInfo('Warning, URL is not defined');
             return;
         }
 
@@ -33,11 +33,11 @@ export class HttpRecorder {
             statusCode: 0,
             request: {
                 headers: req.headers,
-                body: "",
+                body: '',
             },
             response: {
                 headers: {},
-                body: "",
+                body: '',
             },
         };
 
@@ -53,12 +53,12 @@ export class HttpRecorder {
         if (recordRequest){
             this.requests.push(httpReq);
 
-            proxyReq.on("data", (dataBuffer: Buffer) => {
+            proxyReq.on('data', (dataBuffer: Buffer) => {
                 const body: string = dataBuffer.toString();
                 if (!Utils.isBinaryBody(httpReq.request, body)) {
                     httpReq.request.body = body;
                 } else if (body) {
-                    httpReq.request.body = "Body was ignored";
+                    httpReq.request.body = 'Body was ignored';
                 }
             });
         } else {
@@ -90,12 +90,12 @@ export class HttpRecorder {
             return;
         }
 
-        proxyRes.on("data", (dataBuffer) => {
+        proxyRes.on('data', (dataBuffer) => {
             const body: string = dataBuffer.toString();
             if (!Utils.isBinaryBody(httpReq.response, body)) {
                 httpReq.response.body = body;
             } else if (body) {
-                httpReq.request.body = "Body was ignored";
+                httpReq.request.body = 'Body was ignored';
             }
         });
 
@@ -116,7 +116,7 @@ export class HttpRecorder {
         });
 
         if (!correspondingReq) {
-            throw new Error("Not found !");
+            throw new Error('Not found !');
         }
         return correspondingReq;
     }

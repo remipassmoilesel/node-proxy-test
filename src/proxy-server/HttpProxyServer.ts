@@ -1,14 +1,15 @@
-import * as express from "express";
-import { Express } from "express";
-import * as fs from "fs";
-import { IncomingMessage, ServerResponse } from "http";
-import * as https from "https";
-import { printInfo } from "../common/common";
-import { HttpRecorder } from "./HttpRecorder";
+import * as express from 'express';
+import { Express } from 'express';
+import * as fs from 'fs';
+import { IncomingMessage, ServerResponse } from 'http';
+import * as https from 'https';
+import { printInfo } from '../common/common';
+import { Utils } from '../common/Utils';
+import { HttpRecorder } from './HttpRecorder';
 
-const httpProxy = require("http-proxy");
+const httpProxy = require('http-proxy');
 
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 export class HttpProxyServer {
 
@@ -31,9 +32,9 @@ export class HttpProxyServer {
         this.proxy = httpProxy.createProxyServer({
             secure: false,
         });
-        this.proxy.on("error", this.onProxyError.bind(this));
-        this.proxy.on("proxyReq", this.onProxyRequest.bind(this));
-        this.proxy.on("proxyRes", this.onProxyResponse.bind(this));
+        this.proxy.on('error', this.onProxyError.bind(this));
+        this.proxy.on('proxyReq', this.onProxyRequest.bind(this));
+        this.proxy.on('proxyRes', this.onProxyResponse.bind(this));
 
     }
 
@@ -55,39 +56,39 @@ export class HttpProxyServer {
 
     private setupHttpServer() {
         this.httpApp = express();
-        this.httpApp.all("*", this.proxyRequestHandler.bind(this));
+        this.httpApp.all('*', this.proxyRequestHandler.bind(this));
     }
 
     // FIXME: not functional, need non self-signed certificates ?
     private setupHttpsServer() {
         this.httpsApp = express();
 
-        this.httpsApp.all("*", this.proxyRequestHandler.bind(this));
+        this.httpsApp.all('*', this.proxyRequestHandler.bind(this));
 
         const options = {
-            key: fs.readFileSync("./ssl/snakeoil.key"),
-            cert: fs.readFileSync("./ssl/snakeoil.crt"),
+            key: fs.readFileSync('./ssl/snakeoil.key'),
+            cert: fs.readFileSync('./ssl/snakeoil.crt'),
         };
 
         this.httpsServer = https.createServer(options, this.httpsApp);
     }
 
     private proxyRequestHandler(req: express.Request, res: express.Response) {
-        const target = req.protocol + "://" + req.get("host");
-        printInfo("Proxy: Handling request: " + req.url);
+        const target = req.protocol + '://' + req.get('host');
+        this.printRequest(req);
 
         this.proxy.web(req, res, { target });
     }
 
     private onProxyError(e: Error) {
-        printInfo("===== Proxy error: " + e.message, e);
+        printInfo('===== Proxy error: ' + e.message, e);
     }
 
     private onProxyRequest(proxyReq: IncomingMessage, req: IncomingMessage, res: ServerResponse) {
         try {
             this.recorder.registerRequest(proxyReq, req);
         } catch (e) {
-            printInfo("Recording error:", e);
+            printInfo('Recording error:', e);
         }
     }
 
@@ -95,7 +96,7 @@ export class HttpProxyServer {
         try {
             this.recorder.registerResponse(proxyRes, res);
         } catch (e) {
-            printInfo("Recording error:", e);
+            printInfo('Recording error:', e);
         }
     }
 
@@ -105,5 +106,9 @@ export class HttpProxyServer {
 
     public getRequests() {
         return this.recorder.getRequests();
+    }
+
+    private printRequest(req: express.Request) {
+        printInfo(`Forwarding request: ${Utils.limitStringSize(req.url, 120)}`);
     }
 }

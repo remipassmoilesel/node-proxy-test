@@ -9,6 +9,11 @@
     "object-literal-sort-keys": false,
     "member-ordering": false,
     "one-line": false,
+    "quotemark": [true, "single"],
+      "max-line-length": [
+      true,
+      160
+    ],
     "no-var-requires": false,
     "no-consecutive-blank-lines": false
   },

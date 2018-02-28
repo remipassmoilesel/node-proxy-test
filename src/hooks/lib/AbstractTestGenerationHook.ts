@@ -1,5 +1,5 @@
-import { HttpRequest } from "../../proxy-server/HttpRequest";
-import { IMethodArgument } from "./IMethodArgument";
+import { HttpRequest } from '../../proxy-server/HttpRequest';
+import { IMethodArgument } from './IMethodArgument';
 
 export abstract class AbstractTestGenerationHook {
 

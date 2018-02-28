@@ -1,17 +1,17 @@
 // tslint:disable:no-console
-import * as fs from "fs";
-import * as _ from "lodash";
-import * as path from "path";
-import * as readline from "readline";
-import {printInfo} from "./common/common";
-import { Constants } from "./common/Constants";
-import { Utils } from "./common/Utils";
-import { AbstractHttpRecordingHook } from "./hooks/lib/AbstractHttpRecordingHook";
-import { AbstractTestGenerationHook } from "./hooks/lib/AbstractTestGenerationHook";
-import {HttpProxyServer} from "./proxy-server/HttpProxyServer";
-import { HttpRecorder } from "./proxy-server/HttpRecorder";
-import {HttpRequest} from "./proxy-server/HttpRequest";
-import {MochaGenerator} from "./test-generator/MochaGenerator";
+import * as fs from 'fs';
+import * as _ from 'lodash';
+import * as path from 'path';
+import * as readline from 'readline';
+import {printInfo} from './common/common';
+import { Constants } from './common/Constants';
+import { Utils } from './common/Utils';
+import { AbstractHttpRecordingHook } from './hooks/lib/AbstractHttpRecordingHook';
+import { AbstractTestGenerationHook } from './hooks/lib/AbstractTestGenerationHook';
+import {HttpProxyServer} from './proxy-server/HttpProxyServer';
+import { HttpRecorder } from './proxy-server/HttpRecorder';
+import {HttpRequest} from './proxy-server/HttpRequest';
+import {MochaGenerator} from './test-generator/MochaGenerator';
 
 export class CliActions {
 
@@ -26,8 +26,8 @@ export class CliActions {
     private httpServer: HttpProxyServer;
 
     public printHelp() {
-        printInfo("record:        Open a proxy and record http requests, then generate tests");
-        printInfo("generate:      Generate Typescript/Mocha tests");
+        printInfo('record:        Open a proxy and record http requests, then generate tests');
+        printInfo('generate:      Generate Typescript/Mocha tests');
     }
 
     public recordHttpRequests() {
@@ -46,13 +46,13 @@ export class CliActions {
 
         if (!filePathOrNumber) {
             this.showRecordedFiles();
-            printInfo("File path is mandatory.");
+            printInfo('File path is mandatory.');
             process.exit(1);
         }
 
         const generator = new MochaGenerator(this.testGenerationHooks);
 
-        let filePath = "";
+        let filePath = '';
         try{
             const fileNumber: number = Number(filePathOrNumber);
             filePath = path.join(Constants.RECORDED_DIR, this.listRecordedFiles()[fileNumber]);
@@ -66,10 +66,10 @@ export class CliActions {
     }
 
     public showRecordedFiles() {
-        printInfo("Available records: ");
+        printInfo('Available records: ');
         const files = this.listRecordedFiles();
         if (files.length < 0){
-            printInfo("No record found in directory: " + Constants.RECORDED_DIR);
+            printInfo('No record found in directory: ' + Constants.RECORDED_DIR);
             return;
         }
         _.forEach(files, (file, index) => {
@@ -103,12 +103,12 @@ export class CliActions {
     private listenQuitSequence() {
         readline.emitKeypressEvents(process.stdin);
         if (!process.stdin.setRawMode) {
-            throw new Error("process.stdin is undefined");
+            throw new Error('process.stdin is undefined');
         }
         process.stdin.setRawMode(true);
 
-        process.stdin.on("keypress", (str, key) => {
-            if (key.ctrl && key.name === "c") {
+        process.stdin.on('keypress', (str, key) => {
+            if (key.ctrl && key.name === 'c') {
                 this.persistRequests();
                 process.exit(0);
             }
@@ -118,25 +118,25 @@ export class CliActions {
     private persistRequests() {
 
         if (this.httpServer.getRequests().length < 1) {
-            printInfo("");
+            printInfo('');
             printInfo(`No request to record.`);
             return;
         }
 
-        const recordedRequestsJson = path.join("recorded/", new Date().toISOString() + ".json");
+        const recordedRequestsJson = path.join('recorded/', new Date().toISOString() + '.json');
         this.httpServer.persistRequests(recordedRequestsJson);
-        printInfo("");
-        printInfo(`All requests were saved at location: ${recordedRequestsJson}`);
+        printInfo('');
+        printInfo(`${this.httpServer.getRequests().length} requests were saved at location: ${recordedRequestsJson}`);
     }
 
     private listRecordedFiles(): string[] {
         const recorded = fs.readdirSync(Constants.RECORDED_DIR);
-        return _.filter(recorded, (file) => file !== ".gitkeep");
+        return _.filter(recorded, (file) => file !== '.gitkeep');
     }
 
     private showHttpRecordindHooks() {
         if (this.httpRecordingHooks.length > 0){
-            printInfo("Using http recording hooks: ");
+            printInfo('Using http recording hooks: ');
             _.forEach(this.httpRecordingHooks, (hook: AbstractHttpRecordingHook) => {
                 printInfo(Utils.getObjectConstructorName(hook));
             });
@@ -145,7 +145,7 @@ export class CliActions {
 
     private showTestGenerationHooks() {
         if (this.testGenerationHooks.length > 0){
-            printInfo("Using test generation hooks: ");
+            printInfo('Using test generation hooks: ');
             _.forEach(this.testGenerationHooks, (hook: AbstractTestGenerationHook) => {
                 printInfo(Utils.getObjectConstructorName(hook));
             });

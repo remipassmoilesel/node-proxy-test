@@ -1,23 +1,23 @@
-import * as fs from "fs";
-import * as _ from "lodash";
-import * as Mustache from "mustache";
-import * as path from "path";
-import {Utils} from "../common/Utils";
-import { AbstractTestGenerationHook } from "../hooks/lib/AbstractTestGenerationHook";
-import {HttpRequest} from "../proxy-server/HttpRequest";
-import {IMethodCall, IRequestsMethod, IRequestsView, ISpecView} from "./templateTypes";
+import * as fs from 'fs';
+import * as _ from 'lodash';
+import * as Mustache from 'mustache';
+import * as path from 'path';
+import {Utils} from '../common/Utils';
+import { AbstractTestGenerationHook } from '../hooks/lib/AbstractTestGenerationHook';
+import {HttpRequest} from '../proxy-server/HttpRequest';
+import {IMethodCall, IRequestsMethod, IRequestsView, ISpecView} from './templateTypes';
 
 
-const dockerNames = require("docker-names");
+const dockerNames = require('docker-names');
 
-const templateDirPath = path.resolve(__dirname, "..", "..", "src", "templates");
-const outputDirPath = path.resolve(__dirname, "..", "..", "src", "generated-tests");
+const templateDirPath = path.resolve(__dirname, '..', '..', 'src', 'templates');
+const outputDirPath = path.resolve(__dirname, '..', '..', 'src', 'generated-tests');
 
-const camel = require("to-camel-case");
+const camel = require('to-camel-case');
 
 class Templates {
-    public static TemplateRequests = fs.readFileSync(path.join(templateDirPath, "TemplateRequests.ts")).toString();
-    public static TemplateSpec = fs.readFileSync(path.join(templateDirPath, "TemplateSpec.ts")).toString();
+    public static TemplateRequests = fs.readFileSync(path.join(templateDirPath, 'TemplateRequests.ts')).toString();
+    public static TemplateSpec = fs.readFileSync(path.join(templateDirPath, 'TemplateSpec.ts')).toString();
 }
 
 export class MochaGenerator {
@@ -94,7 +94,7 @@ export class MochaGenerator {
                 defaultValues,
                 nameSuffix: methodNameSuffix,
                 params: allParams,
-                returnType: ": HttpRequest", // : is mandatory
+                returnType: ': HttpRequest', // : is mandatory
                 returnValue: Utils.stringifyRawRequests(safeRequest),
             } as IRequestsMethod;
         });
@@ -112,7 +112,7 @@ export class MochaGenerator {
     }
 
     private initMustacheTemplates() {
-        const customTags = ["/*<", ">*/"];
+        const customTags = ['/*<', '>*/'];
         Mustache.parse(Templates.TemplateSpec, customTags);
         Mustache.parse(Templates.TemplateRequests, customTags);
     }
@@ -133,7 +133,7 @@ export class MochaGenerator {
     private applyBeforeTestGenerationHooks(req: HttpRequest) {
         const customParams: string[] = [];
         const defaultValues: string[] = [];
-        const defaultParams = "defaultArg0?: any, defaultArg1?: any, defaultArg2?: any";
+        const defaultParams = 'defaultArg0?: any, defaultArg1?: any, defaultArg2?: any';
 
         _.forEach(this.hooks, (hook: AbstractTestGenerationHook) => {
             const args = hook.beforeTestGeneration(req);
@@ -145,9 +145,9 @@ export class MochaGenerator {
             }
         });
 
-        let allParams = "";
+        let allParams = '';
         if (customParams.length > 0) {
-            allParams = customParams.join(", ") + ", ";
+            allParams = customParams.join(', ') + ', ';
         }
         allParams += defaultParams;
 

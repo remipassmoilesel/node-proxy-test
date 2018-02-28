@@ -1,4 +1,4 @@
-import { HttpRequest } from "../../proxy-server/HttpRequest";
+import { HttpRequest } from '../../proxy-server/HttpRequest';
 
 export abstract class AbstractHttpRecordingHook {
 

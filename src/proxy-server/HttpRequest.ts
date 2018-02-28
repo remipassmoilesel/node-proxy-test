@@ -1,14 +1,14 @@
 export type HttpMethod =
-    "GET"
-    | "HEAD"
-    | "OPTIONS"
-    | "POST"
-    | "DELETE"
-    | "PUT"
-    | " OPTION"
-    | "CONNECT"
-    | " TRACE"
-    | " PATH";
+    'GET'
+    | 'HEAD'
+    | 'OPTIONS'
+    | 'POST'
+    | 'DELETE'
+    | 'PUT'
+    | ' OPTION'
+    | 'CONNECT'
+    | ' TRACE'
+    | ' PATH';
 
 export type AssertHandler = (request: HttpRequest) => void;
 
