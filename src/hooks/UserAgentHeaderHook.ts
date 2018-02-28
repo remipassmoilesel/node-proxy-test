@@ -6,6 +6,7 @@ import { IMethodArgument } from './lib/IMethodArgument';
 export class UserAgentHeaderHook extends  AbstractTestGenerationHook {
 
     public beforeTestGeneration(request: HttpRequest): IMethodArgument[] | void {
+
         const userAgent = _.find(request.request.headers, (val, name) => name.indexOf('user-agent') !== -1);
         if (userAgent) {
             request.request.headers['user-agent'] = '${userAgent}';
@@ -17,6 +18,7 @@ export class UserAgentHeaderHook extends  AbstractTestGenerationHook {
                 },
             ];
         }
+
     }
 
 }

@@ -6,6 +6,7 @@ import { IMethodArgument } from './lib/IMethodArgument';
 export class AuthorizationHeaderHook extends  AbstractTestGenerationHook {
 
     public beforeTestGeneration(request: HttpRequest): IMethodArgument[] | void {
+
         const authorization: string = _.find(request.request.headers,
             (val, name) => name.indexOf('authorization') !== -1);
         if (authorization) {
@@ -18,6 +19,7 @@ export class AuthorizationHeaderHook extends  AbstractTestGenerationHook {
                 },
             ];
         }
+
     }
 
 }

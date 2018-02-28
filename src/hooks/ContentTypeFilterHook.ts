@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { printInfo, printWarning } from '../common/common';
+import { printInfo, printWarning } from '../common/print';
 import { Utils } from '../common/Utils';
 import { HttpRequest } from '../proxy-server/HttpRequest';
 import { AbstractHttpRecordingHook } from './lib/AbstractHttpRecordingHook';
@@ -29,6 +29,7 @@ export class ContentTypeFilterHook extends AbstractHttpRecordingHook {
             }
         });
         return recordRequest;
+
     }
 
 }

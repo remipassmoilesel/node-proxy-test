@@ -1,5 +1,6 @@
 import * as _ from 'lodash';
 import { HttpRequest, RequestDetails, ResponseDetails } from '../proxy-server/HttpRequest';
+import { printError } from './print';
 
 const REQUESTS_SUFFIX = 'Requests';
 const SPEC_SUFFIX = 'Spec';
@@ -79,4 +80,14 @@ export class Utils {
         return JSON.parse(strObj);
     }
 
+    public static checkNodeVersion(maxVersion: number) {
+        const versionNumber = Number(process.versions.node.substr(0, 1));
+        if (versionNumber > maxVersion) {
+            printError('');
+            printError('You must use node 6 to run this project.');
+            printError(`Current version: ${process.versions.node}`);
+            printError('');
+            process.exit(1);
+        }
+    }
 }

@@ -3,20 +3,16 @@
 import { run } from 'f-promise';
 import * as _ from 'lodash';
 import { CliActions } from './CliActions';
-import { printError, printInfo } from './common/common';
+import { printError } from './common/print';
+import { Utils } from './common/Utils';
 import { httpRecordingHooks, testGenerationHooks } from './hooks';
+
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 const sourceMapSupport = require('source-map-support');
 sourceMapSupport.install();
 
-const versionNumber = Number(process.versions.node.substr(0, 1));
-if (versionNumber > 6) {
-    printError('');
-    printError('You must use node 6 to run this project.');
-    printError(`Current version: ${process.versions.node}`);
-    printError('');
-    process.exit(1);
-}
+Utils.checkNodeVersion(6);
 
 const cliActions = new CliActions(testGenerationHooks, httpRecordingHooks);
 const cleanArgs = _.map(process.argv.slice(2), (arg: string) => arg.trim());

@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import { IncomingMessage, ServerResponse } from 'http';
 import * as _ from 'lodash';
 import { URL } from 'url';
-import { printInfo, printWarning } from '../common/common';
+import { printWarning } from '../common/print';
 import { Utils } from '../common/Utils';
 import { AbstractHttpRecordingHook } from '../hooks/lib/AbstractHttpRecordingHook';
 import { HttpRequest } from './HttpRequest';
@@ -58,7 +58,7 @@ export class HttpRecorder {
                 if (!Utils.isBinaryBody(httpReq.request, body)) {
                     httpReq.request.body = body;
                 } else if (body) {
-                    httpReq.request.body = 'Body was ignored';
+                    httpReq.request.body = 'Body was ignored because it was binary';
                 }
             });
         } else {

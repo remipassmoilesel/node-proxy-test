@@ -23,6 +23,7 @@ export class AssetsFilterHook extends AbstractHttpRecordingHook {
     ];
 
     public filterRequestOnSending(request: HttpRequest): boolean {
+
         let recordRequest = true;
         _.forEach(this.assetRegexArray, (regex) => {
             if (request.url.match(regex)) {
@@ -30,6 +31,7 @@ export class AssetsFilterHook extends AbstractHttpRecordingHook {
             }
         });
         return recordRequest;
+
     }
 
 }

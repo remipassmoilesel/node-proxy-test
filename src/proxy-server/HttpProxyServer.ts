@@ -3,13 +3,10 @@ import { Express } from 'express';
 import * as fs from 'fs';
 import { IncomingMessage, ServerResponse } from 'http';
 import * as https from 'https';
-import { printError, printInfo } from '../common/common';
+import { printError, printInfo } from '../common/print';
 import { Utils } from '../common/Utils';
 import { HttpRecorder } from './HttpRecorder';
-
 const httpProxy = require('http-proxy');
-
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 export class HttpProxyServer {
 
@@ -25,6 +22,9 @@ export class HttpProxyServer {
         this.recorder = recorder;
         this.setupProxy();
         this.setupHttpServer();
+
+        // FIXME: not functional, need non self-signed certificates ?
+        // this.setupHttpsServer();
     }
 
     public setupProxy() {
@@ -59,7 +59,6 @@ export class HttpProxyServer {
         this.httpApp.all('*', this.proxyRequestHandler.bind(this));
     }
 
-    // FIXME: not functional, need non self-signed certificates ?
     private setupHttpsServer() {
         this.httpsApp = express();
 
