@@ -18,6 +18,8 @@ export class AssetsFilterHook extends AbstractHttpRecordingHook {
         /\.woff$/,
         /\.woff2$/,
         /\.eot$/,
+        /\.html?$/,
+        /\.js$/,
     ];
 
     public filterRequest(request: HttpRequest): boolean {

@@ -33,9 +33,6 @@ export class Utils {
         if (contentEncoding && contentEncoding.match(/zip/gi)) {
             return true;
         }
-        if (contentEncoding && contentEncoding.match(/zip/gi)) {
-            return true;
-        }
 
         return false;
     }
@@ -58,9 +55,11 @@ export class Utils {
                 if (lineValue.match(/,$/)) {
                     lineValue = lineValue.slice(0, -1);
                 }
-                lineValue = "`" + JSON.parse(lineValue) + "`,";
+                lineValue = JSON.parse(lineValue);
+                lineValue = lineValue.replace(/`/ig, "\\`");
                 lineValue = lineValue.replace(/\$\{/ig, "\\${");
-                line = line.replace(lineMatch[2], lineValue);
+                const quotedLineValue = "`" + lineValue + "`,";
+                line = line.replace(lineMatch[2], quotedLineValue);
             }
 
             return line;
