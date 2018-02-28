@@ -1,5 +1,4 @@
 // tslint:disable:no-console
-import {wait} from "f-promise";
 import * as fs from "fs";
 import * as path from "path";
 import * as readline from "readline";
@@ -8,8 +7,6 @@ import {ITestGeneratorHook} from "./hooks/hookTypes";
 import {HttpProxyServer} from "./proxy-server/HttpProxyServer";
 import {HttpRequest} from "./proxy-server/HttpRequest";
 import {MochaGenerator} from "./test-generator/MochaGenerator";
-
-const {prompt} = require("prompts");
 
 const allHooks: ITestGeneratorHook[] = []; // [new UserAgentHook(), new AcceptEncodingHook()];
 
@@ -39,23 +36,22 @@ export class CliActions {
     }
 
     public showPrompt() {
-
-        // TODO: use prompt (and not prompts)
-        const response = wait(prompt({
-            type: "number",
-            name: "choice",
-            message:
-                `What do you want to do ?
-    - 1 > Launch a proxy to record your activity (http only)
-    - 2 > Generate Typescript/Mocha tests with recorded activity
-    - 3 > Execute these tests
-    - 4 > Quit
-    `,
-        }));
-
-        if (response === 4) {
-            process.exit(0);
-        }
+        // TODO restore later
+        //     const response = wait(prompt({
+        //         type: "number",
+        //         name: "choice",
+        //         message:
+        //             `What do you want to do ?
+        // - 1 > Launch a proxy to record your activity (http only)
+        // - 2 > Generate Typescript/Mocha tests with recorded activity
+        // - 3 > Execute these tests
+        // - 4 > Quit
+        // `,
+        //     }));
+        //
+        //     if (response === 4) {
+        //         process.exit(0);
+        //     }
     }
 
     private readRequests(requestsJsonPath: string): HttpRequest[] {

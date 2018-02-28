@@ -9,8 +9,8 @@ const sourceMapSupport = require("source-map-support");
 sourceMapSupport.install();
 
 const versionNumber = Number(process.versions.node.substr(0, 1));
-if (versionNumber < 8) {
-    printInfo("You must use node 8 to run this project.");
+if (versionNumber > 6) {
+    printInfo("You must use node 6 to run this project.");
     printInfo(`Current version: ${process.versions.node}`);
     process.exit(1);
 }
@@ -47,7 +47,7 @@ function main() {
         }
 
     } catch (e) {
-        printInfo('Fatal error: ', e);
+        printInfo("Fatal error: ", e);
         process.exit(1);
     }
 }
