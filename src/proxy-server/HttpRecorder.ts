@@ -53,7 +53,7 @@ export class HttpRecorder {
         if (recordRequest){
             this.requests.push(httpReq);
 
-            proxyReq.on('data', (dataBuffer: Buffer) => {
+            req.on('data', (dataBuffer: Buffer) => {
                 const body: string = dataBuffer.toString();
                 if (!Utils.isBinaryBody(httpReq.request, body)) {
                     httpReq.request.body = body;
@@ -92,6 +92,7 @@ export class HttpRecorder {
 
         proxyRes.on('data', (dataBuffer) => {
             const body: string = dataBuffer.toString();
+
             if (!Utils.isBinaryBody(httpReq.response, body)) {
                 httpReq.response.body = body;
             } else if (body) {
