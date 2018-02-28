@@ -86,7 +86,7 @@ export class MochaGenerator {
 
         return _.map(requests, (req: HttpRequest) => {
 
-            const safeRequest = Utils.escapeForTemplateStrings(req);
+            const safeRequest: HttpRequest = Utils.escapeForTemplateStrings(req);
             const {defaultValues, allParams} = this.applyBeforeTestGenerationHooks(safeRequest);
             const methodNameSuffix = this.getMethodSuffix(req, methodSuffixArray);
 

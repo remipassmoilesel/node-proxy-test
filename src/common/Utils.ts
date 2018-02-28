@@ -1,5 +1,5 @@
 import * as _ from "lodash";
-import {HttpRequest, RequestDetails, ResponseDetails} from "../proxy-server/HttpRequest";
+import { HttpRequest, RequestDetails, ResponseDetails } from "../proxy-server/HttpRequest";
 
 const REQUESTS_SUFFIX = "Requests";
 const SPEC_SUFFIX = "Spec";
@@ -37,7 +37,7 @@ export class Utils {
         return false;
     }
 
-    public static getObjectConstructorName(obj: any): string{
+    public static getObjectConstructorName(obj: any): string {
         return obj.constructor.name;
     }
 
@@ -68,10 +68,10 @@ export class Utils {
         return res.join("\n");
     }
 
-    public static escapeForTemplateStrings(obj: any){
+    public static escapeForTemplateStrings(obj: any): any {
         let strObj: string = JSON.stringify(obj);
-        strObj = strObj.replace(/\$\{/ig, "\\${");
         strObj = strObj.replace(/`/ig, "\\`");
+        strObj = strObj.replace(/\$\{/ig, "\\\\${");
         return JSON.parse(strObj);
     }
 

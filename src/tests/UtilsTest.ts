@@ -2,6 +2,8 @@ import * as chai from "chai";
 import * as fmocha from "f-mocha";
 import {Utils} from "../common/Utils";
 import {HttpRequest} from "../proxy-server/HttpRequest";
+const sourceMapSupport = require("source-map-support");
+sourceMapSupport.install();
 
 fmocha.setup();
 
@@ -56,8 +58,8 @@ describe(" > Utils", function() {
     });
 
     it(" > Should replace template string variable sequence", () => {
-        const transformed: string = Utils.stringifyRawRequests(sampleRequest);
-        const match = transformed.match(/[^\\]\$\{/);
+        const transformed: HttpRequest = Utils.escapeForTemplateStrings(sampleRequest);
+        const match = transformed.response.headers["bad-header"].match(/([^\\]\$\{)/);
         assert.isNull(match);
     });
 
