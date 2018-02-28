@@ -73,8 +73,8 @@ export class HttpProxyServer {
         this.httpsApp.all('*', this.proxyRequestHandler.bind(this));
 
         const options = {
-            key: fs.readFileSync('./ssl/snakeoil.key'),
-            cert: fs.readFileSync('./ssl/snakeoil.crt'),
+            key: fs.readFileSync('./ssl/server.key'),
+            cert: fs.readFileSync('./ssl/server.crt'),
         };
 
         this.httpsServer = https.createServer(options, this.httpsApp);
