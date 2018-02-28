@@ -12,12 +12,12 @@ export type HttpMethod =
 
 export type AssertHandler = (request: HttpRequest) => void;
 
-export class ResponseDetails {
+export class RequestDetails {
     public body: any;
     public headers: any;
 }
 
-export class RequestDetails {
+export class ResponseDetails {
     public body: any;
     public headers: any;
 }

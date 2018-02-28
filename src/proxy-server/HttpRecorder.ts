@@ -10,7 +10,7 @@ import { HttpRequest } from './HttpRequest';
 export class HttpRecorder {
 
     private requests: HttpRequest[] = [];
-    private ignoredUrls: string[] = [];
+    private ignoredRequests: HttpRequest[] = [];
     private hooks: AbstractHttpRecordingHook[];
 
     constructor(hooks: AbstractHttpRecordingHook[]) {
@@ -62,7 +62,7 @@ export class HttpRecorder {
                 }
             });
         } else {
-            this.ignoredUrls.push(httpReq.url);
+            this.ignoredRequests.push(httpReq);
         }
     }
 
@@ -110,7 +110,6 @@ export class HttpRecorder {
     }
 
     private findRequestForResponse(res: ServerResponse): HttpRequest {
-
         const correspondingReq = _.findLast(this.requests, (req: HttpRequest) => {
             return this.isResponseOfRequest(res, req);
         });
@@ -121,12 +120,14 @@ export class HttpRecorder {
         return correspondingReq;
     }
 
-    private isResponseOfRequest(res: ServerResponse, req: HttpRequest): boolean {
-        return this.getResponseUrl(res) === req.url;
+    private isResponseIgnored(res: ServerResponse): boolean {
+        return !!_.findLast(this.ignoredRequests, (req) => {
+            return this.isResponseOfRequest(res, req);
+        });
     }
 
-    private isResponseIgnored(res: ServerResponse): boolean{
-        return this.ignoredUrls.indexOf(this.getResponseUrl(res)) !== -1;
+    private isResponseOfRequest(res: ServerResponse, req: HttpRequest): boolean {
+        return this.getResponseUrl(res) === req.url && _.isEqual((res as any).req.headers, req.request.headers);
     }
 
     private getResponseUrl(res: ServerResponse){
