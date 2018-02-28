@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import {printWarning} from '../common/print';
+import {printInfo, printWarning} from '../common/print';
 import {Utils} from '../common/Utils';
 import {HttpRequest} from '../proxy-server/HttpRequest';
 import {AbstractHttpRecordingHook} from './lib/AbstractHttpRecordingHook';
@@ -24,7 +24,9 @@ export class ContentTypeFilterHook extends AbstractHttpRecordingHook {
 
         let recordRequest = true;
         _.forEach(this.mimeTypesArray, (regex) => {
-            if (contentType.match(regex)) {
+            const match = contentType.match(regex);
+            if (match) {
+                // printInfo(match)
                 recordRequest = false;
             }
         });

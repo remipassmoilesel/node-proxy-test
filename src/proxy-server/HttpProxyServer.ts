@@ -66,15 +66,11 @@ export class HttpProxyServer {
 
     private setupHttpsServer() {
         this.httpsApp = express();
-
-        this.httpsApp.get('/', (req, res) => {
-            this.proxy.web(req, res, {target: 'https://wikipedia.fr'});
-        });
         this.httpsApp.all('*', this.proxyRequestHandler.bind(this));
 
         const options = {
-            key: fs.readFileSync('./ssl/server.key'),
-            cert: fs.readFileSync('./ssl/server.crt'),
+            key: fs.readFileSync('./ssl/localhost/key.pem'),
+            cert: fs.readFileSync('./ssl/localhost/cert.pem'),
         };
 
         this.httpsServer = https.createServer(options, this.httpsApp);
