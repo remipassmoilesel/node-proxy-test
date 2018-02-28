@@ -17,7 +17,7 @@ export class HttpRecorder {
         this.hooks = hooks;
     }
 
-    public registerRequest(proxyReq: IncomingMessage, req: IncomingMessage) {
+    public registerRequest(proxyReq: IncomingMessage, req: IncomingMessage): void {
 
         if (!req.url) {
             printInfo("Warning, URL is not defined");
@@ -43,8 +43,8 @@ export class HttpRecorder {
 
         let recordRequest = true;
         _.forEach(this.hooks, (hook: AbstractHttpRecordingHook) => {
-            const res = hook.filterRequest(httpReq);
-            if (res === false){
+            const hookDecision = hook.filterRequestOnSending(httpReq);
+            if (hookDecision === false){
                 printInfo(`Request ignored by hook: ${Utils.getObjectConstructorName(hook)}`);
                 recordRequest = false;
             }
@@ -66,7 +66,7 @@ export class HttpRecorder {
         }
     }
 
-    public registerResponse(proxyRes: IncomingMessage, res: ServerResponse) {
+    public registerResponse(proxyRes: IncomingMessage, res: ServerResponse): void {
 
         if (this.isResponseIgnored(res)){
             return;
@@ -75,6 +75,20 @@ export class HttpRecorder {
         const httpReq: HttpRequest = this.findRequestForResponse(res);
         httpReq.statusCode = res.statusCode;
         httpReq.response.headers = proxyRes.headers;
+
+        let recordRequest = true;
+        _.forEach(this.hooks, (hook: AbstractHttpRecordingHook) => {
+            const hookDecision = hook.filterRequestOnReception(httpReq);
+            if (hookDecision === false){
+                printInfo(`Request ignored by hook: ${Utils.getObjectConstructorName(hook)}`);
+                recordRequest = false;
+            }
+        });
+
+        if (!recordRequest){
+            _.remove(this.requests, httpReq);
+            return;
+        }
 
         proxyRes.on("data", (dataBuffer) => {
             const body: string = dataBuffer.toString();
@@ -97,7 +111,7 @@ export class HttpRecorder {
 
     private findRequestForResponse(res: ServerResponse): HttpRequest {
 
-        const correspondingReq = _.find(this.requests, (req: HttpRequest) => {
+        const correspondingReq = _.findLast(this.requests, (req: HttpRequest) => {
             return this.isResponseOfRequest(res, req);
         });
 

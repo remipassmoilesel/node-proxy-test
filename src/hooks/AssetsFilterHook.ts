@@ -22,7 +22,7 @@ export class AssetsFilterHook extends AbstractHttpRecordingHook {
         /\.js$/,
     ];
 
-    public filterRequest(request: HttpRequest): boolean {
+    public filterRequestOnSending(request: HttpRequest): boolean {
         let recordRequest = true;
         _.forEach(this.assetRegexArray, (regex) => {
             if (request.url.match(regex)) {
