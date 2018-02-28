@@ -4,6 +4,7 @@
 
 # See: https://www.chromium.org/developers/design-documents/network-settings
 
+#google-chrome --allow-insecure-localhost --proxy-server="https://127.0.0.1:3001;http://127.0.0.1:3000" --enable-logging=stderr
 google-chrome --proxy-server="http://127.0.0.1:3000" --enable-logging=stderr
 
 

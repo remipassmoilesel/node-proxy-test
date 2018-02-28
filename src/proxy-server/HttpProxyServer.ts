@@ -1,12 +1,17 @@
 import * as express from 'express';
-import { Express } from 'express';
+import {Express} from 'express';
 import * as fs from 'fs';
-import { IncomingMessage, ServerResponse } from 'http';
+import {IncomingMessage, ServerResponse} from 'http';
 import * as https from 'https';
-import { printError, printInfo } from '../common/print';
-import { Utils } from '../common/Utils';
-import { HttpRecorder } from './HttpRecorder';
+import {printError, printInfo} from '../common/print';
+import {Utils} from '../common/Utils';
+import {HttpRecorder} from './HttpRecorder';
+
 const httpProxy = require('http-proxy');
+
+export interface IAugmentedServerResponse extends ServerResponse {
+    req: IncomingMessage;
+}
 
 export class HttpProxyServer {
 
@@ -24,7 +29,7 @@ export class HttpProxyServer {
         this.setupHttpServer();
 
         // FIXME: not functional, need non self-signed certificates ?
-        // this.setupHttpsServer();
+        this.setupHttpsServer();
     }
 
     public setupProxy() {
@@ -62,6 +67,9 @@ export class HttpProxyServer {
     private setupHttpsServer() {
         this.httpsApp = express();
 
+        this.httpsApp.get('/', (req, res) => {
+            this.proxy.web(req, res, {target: 'https://wikipedia.fr'});
+        });
         this.httpsApp.all('*', this.proxyRequestHandler.bind(this));
 
         const options = {
@@ -76,14 +84,14 @@ export class HttpProxyServer {
         const target = req.protocol + '://' + req.get('host');
         this.printRequest(req);
 
-        this.proxy.web(req, res, { target });
+        this.proxy.web(req, res, {target});
     }
 
     private onProxyError(e: Error) {
         printError(`Proxy error: ${e.message}`, e);
     }
 
-    private onProxyRequest(proxyReq: IncomingMessage, req: IncomingMessage, res: ServerResponse) {
+    private onProxyRequest(proxyReq: IncomingMessage, req: IncomingMessage, res: IAugmentedServerResponse) {
         try {
             this.recorder.registerRequest(proxyReq, req);
         } catch (e) {
@@ -91,7 +99,7 @@ export class HttpProxyServer {
         }
     }
 
-    private onProxyResponse(proxyRes: IncomingMessage, req: IncomingMessage, res: ServerResponse) {
+    private onProxyResponse(proxyRes: IncomingMessage, req: IncomingMessage, res: IAugmentedServerResponse) {
         try {
             this.recorder.registerResponse(proxyRes, res);
         } catch (e) {

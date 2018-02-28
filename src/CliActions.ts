@@ -114,7 +114,7 @@ export class CliActions {
         const recordedRequestsJson = path.join('recorded/', new Date().toISOString() + '.json');
         this.httpServer.persistRequests(recordedRequestsJson);
         printInfo('');
-        printInfo(`${this.httpServer.getRequests().length} requests were saved at location: ${recordedRequestsJson}`);
+        printInfo(`${this.httpServer.getRequests().length} request(s) were saved at location: ${recordedRequestsJson}`);
     }
 
     private listRecordedFiles(): string[] {

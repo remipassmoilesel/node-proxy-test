@@ -1,11 +1,12 @@
 import * as fs from 'fs';
-import { IncomingMessage, ServerResponse } from 'http';
+import {IncomingMessage} from 'http';
 import * as _ from 'lodash';
-import { URL } from 'url';
-import { printWarning } from '../common/print';
-import { Utils } from '../common/Utils';
-import { AbstractHttpRecordingHook } from '../hooks/lib/AbstractHttpRecordingHook';
-import { HttpRequest } from './HttpRequest';
+import {URL} from 'url';
+import {printWarning} from '../common/print';
+import {Utils} from '../common/Utils';
+import {AbstractHttpRecordingHook} from '../hooks/lib/AbstractHttpRecordingHook';
+import {HttpRequest} from './HttpRequest';
+import {IAugmentedServerResponse} from "./HttpProxyServer";
 
 export class HttpRecorder {
 
@@ -44,13 +45,13 @@ export class HttpRecorder {
         let recordRequest = true;
         _.forEach(this.hooks, (hook: AbstractHttpRecordingHook) => {
             const hookDecision = hook.filterRequestOnSending(httpReq);
-            if (hookDecision === false){
+            if (hookDecision === false) {
                 printWarning(`Request ignored by hook: ${Utils.getObjectConstructorName(hook)}`);
                 recordRequest = false;
             }
         });
 
-        if (recordRequest){
+        if (recordRequest) {
             this.requests.push(httpReq);
 
             req.on('data', (dataBuffer: Buffer) => {
@@ -66,9 +67,9 @@ export class HttpRecorder {
         }
     }
 
-    public registerResponse(proxyRes: IncomingMessage, res: ServerResponse): void {
+    public registerResponse(proxyRes: IncomingMessage, res: IAugmentedServerResponse): void {
 
-        if (this.isResponseIgnored(res)){
+        if (this.isResponseIgnored(res)) {
             return;
         }
 
@@ -79,13 +80,13 @@ export class HttpRecorder {
         let recordRequest = true;
         _.forEach(this.hooks, (hook: AbstractHttpRecordingHook) => {
             const hookDecision = hook.filterRequestOnReception(httpReq);
-            if (hookDecision === false){
+            if (hookDecision === false) {
                 printWarning(`Request ignored by hook: ${Utils.getObjectConstructorName(hook)}`);
                 recordRequest = false;
             }
         });
 
-        if (!recordRequest){
+        if (!recordRequest) {
             _.remove(this.requests, httpReq);
             return;
         }
@@ -110,30 +111,30 @@ export class HttpRecorder {
         return this.requests;
     }
 
-    private findRequestForResponse(res: ServerResponse): HttpRequest {
+    private findRequestForResponse(res: IAugmentedServerResponse): HttpRequest {
         const correspondingReq = _.findLast(this.requests, (req: HttpRequest) => {
             return this.isResponseOfRequest(res, req);
         });
 
         if (!correspondingReq) {
-            throw new Error('Not found !');
+            throw new Error(`Corresponding request not found: ${JSON.stringify(res.req)}`);
         }
         return correspondingReq;
     }
 
-    private isResponseIgnored(res: ServerResponse): boolean {
+    private isResponseIgnored(res: IAugmentedServerResponse): boolean {
         return !!_.findLast(this.ignoredRequests, (req) => {
             return this.isResponseOfRequest(res, req);
         });
     }
 
-    private isResponseOfRequest(res: ServerResponse, req: HttpRequest): boolean {
-        return this.getResponseUrl(res) === req.url && _.isEqual((res as any).req.headers, req.request.headers);
+    private isResponseOfRequest(res: IAugmentedServerResponse, req: HttpRequest): boolean {
+        return this.getResponseUrl(res) === req.url && _.isEqual(res.req.headers, req.request.headers);
     }
 
-    private getResponseUrl(res: ServerResponse){
+    private getResponseUrl(res: IAugmentedServerResponse) {
         // type error
-        return (res as any).req.url;
+        return res.req.url;
     }
 
 }
