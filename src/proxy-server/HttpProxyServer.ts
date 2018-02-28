@@ -18,9 +18,10 @@ export class HttpProxyServer {
     private proxy: any;
     private httpsApp: Express;
     private httpApp: Express;
-    private recorder = new HttpRecorder();
+    private recorder: HttpRecorder;
 
-    constructor() {
+    constructor(recorder: HttpRecorder) {
+        this.recorder = recorder;
         this.setupProxy();
         this.setupHttpServer();
     }

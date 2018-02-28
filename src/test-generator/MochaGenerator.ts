@@ -3,7 +3,7 @@ import * as _ from "lodash";
 import * as Mustache from "mustache";
 import * as path from "path";
 import {Utils} from "../common/Utils";
-import {ITestGeneratorHook} from "../hooks/hookTypes";
+import { AbstractTestGenerationHook } from "../hooks/lib/AbstractTestGenerationHook";
 import {HttpRequest} from "../proxy-server/HttpRequest";
 import {IMethodCall, IRequestsMethod, IRequestsView, ISpecView} from "./templateTypes";
 
@@ -21,9 +21,9 @@ class Templates {
 }
 
 export class MochaGenerator {
-    private hooks: ITestGeneratorHook[];
+    private hooks: AbstractTestGenerationHook[];
 
-    constructor(hooks: ITestGeneratorHook[]) {
+    constructor(hooks: AbstractTestGenerationHook[]) {
         this.initMustacheTemplates();
         this.hooks = hooks;
     }
@@ -134,7 +134,7 @@ export class MochaGenerator {
         const defaultValues: string[] = [];
         const defaultParams = "defaultArg0?: any, defaultArg1?: any, defaultArg2?: any";
 
-        _.forEach(this.hooks, (hook: ITestGeneratorHook) => {
+        _.forEach(this.hooks, (hook: AbstractTestGenerationHook) => {
             const args = hook.beforeTestGeneration(req);
             if (args && args.length > 0) {
                 _.forEach(args, (methodArg) => {

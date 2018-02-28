@@ -5,15 +5,22 @@ import * as path from "path";
 import * as readline from "readline";
 import {printInfo} from "./common/common";
 import { Constants } from "./common/Constants";
-import {ITestGeneratorHook} from "./hooks/hookTypes";
+import { AbstractHttpRecordingHook } from "./hooks/lib/AbstractHttpRecordingHook";
+import { AbstractTestGenerationHook } from "./hooks/lib/AbstractTestGenerationHook";
 import {HttpProxyServer} from "./proxy-server/HttpProxyServer";
+import { HttpRecorder } from "./proxy-server/HttpRecorder";
 import {HttpRequest} from "./proxy-server/HttpRequest";
 import {MochaGenerator} from "./test-generator/MochaGenerator";
 
-
-const allHooks: ITestGeneratorHook[] = []; // [new UserAgentHook(), new AcceptEncodingHook()];
-
 export class CliActions {
+
+    private testGenerationHooks: AbstractTestGenerationHook[];
+    private httpRecordingHooks: AbstractHttpRecordingHook[];
+
+    constructor(testGenerationHooks: AbstractTestGenerationHook[], httpRecordingHook: AbstractHttpRecordingHook[]) {
+        this.testGenerationHooks = testGenerationHooks;
+        this.httpRecordingHooks = httpRecordingHook;
+    }
 
     private httpServer: HttpProxyServer;
 
@@ -24,12 +31,13 @@ export class CliActions {
 
     public recordHttpRequests() {
         this.listenQuitSequence();
-        this.httpServer = new HttpProxyServer();
+        const recorder = new HttpRecorder(this.httpRecordingHooks);
+        this.httpServer = new HttpProxyServer(recorder);
         this.httpServer.listen();
     }
 
     public generateTests(filePathOrNumber: string) {
-        const generator = new MochaGenerator(allHooks);
+        const generator = new MochaGenerator(this.testGenerationHooks);
 
         let filePath = "";
         try{

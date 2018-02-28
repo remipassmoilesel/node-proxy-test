@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 
-import {run} from "f-promise";
+import { run } from "f-promise";
 import * as _ from "lodash";
-import {CliActions} from "./CliActions";
-import {printInfo} from "./common/common";
+import { CliActions } from "./CliActions";
+import { printInfo } from "./common/common";
+import { AbstractHttpRecordingHook } from "./hooks/lib/AbstractHttpRecordingHook";
+import { AbstractTestGenerationHook } from "./hooks/lib/AbstractTestGenerationHook";
 
 const sourceMapSupport = require("source-map-support");
 sourceMapSupport.install();
@@ -15,7 +17,10 @@ if (versionNumber > 6) {
     process.exit(1);
 }
 
-const cliActions = new CliActions();
+const testGenerationHooks: AbstractTestGenerationHook[] = []; // [new UserAgentHook(), new AcceptEncodingHook()];
+const httpRecordingHooks: AbstractHttpRecordingHook[] = []; // [new UserAgentHook(), new AcceptEncodingHook()];
+
+const cliActions = new CliActions(testGenerationHooks, httpRecordingHooks);
 const cleanArgs = _.map(process.argv.slice(2), (arg: string) => arg.trim());
 
 function main() {
