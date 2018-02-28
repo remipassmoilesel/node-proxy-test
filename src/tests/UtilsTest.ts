@@ -2,6 +2,7 @@ import * as chai from 'chai';
 import * as fmocha from 'f-mocha';
 import {Utils} from '../common/Utils';
 import {HttpRequest} from '../proxy-server/HttpRequest';
+
 const sourceMapSupport = require('source-map-support');
 sourceMapSupport.install();
 
@@ -50,11 +51,12 @@ const sampleRequest: HttpRequest = {
     },
 };
 
-describe(' > Utils', function() {
+describe(' > Utils', function () {
     this.timeout(10000);
 
     it(' > Should ignore body of request if data is binary', () => {
-        assert.isTrue(Utils.isBinaryBody(sampleRequest.response, sampleRequest.response.body));
+        assert.isTrue(Utils.isInvalidBody(sampleRequest.response.body));
+        assert.isFalse(Utils.isInvalidBody(sampleRequest.response.headers.date));
     });
 
     it(' > Should replace template string variable sequence', () => {

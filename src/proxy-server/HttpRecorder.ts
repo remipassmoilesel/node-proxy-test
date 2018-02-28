@@ -55,7 +55,7 @@ export class HttpRecorder {
 
             req.on('data', (dataBuffer: Buffer) => {
                 const body: string = dataBuffer.toString();
-                if (!Utils.isBinaryBody(httpReq.request, body)) {
+                if (!Utils.isInvalidBody(body)) {
                     httpReq.request.body = body;
                 } else if (body) {
                     httpReq.request.body = 'Body was ignored because it was binary';
@@ -93,7 +93,7 @@ export class HttpRecorder {
         proxyRes.on('data', (dataBuffer) => {
             const body: string = dataBuffer.toString();
 
-            if (!Utils.isBinaryBody(httpReq.response, body)) {
+            if (!Utils.isInvalidBody(body)) {
                 httpReq.response.body = body;
             } else if (body) {
                 httpReq.request.body = 'Body was ignored';

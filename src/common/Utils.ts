@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
-import { HttpRequest, RequestDetails, ResponseDetails } from '../proxy-server/HttpRequest';
-import { printError } from './print';
+import {HttpRequest, RequestDetails, ResponseDetails} from '../proxy-server/HttpRequest';
+import {printError} from './print';
 
 const REQUESTS_SUFFIX = 'Requests';
 const SPEC_SUFFIX = 'Spec';
@@ -23,19 +23,8 @@ export class Utils {
         return `runRequest(requests.request_${methodSuffix}(${values}));`;
     }
 
-    public static isBinaryBody(request: RequestDetails | ResponseDetails, body: string): boolean {
-
-        const contentType: string | undefined = request.headers['content-type'];
-        const contentEncoding: string | undefined = request.headers['content-encoding'];
-
-        if (contentType && contentType.match(/(image|stream)/gi)) {
-            return true;
-        }
-        if (contentEncoding && contentEncoding.match(/zip/gi)) {
-            return true;
-        }
-
-        return false;
+    public static isInvalidBody(body: string): boolean {
+        return body.match(/\u0000|\u0013|\u0006|\u0019|\u000A|\u001D|\u007f/gi) !== null;
     }
 
     public static getObjectConstructorName(obj: any): string {
