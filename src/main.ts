@@ -25,15 +25,13 @@ function main() {
         }
 
         else if (_.includes(cleanArgs, "generate")) {
-            const fileName = cleanArgs[1];
-            if (!fileName) {
-                throw new Error("File name or file path is mandatory");
+            const fileNameOrNumber: string = cleanArgs[1];
+            if (!fileNameOrNumber) {
+                cliActions.showRecordedFiles();
+                printInfo("File path is mandatory.");
+                process.exit(1);
             }
-            cliActions.generateTests(fileName);
-        }
-
-        else if (_.includes(cleanArgs, "play")) {
-            cliActions.playTests();
+            cliActions.generateTests(fileNameOrNumber);
         }
 
         else if (_.includes(cleanArgs, "help")) {
