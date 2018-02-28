@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import { IncomingMessage, ServerResponse } from 'http';
 import * as _ from 'lodash';
 import { URL } from 'url';
-import { printInfo } from '../common/common';
+import { printInfo, printWarning } from '../common/common';
 import { Utils } from '../common/Utils';
 import { AbstractHttpRecordingHook } from '../hooks/lib/AbstractHttpRecordingHook';
 import { HttpRequest } from './HttpRequest';
@@ -20,7 +20,7 @@ export class HttpRecorder {
     public registerRequest(proxyReq: IncomingMessage, req: IncomingMessage): void {
 
         if (!req.url) {
-            printInfo('Warning, URL is not defined');
+            printWarning('Warning, URL is not defined');
             return;
         }
 
@@ -45,7 +45,7 @@ export class HttpRecorder {
         _.forEach(this.hooks, (hook: AbstractHttpRecordingHook) => {
             const hookDecision = hook.filterRequestOnSending(httpReq);
             if (hookDecision === false){
-                printInfo(`Request ignored by hook: ${Utils.getObjectConstructorName(hook)}`);
+                printWarning(`Request ignored by hook: ${Utils.getObjectConstructorName(hook)}`);
                 recordRequest = false;
             }
         });
@@ -80,7 +80,7 @@ export class HttpRecorder {
         _.forEach(this.hooks, (hook: AbstractHttpRecordingHook) => {
             const hookDecision = hook.filterRequestOnReception(httpReq);
             if (hookDecision === false){
-                printInfo(`Request ignored by hook: ${Utils.getObjectConstructorName(hook)}`);
+                printWarning(`Request ignored by hook: ${Utils.getObjectConstructorName(hook)}`);
                 recordRequest = false;
             }
         });

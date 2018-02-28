@@ -3,7 +3,7 @@
 import { run } from 'f-promise';
 import * as _ from 'lodash';
 import { CliActions } from './CliActions';
-import { printInfo } from './common/common';
+import { printError, printInfo } from './common/common';
 import { httpRecordingHooks, testGenerationHooks } from './hooks';
 
 const sourceMapSupport = require('source-map-support');
@@ -11,8 +11,10 @@ sourceMapSupport.install();
 
 const versionNumber = Number(process.versions.node.substr(0, 1));
 if (versionNumber > 6) {
-    printInfo('You must use node 6 to run this project.');
-    printInfo(`Current version: ${process.versions.node}`);
+    printError('');
+    printError('You must use node 6 to run this project.');
+    printError(`Current version: ${process.versions.node}`);
+    printError('');
     process.exit(1);
 }
 
@@ -36,13 +38,15 @@ function main() {
         }
 
         else {
-            printInfo('Bad command');
+            printError('');
+            printError('Bad command');
+            printError('');
             cliActions.printHelp();
             process.exit(1);
         }
 
     } catch (e) {
-        printInfo('Fatal error: ', e);
+        printError('Fatal error: ', e);
         process.exit(1);
     }
 }

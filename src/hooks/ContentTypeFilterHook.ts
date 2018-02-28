@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { printInfo } from '../common/common';
+import { printInfo, printWarning } from '../common/common';
 import { Utils } from '../common/Utils';
 import { HttpRequest } from '../proxy-server/HttpRequest';
 import { AbstractHttpRecordingHook } from './lib/AbstractHttpRecordingHook';
@@ -18,7 +18,7 @@ export class ContentTypeFilterHook extends AbstractHttpRecordingHook {
 
         const contentType: string | undefined = request.response.headers['content-type'];
         if (!contentType) {
-            printInfo(`Warning, response do not have a content-type header: ${Utils.limitStringSize(request.url, 120)}`);
+            printWarning(`Warning, response do not have a content-type header: ${Utils.limitStringSize(request.url, 120)}`);
             return true;
         }
 

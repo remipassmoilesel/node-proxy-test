@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as _ from 'lodash';
 import * as path from 'path';
 import * as readline from 'readline';
-import {printInfo} from './common/common';
+import { printError, printInfo, printWarning } from './common/common';
 import { Constants } from './common/Constants';
 import { Utils } from './common/Utils';
 import { AbstractHttpRecordingHook } from './hooks/lib/AbstractHttpRecordingHook';
@@ -32,6 +32,9 @@ export class CliActions {
 
     public recordHttpRequests() {
 
+        printInfo('Starting HTTP request recorder');
+        printInfo('');
+
         this.showHttpRecordindHooks();
 
         this.listenQuitSequence();
@@ -42,11 +45,15 @@ export class CliActions {
 
     public generateTests(filePathOrNumber: string) {
 
+        printInfo('Starting test generation');
+        printInfo('');
+
         this.showTestGenerationHooks();
 
         if (!filePathOrNumber) {
             this.showRecordedFiles();
-            printInfo('File path is mandatory.');
+            printError('');
+            printError('File path is mandatory.');
             process.exit(1);
         }
 
@@ -69,31 +76,12 @@ export class CliActions {
         printInfo('Available records: ');
         const files = this.listRecordedFiles();
         if (files.length < 0){
-            printInfo('No record found in directory: ' + Constants.RECORDED_DIR);
+            printWarning('No record found in directory: ' + Constants.RECORDED_DIR);
             return;
         }
         _.forEach(files, (file, index) => {
             printInfo(`${index}: ${file}`);
         });
-    }
-
-    public showPrompt() {
-        // TODO restore later
-        //     const response = wait(prompt({
-        //         type: "number",
-        //         name: "choice",
-        //         message:
-        //             `What do you want to do ?
-        // - 1 > Launch a proxy to record your activity (http only)
-        // - 2 > Generate Typescript/Mocha tests with recorded activity
-        // - 3 > Execute these tests
-        // - 4 > Quit
-        // `,
-        //     }));
-        //
-        //     if (response === 4) {
-        //         process.exit(0);
-        //     }
     }
 
     private readRequests(requestsJsonPath: string): HttpRequest[] {
@@ -118,8 +106,8 @@ export class CliActions {
     private persistRequests() {
 
         if (this.httpServer.getRequests().length < 1) {
-            printInfo('');
-            printInfo(`No request to record.`);
+            printWarning('');
+            printWarning(`No request to record.`);
             return;
         }
 
@@ -136,19 +124,21 @@ export class CliActions {
 
     private showHttpRecordindHooks() {
         if (this.httpRecordingHooks.length > 0){
-            printInfo('Using http recording hooks: ');
+            printWarning('Using http recording hooks: ');
             _.forEach(this.httpRecordingHooks, (hook: AbstractHttpRecordingHook) => {
-                printInfo(Utils.getObjectConstructorName(hook));
+                printWarning(Utils.getObjectConstructorName(hook));
             });
+            printWarning('');
         }
     }
 
     private showTestGenerationHooks() {
         if (this.testGenerationHooks.length > 0){
-            printInfo('Using test generation hooks: ');
+            printWarning('Using test generation hooks: ');
             _.forEach(this.testGenerationHooks, (hook: AbstractTestGenerationHook) => {
-                printInfo(Utils.getObjectConstructorName(hook));
+                printWarning(Utils.getObjectConstructorName(hook));
             });
+            printWarning('');
         }
     }
 

@@ -3,7 +3,7 @@ import { Express } from 'express';
 import * as fs from 'fs';
 import { IncomingMessage, ServerResponse } from 'http';
 import * as https from 'https';
-import { printInfo } from '../common/common';
+import { printError, printInfo } from '../common/common';
 import { Utils } from '../common/Utils';
 import { HttpRecorder } from './HttpRecorder';
 
@@ -81,14 +81,14 @@ export class HttpProxyServer {
     }
 
     private onProxyError(e: Error) {
-        printInfo('===== Proxy error: ' + e.message, e);
+        printError(`Proxy error: ${e.message}`, e);
     }
 
     private onProxyRequest(proxyReq: IncomingMessage, req: IncomingMessage, res: ServerResponse) {
         try {
             this.recorder.registerRequest(proxyReq, req);
         } catch (e) {
-            printInfo('Recording error:', e);
+            printError('Recording error on request:', e);
         }
     }
 
@@ -96,7 +96,7 @@ export class HttpProxyServer {
         try {
             this.recorder.registerResponse(proxyRes, res);
         } catch (e) {
-            printInfo('Recording error:', e);
+            printError('Recording error on response:', e);
         }
     }
 
