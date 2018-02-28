@@ -1,6 +1,6 @@
 # node-proxy-test
 
-**Utility for generating TypeScript / Mocha tests from HTTP request, in order to tests APIs.**
+**Utility for generating TypeScript / Mocha tests from HTTP requests, in order to tests APIs.**
 
 **/!\ Not ready for production use**
 
