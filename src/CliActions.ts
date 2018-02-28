@@ -5,6 +5,7 @@ import * as path from "path";
 import * as readline from "readline";
 import {printInfo} from "./common/common";
 import { Constants } from "./common/Constants";
+import { Utils } from "./common/Utils";
 import { AbstractHttpRecordingHook } from "./hooks/lib/AbstractHttpRecordingHook";
 import { AbstractTestGenerationHook } from "./hooks/lib/AbstractTestGenerationHook";
 import {HttpProxyServer} from "./proxy-server/HttpProxyServer";
@@ -30,6 +31,9 @@ export class CliActions {
     }
 
     public recordHttpRequests() {
+
+        this.showHttpRecordindHooks();
+
         this.listenQuitSequence();
         const recorder = new HttpRecorder(this.httpRecordingHooks);
         this.httpServer = new HttpProxyServer(recorder);
@@ -37,6 +41,15 @@ export class CliActions {
     }
 
     public generateTests(filePathOrNumber: string) {
+
+        this.showTestGenerationHooks();
+
+        if (!filePathOrNumber) {
+            this.showRecordedFiles();
+            printInfo("File path is mandatory.");
+            process.exit(1);
+        }
+
         const generator = new MochaGenerator(this.testGenerationHooks);
 
         let filePath = "";
@@ -117,4 +130,23 @@ export class CliActions {
         const recorded = fs.readdirSync(Constants.RECORDED_DIR);
         return _.filter(recorded, (file) => file !== ".gitkeep");
     }
+
+    private showHttpRecordindHooks() {
+        if (this.httpRecordingHooks.length > 0){
+            printInfo("Using http recording hooks: ");
+            _.forEach(this.httpRecordingHooks, (hook: AbstractHttpRecordingHook) => {
+                printInfo(Utils.getObjectConstructorName(hook));
+            });
+        }
+    }
+
+    private showTestGenerationHooks() {
+        if (this.testGenerationHooks.length > 0){
+            printInfo("Using test generation hooks: ");
+            _.forEach(this.testGenerationHooks, (hook: AbstractTestGenerationHook) => {
+                printInfo(Utils.getObjectConstructorName(hook));
+            });
+        }
+    }
+
 }

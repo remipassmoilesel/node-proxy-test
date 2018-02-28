@@ -3,7 +3,7 @@ import { HttpRequest } from "../proxy-server/HttpRequest";
 import { AbstractTestGenerationHook } from "./lib/AbstractTestGenerationHook";
 import { IMethodArgument } from "./lib/IMethodArgument";
 
-export class AcceptEncodingHook implements AbstractTestGenerationHook {
+export class AcceptEncodingHook extends AbstractTestGenerationHook {
 
     public beforeTestGeneration(request: HttpRequest): IMethodArgument[] | void {
         const acceptEncoding = _.find(request.request.headers, (val, name) => name.indexOf("accept-encoding") !== -1);

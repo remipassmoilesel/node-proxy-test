@@ -67,4 +67,8 @@ export class Utils {
         });
         return res.join("\n");
     }
+
+    public static getObjectConstructorName(obj: any): string{
+        return obj.constructor.name;
+    }
 }

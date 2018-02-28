@@ -10,6 +10,7 @@ import { HttpRequest } from "./HttpRequest";
 export class HttpRecorder {
 
     private requests: HttpRequest[] = [];
+    private ignoredUrls: string[] = [];
     private hooks: AbstractHttpRecordingHook[];
 
     constructor(hooks: AbstractHttpRecordingHook[]) {
@@ -39,20 +40,38 @@ export class HttpRecorder {
                 body: "",
             },
         };
-        this.requests.push(httpReq);
 
-        proxyReq.on("data", (dataBuffer: Buffer) => {
-            const body: string = dataBuffer.toString();
-            if (!Utils.isBinaryBody(httpReq.request, body)) {
-                httpReq.request.body = body;
-            } else if (body) {
-                httpReq.request.body = "Body was ignored";
+        let recordRequest = true;
+        _.forEach(this.hooks, (hook: AbstractHttpRecordingHook) => {
+            const res = hook.filterRequest(httpReq);
+            if (res === false){
+                printInfo(`Request ignored by hook: ${Utils.getObjectConstructorName(hook)}`);
+                recordRequest = false;
             }
         });
 
+        if (recordRequest){
+            this.requests.push(httpReq);
+
+            proxyReq.on("data", (dataBuffer: Buffer) => {
+                const body: string = dataBuffer.toString();
+                if (!Utils.isBinaryBody(httpReq.request, body)) {
+                    httpReq.request.body = body;
+                } else if (body) {
+                    httpReq.request.body = "Body was ignored";
+                }
+            });
+        } else {
+            this.ignoredUrls.push(httpReq.url);
+        }
     }
 
     public registerResponse(proxyRes: IncomingMessage, res: ServerResponse) {
+
+        if (this.isResponseIgnored(res)){
+            return;
+        }
+
         const httpReq: HttpRequest = this.findRequestForResponse(res);
         httpReq.statusCode = res.statusCode;
         httpReq.response.headers = proxyRes.headers;
@@ -68,29 +87,37 @@ export class HttpRecorder {
 
     }
 
+    public persistRequests(path: string) {
+        fs.writeFileSync(path, JSON.stringify(this.requests, null, 2));
+    }
+
     public getRequests() {
         return this.requests;
     }
 
     private findRequestForResponse(res: ServerResponse): HttpRequest {
+
         const correspondingReq = _.find(this.requests, (req: HttpRequest) => {
             return this.isResponseOfRequest(res, req);
         });
+
         if (!correspondingReq) {
             throw new Error("Not found !");
         }
         return correspondingReq;
     }
 
-
     private isResponseOfRequest(res: ServerResponse, req: HttpRequest): boolean {
+        return this.getResponseUrl(res) === req.url;
+    }
+
+    private isResponseIgnored(res: ServerResponse): boolean{
+        return this.ignoredUrls.indexOf(this.getResponseUrl(res)) !== -1;
+    }
+
+    private getResponseUrl(res: ServerResponse){
         // type error
-        return (res as any).req.url === req.url;
+        return (res as any).req.url;
     }
-
-    public persistRequests(path: string) {
-        fs.writeFileSync(path, JSON.stringify(this.requests, null, 2));
-    }
-
 
 }

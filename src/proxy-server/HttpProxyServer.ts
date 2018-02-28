@@ -1,10 +1,10 @@
 import * as express from "express";
-import {Express} from "express";
+import { Express } from "express";
 import * as fs from "fs";
-import {IncomingMessage, ServerResponse} from "http";
+import { IncomingMessage, ServerResponse } from "http";
 import * as https from "https";
-import {printInfo} from "../common/common";
-import {HttpRecorder} from "./HttpRecorder";
+import { printInfo } from "../common/common";
+import { HttpRecorder } from "./HttpRecorder";
 
 const httpProxy = require("http-proxy");
 
@@ -44,9 +44,13 @@ export class HttpProxyServer {
         this.httpApp.listen(this.HTTP_PORT, () => {
             printInfo(`Listening HTTP on port ${this.HTTP_PORT}`);
         });
-        // this.httpsServer.listen(this.HTTPS_PORT, () => {
-        //     printInfo(`Listening HTTPS on port ${this.HTTPS_PORT}`);
-        // });
+
+        if (this.httpsServer) {
+            this.httpsServer.listen(this.HTTPS_PORT, () => {
+                printInfo(`Listening HTTPS on port ${this.HTTPS_PORT}`);
+            });
+        }
+
     }
 
     private setupHttpServer() {
@@ -70,9 +74,9 @@ export class HttpProxyServer {
 
     private proxyRequestHandler(req: express.Request, res: express.Response) {
         const target = req.protocol + "://" + req.get("host");
-        printInfo("Handling request: " + target);
+        printInfo("Proxy: Handling request: " + req.url);
 
-        this.proxy.web(req, res, {target});
+        this.proxy.web(req, res, { target });
     }
 
     private onProxyError(e: Error) {
@@ -83,7 +87,7 @@ export class HttpProxyServer {
         try {
             this.recorder.registerRequest(proxyReq, req);
         } catch (e) {
-            printInfo('Recording error:', e);
+            printInfo("Recording error:", e);
         }
     }
 
@@ -91,7 +95,7 @@ export class HttpProxyServer {
         try {
             this.recorder.registerResponse(proxyRes, res);
         } catch (e) {
-            printInfo('Recording error:', e);
+            printInfo("Recording error:", e);
         }
     }
 

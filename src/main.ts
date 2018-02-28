@@ -4,8 +4,7 @@ import { run } from "f-promise";
 import * as _ from "lodash";
 import { CliActions } from "./CliActions";
 import { printInfo } from "./common/common";
-import { AbstractHttpRecordingHook } from "./hooks/lib/AbstractHttpRecordingHook";
-import { AbstractTestGenerationHook } from "./hooks/lib/AbstractTestGenerationHook";
+import { httpRecordingHooks, testGenerationHooks } from "./hooks";
 
 const sourceMapSupport = require("source-map-support");
 sourceMapSupport.install();
@@ -17,13 +16,11 @@ if (versionNumber > 6) {
     process.exit(1);
 }
 
-const testGenerationHooks: AbstractTestGenerationHook[] = []; // [new UserAgentHook(), new AcceptEncodingHook()];
-const httpRecordingHooks: AbstractHttpRecordingHook[] = []; // [new UserAgentHook(), new AcceptEncodingHook()];
-
 const cliActions = new CliActions(testGenerationHooks, httpRecordingHooks);
 const cleanArgs = _.map(process.argv.slice(2), (arg: string) => arg.trim());
 
 function main() {
+
     try {
         if (_.includes(cleanArgs, "record")) {
             cliActions.recordHttpRequests();
@@ -31,11 +28,6 @@ function main() {
 
         else if (_.includes(cleanArgs, "generate")) {
             const fileNameOrNumber: string = cleanArgs[1];
-            if (!fileNameOrNumber) {
-                cliActions.showRecordedFiles();
-                printInfo("File path is mandatory.");
-                process.exit(1);
-            }
             cliActions.generateTests(fileNameOrNumber);
         }
 
@@ -45,8 +37,7 @@ function main() {
 
         else {
             printInfo("Bad command");
-            cliActions.showPrompt();
-            // process.exit(1);
+            process.exit(1);
         }
 
     } catch (e) {
