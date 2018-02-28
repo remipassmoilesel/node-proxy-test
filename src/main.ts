@@ -37,6 +37,7 @@ function main() {
 
         else {
             printInfo("Bad command");
+            cliActions.printHelp();
             process.exit(1);
         }
 

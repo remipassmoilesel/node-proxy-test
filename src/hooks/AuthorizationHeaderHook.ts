@@ -3,17 +3,18 @@ import { HttpRequest } from "../proxy-server/HttpRequest";
 import { AbstractTestGenerationHook } from "./lib/AbstractTestGenerationHook";
 import { IMethodArgument } from "./lib/IMethodArgument";
 
-export class BearerHook extends  AbstractTestGenerationHook {
+export class AuthorizationHeaderHook extends  AbstractTestGenerationHook {
 
     public beforeTestGeneration(request: HttpRequest): IMethodArgument[] | void {
-        const bearer: string = _.find(request.request.headers, (val, name) => name.indexOf("authorization") !== -1);
-        if (bearer && bearer.indexOf("Bearer") !== 1) {
-            request.request.headers.authorization = "Bearer ${bearer}";
+        const authorization: string = _.find(request.request.headers,
+            (val, name) => name.indexOf("authorization") !== -1);
+        if (authorization) {
+            request.request.headers.authorization = "${authorization}";
             return [
                 {
-                    name: "bearer",
+                    name: "authorization",
                     type: "string",
-                    defaultValue: '"Add bearer here !"',
+                    defaultValue: '"Add authorization here !"',
                 },
             ];
         }
