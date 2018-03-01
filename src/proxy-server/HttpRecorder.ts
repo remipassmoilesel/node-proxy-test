@@ -64,11 +64,12 @@ export class HttpRecorder {
             req.on('data', (dataBuffer: Buffer) => {
                 const body: string = dataBuffer.toString();
                 if (!Utils.isInvalidBody(body)) {
-                    httpReq.request.body = body;
+                    httpReq.request.body += body;
                 } else if (body) {
                     httpReq.request.body = 'Body was ignored';
                 }
             });
+
         } else {
             this.ignoredRequests.push(httpReq);
         }
@@ -102,7 +103,7 @@ export class HttpRecorder {
             const body: string = dataBuffer.toString();
 
             if (!Utils.isInvalidBody(body)) {
-                httpReq.response.body = body;
+                httpReq.response.body += body;
             } else if (body) {
                 httpReq.response.body = 'Body was ignored';
             }
