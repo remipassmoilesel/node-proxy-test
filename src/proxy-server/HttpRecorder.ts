@@ -46,7 +46,7 @@ export class HttpRecorder {
         _.forEach(this.hooks, (hook: AbstractHttpRecordingHook) => {
             const hookDecision = hook.filterRequestOnSending(httpReq);
             if (hookDecision === false) {
-                printWarning(`Request ignored by hook: ${Utils.getObjectConstructorName(hook)}`);
+                printWarning(`Request record ignored by hook: ${Utils.getObjectConstructorName(hook)}`);
                 recordRequest = false;
             }
         });
@@ -81,7 +81,7 @@ export class HttpRecorder {
         _.forEach(this.hooks, (hook: AbstractHttpRecordingHook) => {
             const hookDecision = hook.filterRequestOnReception(httpReq);
             if (hookDecision === false) {
-                printWarning(`Request ignored by hook: ${Utils.getObjectConstructorName(hook)}`);
+                printWarning(`Request record ignored by hook: ${Utils.getObjectConstructorName(hook)}`);
                 recordRequest = false;
             }
         });

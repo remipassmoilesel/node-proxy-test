@@ -17,29 +17,43 @@ export class HttpProxyServer {
 
     private HTTP_PORT = 3000;
     private HTTPS_PORT = 3001;
+
     private httpsServer: https.Server;
-    private proxy: any;
     private httpsApp: Express;
+    private httpsProxy: any;
+
+    private httpProxy: any;
     private httpApp: Express;
+
     private recorder: HttpRecorder;
 
     constructor(recorder: HttpRecorder) {
         this.recorder = recorder;
-        this.setupProxy();
+        this.setupHttpProxy();
         this.setupHttpServer();
 
-        // FIXME: not functional, need non self-signed certificates ?
+        // NOT FUNCTIONNAL
+        this.setupHttpsProxy();
         this.setupHttpsServer();
     }
 
-    public setupProxy() {
+    public setupHttpProxy() {
 
-        this.proxy = httpProxy.createProxyServer({
+        this.httpProxy = httpProxy.createProxyServer();
+        this.httpProxy.on('error', this.onProxyError.bind(this));
+        this.httpProxy.on('proxyReq', this.onProxyRequest.bind(this));
+        this.httpProxy.on('proxyRes', this.onProxyResponse.bind(this));
+
+    }
+
+    public setupHttpsProxy() {
+
+        this.httpsProxy = httpProxy.createProxyServer({
             secure: false,
         });
-        this.proxy.on('error', this.onProxyError.bind(this));
-        this.proxy.on('proxyReq', this.onProxyRequest.bind(this));
-        this.proxy.on('proxyRes', this.onProxyResponse.bind(this));
+        this.httpsProxy.on('error', this.onProxyError.bind(this));
+        this.httpsProxy.on('proxyReq', this.onProxyRequest.bind(this));
+        this.httpsProxy.on('proxyRes', this.onProxyResponse.bind(this));
 
     }
 
@@ -78,9 +92,9 @@ export class HttpProxyServer {
 
     private proxyRequestHandler(req: express.Request, res: express.Response) {
         const target = req.protocol + '://' + req.get('host');
-        this.printRequest(req);
 
-        this.proxy.web(req, res, {target});
+        this.printRequest(req);
+        this.httpProxy.web(req, res, {target});
     }
 
     private onProxyError(e: Error) {
