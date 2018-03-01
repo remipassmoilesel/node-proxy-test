@@ -4,6 +4,7 @@ import { ContentTypeFilterHook } from './hooks/ContentTypeFilterHook';
 import { AbstractHttpRecordingHook } from './hooks/lib/AbstractHttpRecordingHook';
 import { AbstractTestGenerationHook } from './hooks/lib/AbstractTestGenerationHook';
 import { UserAgentHeaderHook } from './hooks/UserAgentHeaderHook';
+import {HostHeaderHook} from "./hooks/HostHeaderHook";
 
 /**
  * ========================================================================
@@ -18,5 +19,6 @@ export const httpRecordingHooks: AbstractHttpRecordingHook[] = [
 
 export const testGenerationHooks: AbstractTestGenerationHook[] = [
     new AuthorizationHeaderHook(),
-    // new UserAgentHeaderHook(),
+    new HostHeaderHook('old-domain.com', 'new-domain.com'),
+    new UserAgentHeaderHook(),
 ];
