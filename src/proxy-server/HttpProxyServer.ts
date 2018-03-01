@@ -9,8 +9,12 @@ import {HttpRecorder} from './HttpRecorder';
 
 const httpProxy = require('http-proxy');
 
+export interface IAugmentedIncomingMessage extends IncomingMessage {
+    messageId: string;
+}
+
 export interface IAugmentedServerResponse extends ServerResponse {
-    req: IncomingMessage;
+    req: IAugmentedIncomingMessage;
 }
 
 export class HttpProxyServer {

@@ -5,8 +5,11 @@ import {URL} from 'url';
 import {printWarning} from '../common/print';
 import {Utils} from '../common/Utils';
 import {AbstractHttpRecordingHook} from '../hooks/lib/AbstractHttpRecordingHook';
-import {IAugmentedServerResponse} from './HttpProxyServer';
+import {IAugmentedIncomingMessage, IAugmentedServerResponse} from './HttpProxyServer';
 import {HttpRequest} from './HttpRequest';
+import * as uuid from 'node-uuid';
+
+let count = 0;
 
 export class HttpRecorder {
 
@@ -25,8 +28,12 @@ export class HttpRecorder {
             return;
         }
 
+        const augmentedReq: IAugmentedIncomingMessage = req as any;
+        augmentedReq.messageId = uuid.v4();
+
         const url = new URL(req.url);
         const httpReq: HttpRequest = {
+            requestId: augmentedReq.messageId,
             url: req.url,
             host: url.host,
             protocol: url.protocol,
@@ -129,8 +136,7 @@ export class HttpRecorder {
     }
 
     private isResponseOfRequest(res: IAugmentedServerResponse, req: HttpRequest): boolean {
-        return res.req.url === req.url && _.isEqual(res.req.headers, req.request.headers);
+        return res.req.messageId === req.requestId;
     }
-
 
 }

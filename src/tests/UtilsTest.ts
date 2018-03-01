@@ -11,6 +11,7 @@ fmocha.setup();
 const assert = chai.assert;
 
 const sampleRequest: HttpRequest = {
+    requestId: 'fakeRequestId',
     url: 'http://keycloak.somewhere.net/auth/admin/master/console/',
     host: 'keycloak.somewhere.net',
     protocol: 'http:',
