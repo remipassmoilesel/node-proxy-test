@@ -59,7 +59,7 @@ export class HttpRecorder {
                 if (!Utils.isInvalidBody(body)) {
                     httpReq.request.body = body;
                 } else if (body) {
-                    httpReq.request.body = 'Body was ignored because it was binary';
+                    httpReq.request.body = 'Body was ignored';
                 }
             });
         } else {
@@ -97,7 +97,7 @@ export class HttpRecorder {
             if (!Utils.isInvalidBody(body)) {
                 httpReq.response.body = body;
             } else if (body) {
-                httpReq.request.body = 'Body was ignored';
+                httpReq.response.body = 'Body was ignored';
             }
         });
 
