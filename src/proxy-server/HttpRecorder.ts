@@ -5,8 +5,8 @@ import {URL} from 'url';
 import {printWarning} from '../common/print';
 import {Utils} from '../common/Utils';
 import {AbstractHttpRecordingHook} from '../hooks/lib/AbstractHttpRecordingHook';
+import {IAugmentedServerResponse} from './HttpProxyServer';
 import {HttpRequest} from './HttpRequest';
-import {IAugmentedServerResponse} from "./HttpProxyServer";
 
 export class HttpRecorder {
 
@@ -129,12 +129,8 @@ export class HttpRecorder {
     }
 
     private isResponseOfRequest(res: IAugmentedServerResponse, req: HttpRequest): boolean {
-        return this.getResponseUrl(res) === req.url && _.isEqual(res.req.headers, req.request.headers);
+        return res.req.url === req.url && _.isEqual(res.req.headers, req.request.headers);
     }
 
-    private getResponseUrl(res: IAugmentedServerResponse) {
-        // type error
-        return res.req.url;
-    }
 
 }
