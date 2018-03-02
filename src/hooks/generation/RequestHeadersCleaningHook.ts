@@ -10,6 +10,8 @@ export class RequestHeadersCleaningHook extends AbstractTestGenerationHook {
 
     private headersToRemove: string[] = [
         'content-type',
+        'proxy-connection',
+        'content-length',
     ];
 
     public beforeTestGeneration(request: HttpRequest): IMethodArgument[] | void {
