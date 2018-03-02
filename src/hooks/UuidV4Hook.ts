@@ -3,9 +3,19 @@ import { HttpRequest } from '../proxy-server/HttpRequest';
 import { AbstractTestGenerationHook } from './lib/AbstractTestGenerationHook';
 import { IMethodArgument } from './lib/IMethodArgument';
 
+export interface IUuidV4HookOptions {
+    replaceInResponse: boolean;
+}
+
 export class UuidV4Hook extends AbstractTestGenerationHook {
 
     private uuidV4Regex = /([a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12})/gi;
+    private options: IUuidV4HookOptions;
+
+    constructor(options: IUuidV4HookOptions){
+        super();
+        this.options = options;
+    }
 
     public beforeTestGeneration(request: HttpRequest): IMethodArgument[] | void {
 
@@ -13,7 +23,10 @@ export class UuidV4Hook extends AbstractTestGenerationHook {
 
         request.url = this.replaceUuid(request.url, methodArgs);
         request.request.body = this.replaceUuid(request.request.body, methodArgs);
-        request.response.body = this.replaceUuid(request.response.body, methodArgs);
+
+        if (this.options.replaceInResponse){
+            request.response.body = this.replaceUuid(request.response.body, methodArgs);
+        }
 
         if (request.request.headers.referer){
             request.request.headers.referer = this.replaceUuid(request.request.headers.referer, methodArgs);
