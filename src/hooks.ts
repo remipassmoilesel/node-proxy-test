@@ -1,5 +1,5 @@
 import { AuthorizationHeaderHook } from './hooks/generation/AuthorizationHeaderHook';
-import { RequestHeadersCleaningHook } from './hooks/generation/RequestHeadersCleaningHook';
+import { HeadersCleaningHook } from './hooks/generation/HeadersCleaningHook';
 import { UuidV4Hook } from './hooks/generation/UuidV4Hook';
 import { AbstractHttpRecordingHook } from './hooks/lib/AbstractHttpRecordingHook';
 import { AbstractTestGenerationHook } from './hooks/lib/AbstractTestGenerationHook';
@@ -20,7 +20,7 @@ export const httpRecordingHooks: AbstractHttpRecordingHook[] = [
 export const testGenerationHooks: AbstractTestGenerationHook[] = [
     new AuthorizationHeaderHook(),
     new UuidV4Hook({replaceInResponse: false}),
-    new RequestHeadersCleaningHook(),
+    new HeadersCleaningHook(),
     // new HostHeaderHook('old-domain.com', 'new-domain.com'),
     // new UserAgentHeaderHook(),
 ];
