@@ -20,7 +20,7 @@ export const httpRecordingHooks: AbstractHttpRecordingHook[] = [
 
 export const testGenerationHooks: AbstractTestGenerationHook[] = [
     new AuthorizationHeaderHook(),
-    // new HostHeaderHook('old-domain.com', 'new-domain.com'),
-    new UserAgentHeaderHook(),
     new UuidV4Hook({replaceInResponse: false}),
+    // new HostHeaderHook('old-domain.com', 'new-domain.com'),
+    // new UserAgentHeaderHook(),
 ];
