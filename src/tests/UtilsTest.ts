@@ -13,8 +13,6 @@ const assert = chai.assert;
 const sampleRequest: HttpRequest = {
     requestId: 'fakeRequestId',
     url: 'http://keycloak.somewhere.net/auth/admin/master/console/',
-    host: 'keycloak.somewhere.net',
-    protocol: 'http:',
     method: 'GET',
     statusCode: 200,
     request: {
@@ -52,7 +50,7 @@ const sampleRequest: HttpRequest = {
     },
 };
 
-describe(' > Utils', function () {
+describe(' > Utils', function() {
     this.timeout(10000);
 
     it(' > Should ignore body of request if data is binary', () => {

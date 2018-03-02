@@ -33,8 +33,6 @@ export class HttpRecorder {
         const httpReq: HttpRequest = {
             requestId: augmentedReq.messageId,
             url: req.url,
-            host: url.host,
-            protocol: url.protocol,
             method: req.method as any,
             statusCode: 0,
             request: {

@@ -2,7 +2,7 @@ import {HttpRequest} from '../../proxy-server/HttpRequest';
 import {AbstractTestGenerationHook} from '../lib/AbstractTestGenerationHook';
 import {IMethodArgument} from '../lib/IMethodArgument';
 
-export class HostHeaderHook extends AbstractTestGenerationHook {
+export class HostHook extends AbstractTestGenerationHook {
     private newDomain: string;
 
     constructor(pattern: string | RegExp, newDomain: string) {
@@ -17,11 +17,9 @@ export class HostHeaderHook extends AbstractTestGenerationHook {
             const domain = matches && matches[1];
 
             request.url = request.url.replace(domain, this.newDomain);
-            request.host = request.host.replace(domain, this.newDomain);
 
-            HostHeaderHook.replaceHeader(request, 'host', domain, this.newDomain);
-            HostHeaderHook.replaceHeader(request, 'access-control-allow-origin', domain, this.newDomain);
-
+            HostHook.replaceHeader(request, 'host', domain, this.newDomain);
+            HostHook.replaceHeader(request, 'access-control-allow-origin', domain, this.newDomain);
 
         }
 
