@@ -5,6 +5,7 @@ import { AbstractHttpRecordingHook } from './hooks/lib/AbstractHttpRecordingHook
 import { AbstractTestGenerationHook } from './hooks/lib/AbstractTestGenerationHook';
 import { UserAgentHeaderHook } from './hooks/UserAgentHeaderHook';
 import {HostHeaderHook} from "./hooks/HostHeaderHook";
+import { UuidV4Hook } from './hooks/UuidV4Hook';
 
 /**
  * ========================================================================
@@ -19,6 +20,7 @@ export const httpRecordingHooks: AbstractHttpRecordingHook[] = [
 
 export const testGenerationHooks: AbstractTestGenerationHook[] = [
     new AuthorizationHeaderHook(),
-    new HostHeaderHook('old-domain.com', 'new-domain.com'),
+    // new HostHeaderHook('old-domain.com', 'new-domain.com'),
     new UserAgentHeaderHook(),
+    new UuidV4Hook(),
 ];
