@@ -15,14 +15,6 @@ export class Utils {
         return classPrefix + SPEC_SUFFIX;
     }
 
-    public static getRequestsMethodCall(methodSuffix: string, argumentsName?: string[]): string {
-        let argumentsStr = '';
-        if (argumentsName && argumentsName.length > 0) {
-            argumentsStr += argumentsName.join(', ');
-        }
-        return `runRequest(requests.request_${methodSuffix}(${argumentsStr}));`;
-    }
-
     public static isInvalidBody(body: string): boolean {
         return body.match(/\u0000|\u0013|\u0006|\u0019|\u000A|\u001D|\u007f/gi) !== null;
     }

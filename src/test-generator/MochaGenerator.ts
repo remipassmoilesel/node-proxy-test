@@ -59,7 +59,7 @@ export class MochaGenerator {
         const fileName = `${Utils.getSpecClassName(classPrefix)}.ts`;
         const requestsImports = [
             { importLine: `import {${requestsView.className}} from "./${requestsView.className}";` },
-            { importLine: `import { runRequest } from '../common/testUtils';` },
+            { importLine: `import { TestUtils } from '../common/TestUtils';` },
         ];
 
         const specView: ISpecView = {
@@ -101,7 +101,7 @@ export class MochaGenerator {
         _.forEach(requestsView.requestsMethods, (method: IRequestsMethod) => {
             const argumentsNames = _.map(method.methodArguments, (arg) => arg.name);
             methodCalls.push({
-                methodCall: Utils.getRequestsMethodCall(method.nameSuffix, argumentsNames),
+                methodCall: this.getRequestsMethodCall(method.nameSuffix, argumentsNames),
             });
         });
         return methodCalls;
@@ -159,6 +159,14 @@ export class MochaGenerator {
         methodSuffixArray.push(methodNameSuffix);
 
         return methodNameSuffix;
+    }
+
+    public getRequestsMethodCall(methodSuffix: string, argumentsName?: string[]): string {
+        let argumentsStr = '';
+        if (argumentsName && argumentsName.length > 0) {
+            argumentsStr += argumentsName.join(', ');
+        }
+        return `TestUtils.runRequest(requests.request_${methodSuffix}(${argumentsStr}));`;
     }
 
     private generateClassPrefix() {
