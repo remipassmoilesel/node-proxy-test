@@ -1,11 +1,11 @@
-import { AssetsFilterHook } from './hooks/AssetsFilterHook';
-import { AuthorizationHeaderHook } from './hooks/AuthorizationHeaderHook';
-import { ContentTypeFilterHook } from './hooks/ContentTypeFilterHook';
-import {HostHeaderHook} from './hooks/HostHeaderHook';
+import { AssetsFilterHook } from './hooks/recording/AssetsFilterHook';
+import { AuthorizationHeaderHook } from './hooks/generation/AuthorizationHeaderHook';
+import { ContentTypeFilterHook } from './hooks/recording/ContentTypeFilterHook';
+import {HostHeaderHook} from './hooks/generation/HostHeaderHook';
 import { AbstractHttpRecordingHook } from './hooks/lib/AbstractHttpRecordingHook';
 import { AbstractTestGenerationHook } from './hooks/lib/AbstractTestGenerationHook';
-import { UserAgentHeaderHook } from './hooks/UserAgentHeaderHook';
-import { UuidV4Hook } from './hooks/UuidV4Hook';
+import { UserAgentHeaderHook } from './hooks/generation/UserAgentHeaderHook';
+import { UuidV4Hook } from './hooks/generation/UuidV4Hook';
 
 /**
  * ========================================================================

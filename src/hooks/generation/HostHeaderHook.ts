@@ -1,6 +1,6 @@
-import {HttpRequest} from '../proxy-server/HttpRequest';
-import {AbstractTestGenerationHook} from './lib/AbstractTestGenerationHook';
-import {IMethodArgument} from './lib/IMethodArgument';
+import {HttpRequest} from '../../proxy-server/HttpRequest';
+import {AbstractTestGenerationHook} from '../lib/AbstractTestGenerationHook';
+import {IMethodArgument} from '../lib/IMethodArgument';
 
 export class HostHeaderHook extends AbstractTestGenerationHook {
     private newDomain: string;
