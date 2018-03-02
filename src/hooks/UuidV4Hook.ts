@@ -34,7 +34,7 @@ export class UuidV4Hook extends AbstractTestGenerationHook {
                 methodArgs.push({
                     name: uuidFormatted,
                     type: 'string',
-                    defaultValue: rawUuid,
+                    defaultValue: '\'' + rawUuid + '\'',
                 });
             });
         }

@@ -16,6 +16,10 @@ describe(" > Some interesting module", function() {
 
     it(" > All requests", () => {
 
+        /*<#variablesInit>*/
+        /*<&initLine>*/
+        /*</variablesInit>*/
+
         /*<#requestsMethodCalls>*/
         /*<&methodCall>*/
         /*</requestsMethodCalls>*/

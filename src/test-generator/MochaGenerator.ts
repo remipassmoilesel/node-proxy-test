@@ -2,10 +2,11 @@ import * as fs from 'fs';
 import * as _ from 'lodash';
 import * as Mustache from 'mustache';
 import * as path from 'path';
-import {Utils} from '../common/Utils';
+import { Utils } from '../common/Utils';
 import { AbstractTestGenerationHook } from '../hooks/lib/AbstractTestGenerationHook';
-import {HttpRequest} from '../proxy-server/HttpRequest';
-import {IMethodCall, IRequestsMethod, IRequestsView, ISpecView} from './templateTypes';
+import { IMethodArgument } from '../hooks/lib/IMethodArgument';
+import { HttpRequest } from '../proxy-server/HttpRequest';
+import { IMethodCall, IRequestsMethod, IRequestsView, ISpecView } from './templateTypes';
 
 
 const dockerNames = require('docker-names');
@@ -29,15 +30,15 @@ export class MochaGenerator {
     }
 
     public generate(requests: HttpRequest[]) {
-        const requestsView = this.generateRequestsClass(requests);
-        this.generateRequestSpec(requestsView);
+        const classPrefix = this.generateClassPrefix();
+        const requestsView = this.generateRequestsClass(requests, classPrefix);
+        this.generateRequestSpec(requestsView, classPrefix);
     }
 
-    private generateRequestsClass(requests: HttpRequest[]): IRequestsView {
+    private generateRequestsClass(requests: HttpRequest[], classPrefix: string): IRequestsView {
 
         const methods = this.generateMethodsFromRequests(requests);
 
-        const classPrefix = this.generateClassPrefix();
         const className = Utils.getRequestsClassName(classPrefix);
         const fileName = `${className}.ts`;
 
@@ -51,18 +52,20 @@ export class MochaGenerator {
         return requestsView;
     }
 
-    private generateRequestSpec(requestsView: IRequestsView) {
+    private generateRequestSpec(requestsView: IRequestsView, classPrefix: string) {
 
         const requestsMethodCalls = this.generateMethodsCall(requestsView);
-        const fileName = `${Utils.getSpecClassName(this.generateClassPrefix())}.ts`;
+        const variablesInit = this.generateVariableInit(requestsView);
+        const fileName = `${Utils.getSpecClassName(classPrefix)}.ts`;
         const requestsImports = [
-            {importLine: `import {${requestsView.className}} from "./${requestsView.className}";`},
-            {importLine: `import { runRequest } from '../common/testUtils';`},
+            { importLine: `import {${requestsView.className}} from "./${requestsView.className}";` },
+            { importLine: `import { runRequest } from '../common/testUtils';` },
         ];
 
         const specView: ISpecView = {
-            requestsInstantiation: `const requests = new ${requestsView.className}();`,
             requestsImports,
+            requestsInstantiation: `const requests = new ${requestsView.className}();`,
+            variablesInit,
             requestsMethodCalls,
         };
 
@@ -70,30 +73,22 @@ export class MochaGenerator {
 
     }
 
-    private render(fileName: string, template: string, variables: any) {
-        const output = Mustache.render(template, variables);
-        fs.writeFileSync(path.join(outputDirPath, fileName), output);
-    }
-
-    private generateClassPrefix() {
-        const raw = camel(dockerNames.getRandomName());
-        return raw.charAt(0).toLocaleUpperCase() + raw.slice(1);
-    }
-
     private generateMethodsFromRequests(requests: HttpRequest[]): IRequestsMethod[] {
 
+        // this array is used in order to keep method names unique
         const methodSuffixArray: string[] = [];
 
         return _.map(requests, (req: HttpRequest) => {
 
             const safeRequest: HttpRequest = Utils.escapeForTemplateStrings(req);
-            const {defaultValues, allParams} = this.applyBeforeTestGenerationHooks(safeRequest);
+            const { defaultValues, methodArguments, methodArgumentsStr } = this.applyBeforeTestGenerationHooks(safeRequest);
             const methodNameSuffix = this.getMethodSuffix(req, methodSuffixArray);
 
             return {
                 defaultValues,
+                methodArgumentsStr,
+                methodArguments,
                 nameSuffix: methodNameSuffix,
-                params: allParams,
                 returnType: ': HttpRequest', // : is mandatory
                 returnValue: Utils.stringifyRawRequests(safeRequest),
             } as IRequestsMethod;
@@ -104,17 +99,53 @@ export class MochaGenerator {
 
         const methodCalls: IMethodCall[] = [];
         _.forEach(requestsView.requestsMethods, (method: IRequestsMethod) => {
+            const argumentsNames = _.map(method.methodArguments, (arg) => arg.name);
             methodCalls.push({
-                methodCall: Utils.getRequestsMethodCall(method.nameSuffix, method.defaultValues),
+                methodCall: Utils.getRequestsMethodCall(method.nameSuffix, argumentsNames),
             });
         });
         return methodCalls;
     }
 
-    private initMustacheTemplates() {
-        const customTags = ['/*<', '>*/'];
-        Mustache.parse(Templates.TemplateSpec, customTags);
-        Mustache.parse(Templates.TemplateRequests, customTags);
+    private applyBeforeTestGenerationHooks(req: HttpRequest) {
+        let methodArguments: IMethodArgument[] = [];
+        const customParams: string[] = [];
+        const defaultValues: string[] = [];
+        const defaultParamsStr = 'defaultArg0?: any, defaultArg1?: any, defaultArg2?: any';
+
+        _.forEach(this.hooks, (hook: AbstractTestGenerationHook) => {
+            const args = hook.beforeTestGeneration(req);
+            if (args && args.length > 0) {
+                methodArguments = methodArguments.concat(args);
+                _.forEach(args, (methodArg) => {
+                    customParams.push(`${methodArg.name}: ${methodArg.type}`);
+                    defaultValues.push(methodArg.defaultValue);
+                });
+            }
+        });
+
+        let methodArgumentsStr = '';
+        if (customParams.length > 0) {
+            methodArgumentsStr = customParams.join(', ') + ', ';
+        }
+        methodArgumentsStr += defaultParamsStr;
+
+        return {
+            methodArguments, methodArgumentsStr, defaultValues,
+        };
+    }
+
+    private generateVariableInit(requestsView: IRequestsView) {
+        const allArguments: IMethodArgument[] = _.chain(requestsView.requestsMethods)
+            .flatMap((method: IRequestsMethod) => {
+                return method.methodArguments;
+            })
+            .uniqBy((methodArg: IMethodArgument) => methodArg.name)
+            .value();
+
+        return _.map(allArguments, (arg) => {
+            return { initLine: `const ${arg.name} = ${arg.defaultValue};` };
+        });
     }
 
     private getMethodSuffix(req: HttpRequest, methodSuffixArray: string[]) {
@@ -130,29 +161,20 @@ export class MochaGenerator {
         return methodNameSuffix;
     }
 
-    private applyBeforeTestGenerationHooks(req: HttpRequest) {
-        const customParams: string[] = [];
-        const defaultValues: string[] = [];
-        const defaultParams = 'defaultArg0?: any, defaultArg1?: any, defaultArg2?: any';
-
-        _.forEach(this.hooks, (hook: AbstractTestGenerationHook) => {
-            const args = hook.beforeTestGeneration(req);
-            if (args && args.length > 0) {
-                _.forEach(args, (methodArg) => {
-                    customParams.push(`${methodArg.name}: ${methodArg.type}`);
-                    defaultValues.push(methodArg.defaultValue);
-                });
-            }
-        });
-
-        let allParams = '';
-        if (customParams.length > 0) {
-            allParams = customParams.join(', ') + ', ';
-        }
-        allParams += defaultParams;
-
-        return {
-            defaultValues, allParams,
-        };
+    private generateClassPrefix() {
+        const raw = camel(dockerNames.getRandomName());
+        return raw.charAt(0).toLocaleUpperCase() + raw.slice(1);
     }
+
+    private render(fileName: string, template: string, variables: any) {
+        const output = Mustache.render(template, variables);
+        fs.writeFileSync(path.join(outputDirPath, fileName), output);
+    }
+
+    private initMustacheTemplates() {
+        const customTags = ['/*<', '>*/'];
+        Mustache.parse(Templates.TemplateSpec, customTags);
+        Mustache.parse(Templates.TemplateRequests, customTags);
+    }
+
 }

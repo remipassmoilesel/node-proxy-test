@@ -15,12 +15,12 @@ export class Utils {
         return classPrefix + SPEC_SUFFIX;
     }
 
-    public static getRequestsMethodCall(methodSuffix: string, defaultValuesStr?: string[]): string {
-        let values = '';
-        if (defaultValuesStr && defaultValuesStr.length > 0) {
-            values += defaultValuesStr.join(', ');
+    public static getRequestsMethodCall(methodSuffix: string, argumentsName?: string[]): string {
+        let argumentsStr = '';
+        if (argumentsName && argumentsName.length > 0) {
+            argumentsStr += argumentsName.join(', ');
         }
-        return `runRequest(requests.request_${methodSuffix}(${values}));`;
+        return `runRequest(requests.request_${methodSuffix}(${argumentsStr}));`;
     }
 
     public static isInvalidBody(body: string): boolean {
