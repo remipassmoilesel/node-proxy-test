@@ -2,14 +2,12 @@ import * as fs from 'fs';
 import {IncomingMessage} from 'http';
 import * as _ from 'lodash';
 import {URL} from 'url';
+import * as uuid from 'uuid';
 import {printWarning} from '../common/print';
 import {Utils} from '../common/Utils';
 import {AbstractHttpRecordingHook} from '../hooks/lib/AbstractHttpRecordingHook';
 import {IAugmentedIncomingMessage, IAugmentedServerResponse} from './HttpProxyServer';
 import {HttpRequest} from './HttpRequest';
-import * as uuid from 'node-uuid';
-
-let count = 0;
 
 export class HttpRecorder {
 
@@ -35,8 +33,6 @@ export class HttpRecorder {
         const httpReq: HttpRequest = {
             requestId: augmentedReq.messageId,
             url: req.url,
-            host: url.host,
-            protocol: url.protocol,
             method: req.method as any,
             statusCode: 0,
             request: {

@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
-import { HttpRequest } from '../proxy-server/HttpRequest';
-import { AbstractTestGenerationHook } from './lib/AbstractTestGenerationHook';
-import { IMethodArgument } from './lib/IMethodArgument';
+import { HttpRequest } from '../../proxy-server/HttpRequest';
+import { AbstractTestGenerationHook } from '../lib/AbstractTestGenerationHook';
+import { IMethodArgument } from '../lib/IMethodArgument';
 
 export class AuthorizationHeaderHook extends  AbstractTestGenerationHook {
 

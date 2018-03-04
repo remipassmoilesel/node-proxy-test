@@ -1,10 +1,10 @@
-import { AssetsFilterHook } from './hooks/AssetsFilterHook';
-import { AuthorizationHeaderHook } from './hooks/AuthorizationHeaderHook';
-import { ContentTypeFilterHook } from './hooks/ContentTypeFilterHook';
+import { AuthorizationHeaderHook } from './hooks/generation/AuthorizationHeaderHook';
+import { HeadersCleaningHook } from './hooks/generation/HeadersCleaningHook';
+import { UuidV4Hook } from './hooks/generation/UuidV4Hook';
 import { AbstractHttpRecordingHook } from './hooks/lib/AbstractHttpRecordingHook';
 import { AbstractTestGenerationHook } from './hooks/lib/AbstractTestGenerationHook';
-import { UserAgentHeaderHook } from './hooks/UserAgentHeaderHook';
-import {HostHeaderHook} from "./hooks/HostHeaderHook";
+import { AssetsFilterHook } from './hooks/recording/AssetsFilterHook';
+import { ContentTypeFilterHook } from './hooks/recording/ContentTypeFilterHook';
 
 /**
  * ========================================================================
@@ -19,6 +19,8 @@ export const httpRecordingHooks: AbstractHttpRecordingHook[] = [
 
 export const testGenerationHooks: AbstractTestGenerationHook[] = [
     new AuthorizationHeaderHook(),
-    new HostHeaderHook('old-domain.com', 'new-domain.com'),
-    new UserAgentHeaderHook(),
+    new UuidV4Hook({replaceInResponse: false}),
+    new HeadersCleaningHook(),
+    // new HostHeaderHook('old-domain.com', 'new-domain.com'),
+    // new UserAgentHeaderHook(),
 ];

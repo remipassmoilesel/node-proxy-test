@@ -29,11 +29,11 @@
     "got": "^8.2.0",
     "http-proxy": "^1.16.2",
     "mustache": "^2.3.0",
-    "node-uuid": "^1.4.8",
     "rimraf": "^2.6.2",
     "socksv5": "0.0.6",
     "source-map-support": "^0.5.3",
-    "to-camel-case": "^1.0.0"
+    "to-camel-case": "^1.0.0",
+    "uuid": "^3.2.1"
   },
   "devDependencies": {
     "@types/chai": "^4.0.4",
@@ -46,6 +46,7 @@
     "@types/mustache": "^0.8.30",
     "@types/node": "^8.9.4",
     "@types/sinon": "^2.3.6",
+    "@types/uuid": "^3.4.3",
     "chai": "^4.1.2",
     "coveralls": "^3.0.0",
     "f-mocha": "^1.1.3",

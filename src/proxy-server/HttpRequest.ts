@@ -26,8 +26,6 @@ export class HttpRequest {
 
     public requestId: string;
     public url: string;
-    public host: string;
-    public protocol: string;
     public statusCode: number;
     public method: HttpMethod;
 

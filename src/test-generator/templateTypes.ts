@@ -1,7 +1,10 @@
+import { IMethodArgument } from '../hooks/lib/IMethodArgument';
+
 export interface IRequestsMethod {
     nameSuffix: string;
     defaultValues: string[];
-    params: string;
+    methodArguments: IMethodArgument[];
+    methodArgumentsStr: string;
     returnType: string;
     returnValue: string;
 }
@@ -20,8 +23,13 @@ export interface IImportLine {
     importLine: string;
 }
 
+export interface IVariableInit {
+    initLine: string;
+}
+
 export interface ISpecView {
     requestsImports: IImportLine[];
     requestsInstantiation: string;
     requestsMethodCalls: IMethodCall[];
+    variablesInit: IVariableInit[];
 }
