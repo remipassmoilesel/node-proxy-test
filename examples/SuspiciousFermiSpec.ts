@@ -15,9 +15,14 @@ describe(" > Some interesting module", function () {
 
     it(" > All requests", () => {
 
+        // These variables are extracted with pre-generation hooks
+        // - One hook variabilize host in order to change it
+        // - One hook authorization headers
+        // - One hook variabilize UUIDS
+
         const http127001 = "http://127.0.0.1";
-        const u_5b4f0445_a04f_40c2_9f5a_0e956c3ab495 = '5b4f0445-a04f-40c2-9f5a-0e956c3ab495';
         const authorization = "Add authorization here !";
+        const u_5b4f0445_a04f_40c2_9f5a_0e956c3ab495 = '5b4f0445-a04f-40c2-9f5a-0e956c3ab495';
         const u_5522532e_69ab_4868_a014_c4095d69f72d = '5522532e-69ab-4868-a014-c4095d69f72d';
 
         TestUtils.runRequest(requests.request_postHttp1270018080AuthRealmsMasterLoginActionsAuthenticateCodeVgdum0jxshverlzpqulSy2xfldd7kvxcklw9o8ajjkExecution5b4f0445A04f40c29f5a0e956c3ab495ClientIdSecurityAdminConsoleTabIdRiy9k2tyjv8_0(http127001, u_5b4f0445_a04f_40c2_9f5a_0e956c3ab495));

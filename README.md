@@ -7,7 +7,8 @@
 ## Description
 
 With this tool, you can record HTTP activity of your web browser in a json file, then export it 
-as Typescript source code ready-to-use with Mocha and Chai, two greats tools for tests !
+as a [Typescript](http://www.typescriptlang.org) source code ready-to-use with [Mocha](https://mochajs.org) 
+and [Chai](http://chaijs.com/), two greats tools for tests !
 
 ## Examples of data and generated tests 
 
