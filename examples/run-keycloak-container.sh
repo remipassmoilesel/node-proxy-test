@@ -14,4 +14,5 @@ docker run  -e KEYCLOAK_USER=admin \
             -e KEYCLOAK_PASSWORD=admin \
             -e DB_VENDOR=h2 \
             --net keycloak-network \
+            -p 8080:8080 \
             jboss/keycloak
