@@ -5,7 +5,7 @@ import {URL} from 'url';
 import * as uuid from 'uuid';
 import {printWarning} from '../common/print';
 import {Utils} from '../common/Utils';
-import {AbstractHttpRecordingHook} from '../hooks/lib/AbstractHttpRecordingHook';
+import {AbstractHttpRecordingHook} from '../hooks/models/AbstractHttpRecordingHook';
 import {IAugmentedIncomingMessage, IAugmentedServerResponse} from './HttpProxyServer';
 import {HttpRequest} from './HttpRequest';
 

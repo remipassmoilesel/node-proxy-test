@@ -1,7 +1,7 @@
 import _ = require('lodash');
 import { HttpRequest } from '../../proxy-server/HttpRequest';
-import { AbstractTestGenerationHook } from '../lib/AbstractTestGenerationHook';
-import { IMethodArgument } from '../lib/IMethodArgument';
+import { AbstractTestGenerationHook } from '../models/AbstractTestGenerationHook';
+import { IMethodArgument } from '../models/IMethodArgument';
 
 export interface IUuidV4HookOptions {
     replaceInResponse: boolean;

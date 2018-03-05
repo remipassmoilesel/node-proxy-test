@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 import { printWarning } from '../../common/print';
 import { Utils } from '../../common/Utils';
 import { HttpRequest } from '../../proxy-server/HttpRequest';
-import { AbstractHttpRecordingHook } from '../lib/AbstractHttpRecordingHook';
+import { AbstractHttpRecordingHook } from '../models/AbstractHttpRecordingHook';
 
 export class ContentTypeFilterHook extends AbstractHttpRecordingHook {
 

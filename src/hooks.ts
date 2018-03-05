@@ -1,8 +1,8 @@
 import { AuthorizationHeaderHook } from './hooks/generation/AuthorizationHeaderHook';
 import { HeadersCleaningHook } from './hooks/generation/HeadersCleaningHook';
 import { UuidV4Hook } from './hooks/generation/UuidV4Hook';
-import { AbstractHttpRecordingHook } from './hooks/lib/AbstractHttpRecordingHook';
-import { AbstractTestGenerationHook } from './hooks/lib/AbstractTestGenerationHook';
+import { AbstractHttpRecordingHook } from './hooks/models/AbstractHttpRecordingHook';
+import { AbstractTestGenerationHook } from './hooks/models/AbstractTestGenerationHook';
 import { AssetsFilterHook } from './hooks/recording/AssetsFilterHook';
 import { ContentTypeFilterHook } from './hooks/recording/ContentTypeFilterHook';
 import { HttpHostHook } from './hooks/generation/HttpHostHook';

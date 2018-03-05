@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 import { HttpRequest } from '../../proxy-server/HttpRequest';
-import { AbstractHttpRecordingHook } from '../lib/AbstractHttpRecordingHook';
+import { AbstractHttpRecordingHook } from '../models/AbstractHttpRecordingHook';
 
 export class AssetsFilterHook extends AbstractHttpRecordingHook {
 

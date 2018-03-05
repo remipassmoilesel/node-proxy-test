@@ -3,8 +3,8 @@ import * as _ from 'lodash';
 import * as Mustache from 'mustache';
 import * as path from 'path';
 import { Utils } from '../common/Utils';
-import { AbstractTestGenerationHook } from '../hooks/lib/AbstractTestGenerationHook';
-import { IMethodArgument } from '../hooks/lib/IMethodArgument';
+import { AbstractTestGenerationHook } from '../hooks/models/AbstractTestGenerationHook';
+import { IMethodArgument } from '../hooks/models/IMethodArgument';
 import { HttpRequest } from '../proxy-server/HttpRequest';
 import { IMethodCall, IRequestsMethod, IRequestsView, ISpecView } from './templateTypes';
 

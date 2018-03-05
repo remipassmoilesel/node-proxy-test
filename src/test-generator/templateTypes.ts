@@ -1,4 +1,4 @@
-import { IMethodArgument } from '../hooks/lib/IMethodArgument';
+import { IMethodArgument } from '../hooks/models/IMethodArgument';
 
 export interface IRequestsMethod {
     nameSuffix: string;
