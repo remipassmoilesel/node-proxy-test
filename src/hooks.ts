@@ -5,6 +5,7 @@ import { AbstractHttpRecordingHook } from './hooks/lib/AbstractHttpRecordingHook
 import { AbstractTestGenerationHook } from './hooks/lib/AbstractTestGenerationHook';
 import { AssetsFilterHook } from './hooks/recording/AssetsFilterHook';
 import { ContentTypeFilterHook } from './hooks/recording/ContentTypeFilterHook';
+import { HttpHostHook } from './hooks/generation/HttpHostHook';
 
 /**
  * ========================================================================
@@ -21,6 +22,6 @@ export const testGenerationHooks: AbstractTestGenerationHook[] = [
     new AuthorizationHeaderHook(),
     new UuidV4Hook({replaceInResponse: false}),
     new HeadersCleaningHook(),
-    // new HostHeaderHook('old-domain.com', 'new-domain.com'),
+    new HttpHostHook(),
     // new UserAgentHeaderHook(),
 ];

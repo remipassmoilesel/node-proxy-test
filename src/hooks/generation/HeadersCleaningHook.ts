@@ -9,6 +9,7 @@ import { IMethodArgument } from '../lib/IMethodArgument';
 export class HeadersCleaningHook extends AbstractTestGenerationHook {
 
     private requestHeadersToRemove: string[] = [
+        'host',
         'accept',
         'content-type',
         'proxy-connection',
@@ -24,6 +25,7 @@ export class HeadersCleaningHook extends AbstractTestGenerationHook {
     ];
 
     private responseHeadersToRemove: string[] = [
+        'host',
         'content-type',
         'proxy-connection',
         'content-length',
