@@ -73,6 +73,7 @@ export class HttpProxyServer {
         if (this.httpsServer) {
             this.httpsServer.listen(this.HTTPS_PORT, () => {
                 printInfo(`Listening HTTPS on port ${this.HTTPS_PORT}`);
+                printInfo(`HTTPS proxy is not functional, this is a work in progress...`);
             });
         }
 
