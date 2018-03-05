@@ -26,7 +26,6 @@ export class HeadersCleaningHook extends AbstractTestGenerationHook {
 
     private responseHeadersToRemove: string[] = [
         'host',
-        'content-type',
         'proxy-connection',
         'content-length',
         'server',
