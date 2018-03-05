@@ -149,7 +149,7 @@ export class MochaGenerator {
     }
 
     private getMethodSuffix(req: HttpRequest, methodSuffixArray: string[]) {
-        const methodBaseSuffix: string = camel(req.url);
+        const methodBaseSuffix: string = camel(req.method + '_' + req.url);
         let methodNameSuffix;
         let i = 0;
         do {
