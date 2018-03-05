@@ -12,7 +12,7 @@ and [Chai](http://chaijs.com/), two greats tools for tests !
 
 ## Examples of data and generated tests 
 
-See examples directory !
+See [examples](examples/) directory !
 
 ## Usage
 
