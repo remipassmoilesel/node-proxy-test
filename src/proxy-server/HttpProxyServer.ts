@@ -38,8 +38,8 @@ export class HttpProxyServer {
 
         // FIXME: NOT FUNCTIONNAL
         // TODO: retry with a simpler proxy instanciation (see node-http-proxy README)
-        this.setupHttpsProxy();
-        this.setupHttpsServer();
+        // this.setupHttpsProxy();
+        // this.setupHttpsServer();
     }
 
     public setupHttpProxy() {
