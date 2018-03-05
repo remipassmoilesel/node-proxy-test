@@ -9,7 +9,7 @@
 With this tool, you can record HTTP activity of your web browser in a json file, then export it 
 as Typescript source code ready-to-use with Mocha and Chai, two greats tools for tests !
 
-## Examples
+## Examples of data and generated tests 
 
 See examples directory !
 
@@ -42,3 +42,7 @@ Play them:
 
     $ npm run generated-tests
     
+## About hooks
+
+Http requests can be modified by programmatic hooks, before persit them on disk and before 
+test generation. See `src/hooks/models' for more informations.
