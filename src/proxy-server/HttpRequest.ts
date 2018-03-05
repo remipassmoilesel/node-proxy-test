@@ -5,10 +5,10 @@ export type HttpMethod =
     | 'POST'
     | 'DELETE'
     | 'PUT'
-    | ' OPTION'
+    | 'OPTION'
     | 'CONNECT'
-    | ' TRACE'
-    | ' PATH';
+    | 'TRACE'
+    | 'PATH';
 
 export type AssertHandler = (request: HttpRequest) => void;
 
@@ -25,6 +25,7 @@ export class ResponseDetails {
 export class HttpRequest {
 
     public requestId: string;
+
     public url: string;
     public statusCode: number;
     public method: HttpMethod;
