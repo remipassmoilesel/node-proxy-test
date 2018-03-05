@@ -1,6 +1,9 @@
 # node-proxy-test
 
-**Utility for generating TypeScript / Mocha tests from HTTP requests, in order to tests APIs.**
+**Utility for generating TypeScript / Mocha application tests from HTTP requests, 
+in order to tests APIs.**
+
+![Image of Yaktocat](doc/icon.png)
 
 ## Usage
 
