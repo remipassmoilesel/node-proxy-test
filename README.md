@@ -46,4 +46,4 @@ Play them:
 ## About hooks
 
 Http requests can be modified by programmatic hooks, before persit them on disk and before 
-test generation. See `src/hooks/models' for more informations.
+test generation. See [src/hooks/models](src/hooks/models) for more informations.
