@@ -30,14 +30,14 @@ function main() {
         }
 
         else if (_.includes(cleanArgs, 'help')) {
-            cliActions.printHelp();
+            cliActions.printCliHelp();
         }
 
         else {
             printError('');
             printError('Bad command');
             printError('');
-            cliActions.printHelp();
+            cliActions.printCliHelp();
             process.exit(1);
         }
 

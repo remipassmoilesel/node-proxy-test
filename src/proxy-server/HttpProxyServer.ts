@@ -19,8 +19,8 @@ export interface IAugmentedServerResponse extends ServerResponse {
 
 export class HttpProxyServer {
 
-    private HTTP_PORT = 3000;
-    private HTTPS_PORT = 3001;
+    private HTTP_PORT = 63000;
+    private HTTPS_PORT = 63001;
 
     private httpsServer: https.Server;
     private httpsApp: Express;
@@ -70,17 +70,32 @@ export class HttpProxyServer {
      * Start listening and serve requests
      */
     public listen() {
-        this.httpApp.listen(this.HTTP_PORT, () => {
-            printInfo(`Listening HTTP on port ${this.HTTP_PORT}`);
+        return this.listenHttp().then(() => {
+            return this.listenHttps.bind(this);
         });
+    }
 
-        if (this.httpsServer) {
-            this.httpsServer.listen(this.HTTPS_PORT, () => {
-                printInfo(`Listening HTTPS on port ${this.HTTPS_PORT}`);
-                printInfo(`HTTPS proxy is not functional, this is a work in progress...`);
+    private listenHttp(): Promise<void>{
+        return new Promise((resolve, reject) => {
+            this.httpApp.listen(this.HTTP_PORT, () => {
+                printInfo(`Listening HTTP on port ${this.HTTP_PORT}`);
+                resolve();
             });
-        }
+        });
+    }
 
+    private listenHttps(): Promise<void>{
+        return new Promise((resolve, reject) => {
+            if (this.httpsServer) {
+                this.httpsServer.listen(this.HTTPS_PORT, () => {
+                    printInfo(`Listening HTTPS on port ${this.HTTPS_PORT}`);
+                    printInfo(`HTTPS proxy is not functional, this is a work in progress...`);
+                    resolve();
+                });
+            } else {
+                resolve();
+            }
+        });
     }
 
     private setupHttpServer() {

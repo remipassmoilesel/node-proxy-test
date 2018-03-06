@@ -8,26 +8,31 @@ import { printError, printInfo, printWarning } from './common/print';
 import { Utils } from './common/Utils';
 import { AbstractHttpRecordingHook } from './hooks/models/AbstractHttpRecordingHook';
 import { AbstractTestGenerationHook } from './hooks/models/AbstractTestGenerationHook';
-import {HttpProxyServer} from './proxy-server/HttpProxyServer';
+import { HttpProxyServer } from './proxy-server/HttpProxyServer';
 import { HttpRecorder } from './proxy-server/HttpRecorder';
-import {HttpRequest} from './proxy-server/HttpRequest';
-import {MochaGenerator} from './test-generator/MochaGenerator';
+import { HttpRequest } from './proxy-server/HttpRequest';
+import { MochaGenerator } from './test-generator/MochaGenerator';
 
 export class CliActions {
 
     private testGenerationHooks: AbstractTestGenerationHook[];
     private httpRecordingHooks: AbstractHttpRecordingHook[];
+    private httpServer: HttpProxyServer;
+    private httpRecorder: HttpRecorder;
 
     constructor(testGenerationHooks: AbstractTestGenerationHook[], httpRecordingHook: AbstractHttpRecordingHook[]) {
         this.testGenerationHooks = testGenerationHooks;
         this.httpRecordingHooks = httpRecordingHook;
     }
 
-    private httpServer: HttpProxyServer;
-
-    public printHelp() {
+    public printCliHelp() {
         printInfo('record:        Open a proxy and record http requests, then generate tests');
         printInfo('generate:      Generate Typescript/Mocha tests');
+    }
+
+    public printRecordingHelp() {
+        printInfo('CTRL + C:    Stop recording and persist requests');
+        printInfo('s:           Enable/disable http recording');
     }
 
     public recordHttpRequests() {
@@ -37,10 +42,12 @@ export class CliActions {
 
         this.showHttpRecordindHooks();
 
-        this.listenQuitSequence();
-        const recorder = new HttpRecorder(this.httpRecordingHooks);
-        this.httpServer = new HttpProxyServer(recorder);
-        this.httpServer.listen();
+        this.listenKeypress();
+        this.httpRecorder = new HttpRecorder(this.httpRecordingHooks);
+        this.httpServer = new HttpProxyServer(this.httpRecorder);
+        this.httpServer.listen().then(() => {
+            this.printRecordingHelp();
+        });
     }
 
     public generateTests(filePathOrNumber: string) {
@@ -60,10 +67,10 @@ export class CliActions {
         const generator = new MochaGenerator(this.testGenerationHooks);
 
         let filePath = '';
-        try{
+        try {
             const fileNumber: number = Number(filePathOrNumber);
             filePath = path.join(Constants.RECORDED_DIR, this.listRecordedFiles()[fileNumber]);
-        } catch (e){
+        } catch (e) {
             filePath = filePathOrNumber;
         }
 
@@ -75,7 +82,7 @@ export class CliActions {
     public showRecordedFiles() {
         printInfo('Available records: ');
         const files = this.listRecordedFiles();
-        if (files.length < 0){
+        if (files.length < 0) {
             printWarning('No record found in directory: ' + Constants.RECORDED_DIR);
             return;
         }
@@ -88,19 +95,23 @@ export class CliActions {
         return JSON.parse(fs.readFileSync(requestsJsonPath).toString());
     }
 
-    private listenQuitSequence() {
+    private listenKeypress() {
         readline.emitKeypressEvents(process.stdin);
         if (!process.stdin.setRawMode) {
             throw new Error('process.stdin is undefined');
         }
         process.stdin.setRawMode(true);
+        process.stdin.on('keypress', this.handleKeyPress.bind(this));
+    }
 
-        process.stdin.on('keypress', (str, key) => {
-            if (key.ctrl && key.name === 'c') {
-                this.persistRequests();
-                process.exit(0);
-            }
-        });
+    private handleKeyPress(str: string, key: any) {
+        if (key.ctrl && key.name === 'c') {
+            this.persistRequests();
+            process.exit(0);
+        }
+        else if (key.name === 's') {
+            this.toggleRecording();
+        }
     }
 
     private persistRequests() {
@@ -123,7 +134,7 @@ export class CliActions {
     }
 
     private showHttpRecordindHooks() {
-        if (this.httpRecordingHooks.length > 0){
+        if (this.httpRecordingHooks.length > 0) {
             printWarning('Using http recording hooks: ');
             _.forEach(this.httpRecordingHooks, (hook: AbstractHttpRecordingHook) => {
                 printWarning(Utils.getObjectConstructorName(hook));
@@ -133,13 +144,22 @@ export class CliActions {
     }
 
     private showTestGenerationHooks() {
-        if (this.testGenerationHooks.length > 0){
+        if (this.testGenerationHooks.length > 0) {
             printWarning('Using test generation hooks: ');
             _.forEach(this.testGenerationHooks, (hook: AbstractTestGenerationHook) => {
                 printWarning(Utils.getObjectConstructorName(hook));
             });
             printWarning('');
         }
+    }
+
+    private toggleRecording() {
+        const oldStateStr: string = this.httpRecorder.isRecording() ? 'ENABLED' : 'DISABLED';
+        const newStateStr: string = !this.httpRecorder.isRecording() ? 'ENABLED' : 'DISABLED';
+
+        printInfo(`Recording state was: ${oldStateStr}`);
+        this.httpRecorder.toggleRecording();
+        printWarning(`Recording state become: ${newStateStr}`);
     }
 
 }

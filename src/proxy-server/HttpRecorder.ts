@@ -3,7 +3,7 @@ import {IncomingMessage} from 'http';
 import * as _ from 'lodash';
 import {URL} from 'url';
 import * as uuid from 'uuid';
-import {printWarning} from '../common/print';
+import { printInfo, printWarning } from '../common/print';
 import {Utils} from '../common/Utils';
 import {AbstractHttpRecordingHook} from '../hooks/models/AbstractHttpRecordingHook';
 import {IAugmentedIncomingMessage, IAugmentedServerResponse} from './HttpProxyServer';
@@ -14,12 +14,19 @@ export class HttpRecorder {
     private requests: HttpRequest[] = [];
     private ignoredRequests: HttpRequest[] = [];
     private hooks: AbstractHttpRecordingHook[];
+    private recordingEnabled: boolean;
 
     constructor(hooks: AbstractHttpRecordingHook[]) {
         this.hooks = hooks;
+        this.recordingEnabled = true;
     }
 
     public registerRequest(proxyReq: IncomingMessage, req: IncomingMessage): void {
+
+        if (!this.recordingEnabled){
+            printInfo('Request ignored, because recording is disabled');
+            return;
+        }
 
         if (!req.url) {
             printWarning('Warning, URL is not defined');
@@ -29,7 +36,6 @@ export class HttpRecorder {
         const augmentedReq: IAugmentedIncomingMessage = req as any;
         augmentedReq.messageId = uuid.v4();
 
-        const url = new URL(req.url);
         const httpReq: HttpRequest = {
             requestId: augmentedReq.messageId,
             url: req.url,
@@ -73,6 +79,10 @@ export class HttpRecorder {
 
     public registerResponse(proxyRes: IncomingMessage, res: IAugmentedServerResponse): void {
 
+        if (!this.recordingEnabled){
+            return;
+        }
+
         if (this.isResponseIgnored(res)) {
             return;
         }
@@ -113,6 +123,14 @@ export class HttpRecorder {
 
     public getRequests() {
         return this.requests;
+    }
+
+    public toggleRecording(): void {
+        this.recordingEnabled = !this.recordingEnabled;
+    }
+
+    public isRecording(): boolean {
+        return this.recordingEnabled;
     }
 
     private findRequestForResponse(res: IAugmentedServerResponse): HttpRequest {
