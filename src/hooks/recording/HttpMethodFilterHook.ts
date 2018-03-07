@@ -12,7 +12,7 @@ export class HttpMethodFilterHook extends AbstractHttpRecordingHook {
     ];
 
     public filterRequestOnReception(request: HttpRequest): boolean {
-        return _.includes(this.filteredMethods, request.method);
+        return !_.includes(this.filteredMethods, request.method);
     }
 
 }
