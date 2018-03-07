@@ -4,6 +4,8 @@
 
 # See: https://www.chromium.org/developers/design-documents/network-settings
 
+echo Starting browser using proxy on port 63000
+
 chromium-browser --proxy-server="http://127.0.0.1:63000" --enable-logging=stderr
 
 # FIXME
