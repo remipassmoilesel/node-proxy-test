@@ -43,6 +43,7 @@ export class CliActions {
         this.showHttpRecordindHooks();
 
         this.listenKeypress();
+
         this.httpRecorder = new HttpRecorder(this.httpRecordingHooks);
         this.httpServer = new HttpProxyServer(this.httpRecorder);
         this.httpServer.listen().then(() => {
@@ -98,13 +99,14 @@ export class CliActions {
     private listenKeypress() {
         readline.emitKeypressEvents(process.stdin);
         if (!process.stdin.setRawMode) {
-            throw new Error('process.stdin is undefined');
+            throw new Error('process.stdin.setRawMode is undefined');
         }
         process.stdin.setRawMode(true);
         process.stdin.on('keypress', this.handleKeyPress.bind(this));
     }
 
     private handleKeyPress(str: string, key: any) {
+        console.log(str); // log in order to let user spam Enter :)
         if (key.ctrl && key.name === 'c') {
             this.persistRequests();
             process.exit(0);

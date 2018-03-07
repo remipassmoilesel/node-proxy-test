@@ -1,6 +1,6 @@
 import * as http from "http";
 import * as net from "net";
-import {printWarning} from "../common/print";
+import {printColor, printWarning} from "../common/print";
 
 const debugging = false;
 
@@ -8,10 +8,14 @@ const regex_hostport = /^([^:]+)(:([0-9]+))?$/;
 
 // see https://newspaint.wordpress.com/2012/11/05/node-js-http-and-https-proxy/
 
+const log = (msg: string, ...data: any[]) => {
+    printColor.apply(null, ['magenta', msg].concat(data));
+};
+
 export class HttpConnectListener {
 
     public registerListener(server: http.Server) {
-        
+
         // add handler for HTTPS (which issues a CONNECT to the proxy)
         server.addListener('connect', (request, socketRequest, bodyhead) => {
 
@@ -23,7 +27,7 @@ export class HttpConnectListener {
                 const hostport = this.getHostPortFromString(url, '443');
 
                 if (debugging)
-                    console.log('  = will connect to %s:%s', hostport[0], hostport[1]);
+                    log('  = will connect to %s:%s', hostport[0], hostport[1]);
 
                 // set up TCP connection
                 const proxySocket = new net.Socket();
@@ -31,10 +35,10 @@ export class HttpConnectListener {
                     parseInt(hostport[1]), hostport[0],
                     function () {
                         if (debugging)
-                            console.log('  < connected to %s/%s', hostport[0], hostport[1]);
+                            log('  < connected to %s/%s', hostport[0], hostport[1]);
 
                         if (debugging)
-                            console.log('  > writing head of length %d', bodyhead.length);
+                            log('  > writing head of length %d', bodyhead.length);
 
                         proxySocket.write(bodyhead);
 
@@ -47,7 +51,7 @@ export class HttpConnectListener {
                     'data',
                     function (chunk: any) {
                         if (debugging)
-                            console.log('  < data length = %d', chunk.length);
+                            log('  < data length = %d', chunk.length);
 
                         socketRequest.write(chunk);
                     }
@@ -57,7 +61,7 @@ export class HttpConnectListener {
                     'end',
                     function () {
                         if (debugging)
-                            console.log('  < end');
+                            log('  < end');
 
                         socketRequest.end();
                     }
@@ -67,7 +71,7 @@ export class HttpConnectListener {
                     'data',
                     function (chunk: any) {
                         if (debugging)
-                            console.log('  > data length = %d', chunk.length);
+                            log('  > data length = %d', chunk.length);
 
                         proxySocket.write(chunk);
                     }
@@ -77,7 +81,7 @@ export class HttpConnectListener {
                     'end',
                     function () {
                         if (debugging)
-                            console.log('  > end');
+                            log('  > end');
 
                         proxySocket.end();
                     }
@@ -88,7 +92,7 @@ export class HttpConnectListener {
                     function (err) {
                         socketRequest.write("HTTP/" + httpVersion + " 500 Connection error\r\n\r\n");
                         if (debugging) {
-                            console.log('  < ERR: %s', err);
+                            log('  < ERR: %s', err);
                         }
                         socketRequest.end();
                     }
@@ -98,7 +102,7 @@ export class HttpConnectListener {
                     'error',
                     function (err: any) {
                         if (debugging) {
-                            console.log('  > ERR: %s', err);
+                            log('  > ERR: %s', err);
                         }
                         proxySocket.end();
                     }
