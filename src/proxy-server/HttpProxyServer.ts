@@ -1,11 +1,13 @@
 import * as express from 'express';
 import {Express} from 'express';
 import * as fs from 'fs';
+import * as http from 'http';
 import {IncomingMessage, ServerResponse} from 'http';
 import * as https from 'https';
 import {printError, printInfo} from '../common/print';
 import {Utils} from '../common/Utils';
 import {HttpRecorder} from './HttpRecorder';
+import {HttpConnectListener} from "./HttpConnectListener";
 
 const httpProxy = require('http-proxy');
 
@@ -26,8 +28,9 @@ export class HttpProxyServer {
     private httpsApp: Express;
     private httpsProxy: any;
 
-    private httpProxy: any;
+    private httpServer: http.Server;
     private httpApp: Express;
+    private httpProxy: any;
 
     private recorder: HttpRecorder;
 
@@ -57,7 +60,6 @@ export class HttpProxyServer {
         this.httpProxy.on('error', this.onProxyError.bind(this));
         this.httpProxy.on('proxyReq', this.onProxyRequest.bind(this));
         this.httpProxy.on('proxyRes', this.onProxyResponse.bind(this));
-
     }
 
     private setupHttpsProxy() {
@@ -75,16 +77,16 @@ export class HttpProxyServer {
 
     }
 
-    private listenHttp(): Promise<void>{
+    private listenHttp(): Promise<void> {
         return new Promise((resolve, reject) => {
-            this.httpApp.listen(this.HTTP_PORT, () => {
+            this.httpServer.listen(this.HTTP_PORT, () => {
                 printInfo(`Proxy listening HTTP on port ${this.HTTP_PORT}`);
                 resolve();
             });
         });
     }
 
-    private listenHttps(): Promise<void>{
+    private listenHttps(): Promise<void> {
         return new Promise((resolve, reject) => {
             if (this.httpsServer) {
                 this.httpsServer.listen(this.HTTPS_PORT, () => {
@@ -99,7 +101,12 @@ export class HttpProxyServer {
     }
 
     private setupHttpServer() {
+
         this.httpApp = express();
+
+        this.httpServer = http.createServer(this.httpApp);
+        new HttpConnectListener().registerListener(this.httpServer);
+
         this.httpApp.all('*', this.proxyRequestHandler.bind(this));
     }
 
