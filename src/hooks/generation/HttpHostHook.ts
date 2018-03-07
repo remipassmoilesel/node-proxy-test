@@ -10,7 +10,7 @@ const camel = require('to-camel-case');
  *
  */
 export class HttpHostHook extends AbstractTestGenerationHook {
-    private domainRegex: RegExp = /https?:\/\/([a-z0-9][a-z0-9\.-]{1,61}[a-z0-9])+/ig;
+    private domainRegex: RegExp = /https?:\/\/[a-z0-9][a-z0-9\.-]{1,61}[a-z0-9]+(:[0-9]+)?/ig;
 
     constructor(pattern?: RegExp | RegExp) {
         super();
@@ -50,7 +50,7 @@ export class HttpHostHook extends AbstractTestGenerationHook {
                 methodArguments.push({
                     name: varName,
                     type: 'string',
-                    defaultValue: '"' + domain + '"',
+                    defaultValue: `"${domain}"`,
                 });
             });
             return modifiedSubject;
