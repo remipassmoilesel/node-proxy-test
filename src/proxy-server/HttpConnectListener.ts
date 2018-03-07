@@ -11,9 +11,7 @@ const regex_hostport = /^([^:]+)(:([0-9]+))?$/;
 export class HttpConnectListener {
 
     public registerListener(server: http.Server) {
-
-        console.log('public registerListener(server: http.Server){')
-
+        
         // add handler for HTTPS (which issues a CONNECT to the proxy)
         server.addListener('connect', (request, socketRequest, bodyhead) => {
 
