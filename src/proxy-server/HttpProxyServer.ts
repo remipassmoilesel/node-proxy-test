@@ -78,7 +78,7 @@ export class HttpProxyServer {
     private listenHttp(): Promise<void>{
         return new Promise((resolve, reject) => {
             this.httpApp.listen(this.HTTP_PORT, () => {
-                printInfo(`Listening HTTP on port ${this.HTTP_PORT}`);
+                printInfo(`Proxy listening HTTP on port ${this.HTTP_PORT}`);
                 resolve();
             });
         });
