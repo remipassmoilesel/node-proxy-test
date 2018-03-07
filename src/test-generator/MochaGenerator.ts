@@ -29,10 +29,10 @@ export class MochaGenerator {
         this.hooks = hooks;
     }
 
-    public generate(requests: HttpRequest[]) {
+    public generate(requests: HttpRequest[]): string {
         const classPrefix = this.generateClassPrefix();
         const requestsView = this.generateRequestsClass(requests, classPrefix);
-        this.generateRequestSpec(requestsView, classPrefix);
+        return this.generateRequestSpec(requestsView, classPrefix);
     }
 
     private generateRequestsClass(requests: HttpRequest[], classPrefix: string): IRequestsView {
@@ -52,7 +52,7 @@ export class MochaGenerator {
         return requestsView;
     }
 
-    private generateRequestSpec(requestsView: IRequestsView, classPrefix: string) {
+    private generateRequestSpec(requestsView: IRequestsView, classPrefix: string): string {
 
         const requestsMethodCalls = this.generateMethodsCall(requestsView);
         const variablesInit = this.generateVariableInit(requestsView);
@@ -71,6 +71,7 @@ export class MochaGenerator {
 
         this.render(fileName, Templates.TemplateSpec, specView);
 
+        return fileName;
     }
 
     private generateMethodsFromRequests(requests: HttpRequest[]): IRequestsMethod[] {

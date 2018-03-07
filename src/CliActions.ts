@@ -75,8 +75,8 @@ export class CliActions {
         }
 
         printInfo(`Generating test from: ${filePath}`);
-        generator.generate(this.readRequests(filePath));
-        printInfo(`Generated !`);
+        const filename = generator.generate(this.readRequests(filePath));
+        printInfo(`Generated ! See: ${filename}`);
     }
 
     public showRecordedFiles() {
