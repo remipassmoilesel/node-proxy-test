@@ -1,11 +1,12 @@
 import { AuthorizationHeaderHook } from './hooks/generation/AuthorizationHeaderHook';
 import { HeadersCleaningHook } from './hooks/generation/HeadersCleaningHook';
+import { HttpHostHook } from './hooks/generation/HttpHostHook';
 import { UuidV4Hook } from './hooks/generation/UuidV4Hook';
 import { AbstractHttpRecordingHook } from './hooks/models/AbstractHttpRecordingHook';
 import { AbstractTestGenerationHook } from './hooks/models/AbstractTestGenerationHook';
 import { AssetsFilterHook } from './hooks/recording/AssetsFilterHook';
 import { ContentTypeFilterHook } from './hooks/recording/ContentTypeFilterHook';
-import { HttpHostHook } from './hooks/generation/HttpHostHook';
+import { HttpMethodFilterHook } from './hooks/recording/HttpMethodFilterHook';
 
 /**
  * ========================================================================
@@ -14,6 +15,7 @@ import { HttpHostHook } from './hooks/generation/HttpHostHook';
  */
 
 export const httpRecordingHooks: AbstractHttpRecordingHook[] = [
+    new HttpMethodFilterHook(),
     new AssetsFilterHook(),
     new ContentTypeFilterHook(),
 ];
