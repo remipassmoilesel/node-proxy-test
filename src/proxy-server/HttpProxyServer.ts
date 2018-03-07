@@ -42,7 +42,16 @@ export class HttpProxyServer {
         this.setupHttpsServer();
     }
 
-    public setupHttpProxy() {
+    /**
+     * Start listening and serve requests
+     */
+    public listen() {
+        return this.listenHttp().then(() => {
+            return this.listenHttps.bind(this);
+        });
+    }
+
+    private setupHttpProxy() {
 
         this.httpProxy = httpProxy.createProxyServer();
         this.httpProxy.on('error', this.onProxyError.bind(this));
@@ -51,7 +60,7 @@ export class HttpProxyServer {
 
     }
 
-    public setupHttpsProxy() {
+    private setupHttpsProxy() {
 
         // this.httpsServer.on('connect', function (){
         //
@@ -64,15 +73,6 @@ export class HttpProxyServer {
         this.httpsProxy.on('proxyReq', this.onProxyRequest.bind(this));
         this.httpsProxy.on('proxyRes', this.onProxyResponse.bind(this));
 
-    }
-
-    /**
-     * Start listening and serve requests
-     */
-    public listen() {
-        return this.listenHttp().then(() => {
-            return this.listenHttps.bind(this);
-        });
     }
 
     private listenHttp(): Promise<void>{
