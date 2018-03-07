@@ -5,7 +5,7 @@ import { AbstractHttpRecordingHook } from '../models/AbstractHttpRecordingHook';
 export class HttpMethodFilterHook extends AbstractHttpRecordingHook {
 
     private filteredMethods: HttpMethod[] = [
-        'OPTION',
+        'OPTIONS',
         'HEAD',
         'TRACE',
         'CONNECT',
