@@ -21,16 +21,17 @@ export class TestUtils {
         return response;
     }
 
-    public static debugResponse(response: any) {
 
+    public debugResponse(response: any) {
         printWarning('=== Response debug: ');
 
         if (response instanceof Error) {
             printWarning('** Response is an error:');
 
-            if ((response as any).statusCode) {
-                const anyResponse: any = response;
-                printWarning('** Informations: ' + anyResponse.statusCode);
+            const anyResponse: any = response as any;
+
+            if (anyResponse.statusCode) {
+                printWarning('  Informations: ' + anyResponse.statusCode);
                 printWarning('   - statusCode: ' + anyResponse.statusCode);
                 printWarning('   - statusMessage: ' + anyResponse.statusMessage);
                 printWarning('   - host: ' + anyResponse.host);
@@ -41,10 +42,19 @@ export class TestUtils {
                 printWarning('   - url: ' + anyResponse.url);
             }
 
-            printWarning('  Error stack:', response.stack);
+            printWarning(`  Error stack: \n${response.stack}`);
+
+            if (anyResponse.response && anyResponse.response.body) {
+                const body = (response as any).response.body;
+                printWarning(`** Response contains a body: ${JSON.stringify(body, null, 2)}`);
+
+            } else {
+                printWarning('** Response does NOT contain a body');
+            }
 
         } else {
             printWarning('** Response is NOT an error');
+            printWarning(`** Response: ${JSON.stringify(response, null, 2)}`);
         }
 
     }
