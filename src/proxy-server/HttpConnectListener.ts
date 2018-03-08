@@ -1,6 +1,6 @@
 import * as http from 'http';
 import * as net from 'net';
-import { printColor, printWarning } from '../common/print';
+import { printColor, printError, printWarning } from '../common/print';
 
 const debugging = false;
 
@@ -31,7 +31,7 @@ export class HttpConnectListener {
 
                 // set up TCP connection
                 const proxySocket = new net.Socket();
-                proxySocket.connect(parseInt(hostport[1]), hostport[0], () => {
+                proxySocket.connect(Number(hostport[1]), hostport[0], () => {
                         if (debugging) {
                             log('  < connected to %s/%s', hostport[0], hostport[1]);
                         }
@@ -84,6 +84,8 @@ export class HttpConnectListener {
                 );
 
                 proxySocket.on('error', (err) => {
+                        printError('[CONNECT] Error: ', err);
+
                         socketRequest.write('HTTP/' + httpVersion + ' 500 Connection error\r\n\r\n');
                         if (debugging) {
                             log('  < ERR: %s', err);
@@ -93,6 +95,8 @@ export class HttpConnectListener {
                 );
 
                 socketRequest.on('error', (err: any) => {
+                        printError('[CONNECT] Error: ', err);
+
                         if (debugging) {
                             log('  > ERR: %s', err);
                         }
