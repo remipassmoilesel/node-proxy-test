@@ -1,6 +1,6 @@
 import { AuthorizationHeaderHook } from './hooks/generation/AuthorizationHeaderHook';
 import { HeadersCleaningHook } from './hooks/generation/HeadersCleaningHook';
-import { HttpHostHook } from './hooks/generation/HttpHostHook';
+import { HostHook } from './hooks/generation/HostHook';
 import { UuidV4Hook } from './hooks/generation/UuidV4Hook';
 import { AbstractHttpRecordingHook } from './hooks/models/AbstractHttpRecordingHook';
 import { AbstractTestGenerationHook } from './hooks/models/AbstractTestGenerationHook';
@@ -22,7 +22,7 @@ export const httpRecordingHooks: AbstractHttpRecordingHook[] = [
 
 export const testGenerationHooks: AbstractTestGenerationHook[] = [
     new AuthorizationHeaderHook(),
-    new HttpHostHook(),
+    new HostHook({replaceInResponse: false}),
     new UuidV4Hook({replaceInResponse: false}),
     new HeadersCleaningHook(),
     // new UserAgentHeaderHook(),

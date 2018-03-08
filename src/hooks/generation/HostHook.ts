@@ -5,16 +5,27 @@ import { IMethodArgument } from '../models/IMethodArgument';
 
 const camel = require('to-camel-case');
 
+export interface IHostHookOptions {
+    replaceInResponse?: boolean;
+    hostPattern?: RegExp;
+}
+
 /**
- * Hosts are replaced if they contains http prefix in order to not replace too mutch things
+ * Hosts are replaced if they contains http prefix in order to not replace too much things
  *
  */
-export class HttpHostHook extends AbstractTestGenerationHook {
-    private domainRegex: RegExp = /https?:\/\/[a-z0-9][a-z0-9\.-]{1,61}[a-z0-9]+(:[0-9]+)?/ig;
+export class HostHook extends AbstractTestGenerationHook {
 
-    constructor(pattern?: RegExp | RegExp) {
+    private defaultDomainRegex: RegExp = /(https?:)?\/\/[a-z0-9][a-z0-9\.-]{1,61}[a-z0-9]+(:[0-9]+)?/ig;
+    private options: IHostHookOptions = { replaceInResponse: true, hostPattern: this.defaultDomainRegex };
+    private hostPattern: RegExp;
+    private replaceInResponse: boolean;
+
+    constructor(options?: IHostHookOptions) {
         super();
-        this.domainRegex = pattern || this.domainRegex;
+        _.merge(this.options, options);
+        this.hostPattern = this.options.hostPattern as any;
+        this.replaceInResponse = this.options.replaceInResponse as any;
     }
 
     public beforeTestGeneration(request: HttpRequest): IMethodArgument[] | void {
@@ -25,7 +36,10 @@ export class HttpHostHook extends AbstractTestGenerationHook {
 
         request.url = this.replace(request.url, methodArgs);
         request.request.body = this.replace(request.request.body, methodArgs);
-        request.response.body = this.replace(request.response.body, methodArgs);
+
+        if (this.replaceInResponse){
+            request.response.body = this.replace(request.response.body, methodArgs);
+        }
 
         this.replaceHeader(request, 'host', methodArgs);
         this.replaceHeader(request, 'access-control-allow-origin', methodArgs);
@@ -40,7 +54,8 @@ export class HttpHostHook extends AbstractTestGenerationHook {
     }
 
     private replace(subject: string, methodArguments: IMethodArgument[]): string {
-        const matches = subject.match(this.domainRegex);
+        const matches = subject.match(this.hostPattern);
+
         if (matches) {
             let modifiedSubject: string = subject;
             _.forEach(matches, (domain) => {
