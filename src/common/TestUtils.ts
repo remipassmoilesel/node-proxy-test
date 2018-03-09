@@ -1,7 +1,11 @@
+import * as chai from 'chai';
 import { wait } from 'f-promise';
 import * as got from 'got';
+import * as uuid from 'uuid';
 import { HttpRequest } from '../proxy-server/HttpRequest';
 import { printInfo, printWarning } from './print';
+
+const assert = chai.assert;
 
 export class TestUtils {
 
@@ -21,42 +25,71 @@ export class TestUtils {
         return response;
     }
 
+    public assertNotError(toInspect: any) {
+        try {
+            assert.notInstanceOf(toInspect, Error);
+        } catch (e) {
+            e.stack += '\n\nInspected objet: ' + this.getDebugInformationsForResponse(toInspect);
+            throw e;
+        }
+    }
 
-    public debugResponse(response: any) {
-        printWarning('=== Response debug: ');
+    public assertError(toInspect: any, expectedStatusCode?: number) {
+        try {
+            assert.instanceOf(toInspect, Error);
+            if (expectedStatusCode) {
+                assert.equal(toInspect.statusCode, expectedStatusCode);
+            }
+        } catch (e) {
+            e.stack += '\n\nInspected objet: ' + this.getDebugInformationsForResponse(toInspect);
+            throw e;
+        }
+    }
 
-        if (response instanceof Error) {
-            printWarning('** Response is an error:');
+    public uniqueName(prefix: string): string {
+        return prefix + '_' + uuid.v4();
+    }
 
-            const anyResponse: any = response as any;
 
-            if (anyResponse.statusCode) {
-                printWarning('  Informations: ' + anyResponse.statusCode);
-                printWarning('   - statusCode: ' + anyResponse.statusCode);
-                printWarning('   - statusMessage: ' + anyResponse.statusMessage);
-                printWarning('   - host: ' + anyResponse.host);
-                printWarning('   - hostname: ' + anyResponse.hostname);
-                printWarning('   - method: ' + anyResponse.method);
-                printWarning('   - path: ' + anyResponse.path);
-                printWarning('   - protocol: ' + anyResponse.protocol);
-                printWarning('   - url: ' + anyResponse.url);
+    public printDebugForResponse(response: any) {
+        printWarning(this.getDebugInformationsForResponse(response));
+    }
+
+    public getDebugInformationsForResponse(toInspect: any) {
+        let result = '=== DEBUG INFORMATIONS ===';
+
+        if (toInspect instanceof Error) {
+            result += '\n** Object is an error:';
+
+            const toInspectAny: any = toInspect as any;
+
+            if (toInspectAny.statusCode) {
+                result += '\n  Informations: ' + toInspectAny.statusCode;
+                result += '\n   - statusCode: ' + toInspectAny.statusCode;
+                result += '\n   - statusMessage: ' + toInspectAny.statusMessage;
+                result += '\n   - host: ' + toInspectAny.host;
+                result += '\n   - hostname: ' + toInspectAny.hostname;
+                result += '\n   - method: ' + toInspectAny.method;
+                result += '\n   - path: ' + toInspectAny.path;
+                result += '\n   - protocol: ' + toInspectAny.protocol;
+                result += '\n   - url: ' + toInspectAny.url;
             }
 
-            printWarning(`  Error stack: \n${response.stack}`);
+            result += `\n  Error stack: \n${toInspect.stack}`;
 
-            if (anyResponse.response && anyResponse.response.body) {
-                const body = (response as any).response.body;
-                printWarning(`** Response contains a body: ${JSON.stringify(body, null, 2)}`);
-
+            if (toInspectAny.response && toInspectAny.response.body) {
+                const body = (toInspect as any).response.body;
+                result += `\n** Object contains a body: ${JSON.stringify(body, null, 2)}`;
             } else {
-                printWarning('** Response does NOT contain a body');
+                result += '\n** Object does NOT contain a body';
             }
 
         } else {
-            printWarning('** Response is NOT an error');
-            printWarning(`** Response: ${JSON.stringify(response, null, 2)}`);
+            result += '\n** Object is NOT an error';
+            result += `\n** Object: ${JSON.stringify(toInspect, null, 2)}`;
         }
 
+        return result;
     }
 
 }
