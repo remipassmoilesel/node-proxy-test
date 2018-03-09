@@ -55,7 +55,7 @@ export class HttpRecorder {
         _.forEach(this.hooks, (hook: AbstractHttpRecordingHook) => {
             const hookDecision = hook.filterRequestOnSending(httpReq);
             if (hookDecision === false) {
-                printWarning(`Request record ignored by hook: ${Utils.getObjectConstructorName(hook)}`);
+                printWarning(`Request record ignored by hook: ${Utils.getObjectConstructorName(hook)} req=${httpReq.url}`);
                 recordRequest = false;
             }
         });
@@ -65,6 +65,7 @@ export class HttpRecorder {
 
             req.on('data', (dataBuffer: Buffer) => {
                 const body: string = dataBuffer.toString();
+
                 if (!Utils.isInvalidBody(body)) {
                     httpReq.request.body += body;
                 } else if (body) {
@@ -95,7 +96,7 @@ export class HttpRecorder {
         _.forEach(this.hooks, (hook: AbstractHttpRecordingHook) => {
             const hookDecision = hook.filterRequestOnReception(httpReq);
             if (hookDecision === false) {
-                printWarning(`Request record ignored by hook: ${Utils.getObjectConstructorName(hook)}`);
+                printWarning(`Request record ignored by hook: ${Utils.getObjectConstructorName(hook)} req=${httpReq.url}`);
                 recordRequest = false;
             }
         });
@@ -111,7 +112,7 @@ export class HttpRecorder {
             if (!Utils.isInvalidBody(body)) {
                 httpReq.response.body += body;
             } else if (body) {
-                httpReq.response.body = 'Body was ignored';
+                httpReq.response.body = `Body was ignored`;
             }
         });
 
