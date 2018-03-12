@@ -19,6 +19,7 @@ export class TestUtils {
                 headers: request.request.headers,
             }));
         } catch (e) {
+            printWarning(`Error was thrown: ${e.statusCode} - ${request.method} - ${request.url}`);
             response = e;
         }
 
@@ -64,7 +65,7 @@ export class TestUtils {
             const toInspectAny: any = toInspect as any;
 
             if (toInspectAny.statusCode) {
-                result += '\n  Informations: ' + toInspectAny.statusCode;
+                result += '\n  Object have a status code, informations: ';
                 result += '\n   - statusCode: ' + toInspectAny.statusCode;
                 result += '\n   - statusMessage: ' + toInspectAny.statusMessage;
                 result += '\n   - host: ' + toInspectAny.host;
