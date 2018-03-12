@@ -158,6 +158,6 @@ export class HttpProxyServer {
     }
 
     private printRequest(req: express.Request) {
-        printInfo(`Forwarding request: ${Utils.limitStringSize(req.url, 120)}`);
+        printInfo(`Forwarding request: ${req.method} - ${Utils.limitStringSize(req.url, 120)}`);
     }
 }

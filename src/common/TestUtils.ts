@@ -11,7 +11,7 @@ export class TestUtils {
 
     public static runRequest(request: HttpRequest): any {
 
-        printInfo(`Running request: ${request.url}`);
+        printInfo(`Running request: ${request.method} - ${request.url}`);
 
         let response;
         try {
