@@ -61,7 +61,7 @@ export class CliActions {
         if (!filePathOrNumber) {
             this.showRecordedFiles();
             printError('');
-            printError('File path is mandatory.');
+            printError('File path or number is mandatory.');
             process.exit(1);
         }
 
