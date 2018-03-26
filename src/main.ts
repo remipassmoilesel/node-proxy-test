@@ -12,7 +12,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 const sourceMapSupport = require('source-map-support');
 sourceMapSupport.install();
 
-Utils.checkNodeVersion(6);
+Utils.checkMinimumNodeVersion(8);
 
 const cliActions = new CliActions(testGenerationHooks, httpRecordingHooks);
 const cleanArgs = _.map(process.argv.slice(2), (arg: string) => arg.trim());

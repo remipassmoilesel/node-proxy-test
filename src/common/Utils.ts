@@ -61,11 +61,11 @@ export class Utils {
         return JSON.parse(strObj);
     }
 
-    public static checkNodeVersion(maxVersion: number) {
+    public static checkMinimumNodeVersion(minVersion: number) {
         const versionNumber = Number(process.versions.node.substr(0, 1));
-        if (versionNumber > maxVersion) {
+        if (versionNumber < minVersion) {
             printError('');
-            printError('You must use node 6 to run this project.');
+            printError('You must use at least node 8 to run this project.');
             printError(`Current version: ${process.versions.node}`);
             printError('');
             process.exit(1);
