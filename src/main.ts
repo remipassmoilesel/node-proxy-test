@@ -3,10 +3,10 @@
 import { run } from 'f-promise';
 import * as _ from 'lodash';
 import { CliActions } from './CliActions';
+import {Help} from './common/Help';
 import { printError } from './common/print';
 import { Utils } from './common/Utils';
 import { httpRecordingHooks, testGenerationHooks } from './hooks';
-import {Help} from "./common/Help";
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 

@@ -6,8 +6,8 @@ import {IncomingMessage, ServerResponse} from 'http';
 import * as https from 'https';
 import {printError, printInfo} from '../common/print';
 import {Utils} from '../common/Utils';
+import {HttpConnectListener} from './HttpConnectListener';
 import {HttpRecorder} from './HttpRecorder';
-import {HttpConnectListener} from "./HttpConnectListener";
 
 const httpProxy = require('http-proxy');
 

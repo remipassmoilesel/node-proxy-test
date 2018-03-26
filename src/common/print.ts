@@ -1,5 +1,5 @@
 // tslint:disable:no-console
-import * as assert from "assert";
+import * as assert from 'assert';
 const colors = require('colors/safe');
 
 export function printColor(color: string, msg: any, ...data: any[]) {
