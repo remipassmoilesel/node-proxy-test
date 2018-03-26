@@ -6,6 +6,7 @@ import { CliActions } from './CliActions';
 import { printError } from './common/print';
 import { Utils } from './common/Utils';
 import { httpRecordingHooks, testGenerationHooks } from './hooks';
+import {Help} from "./common/Help";
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
@@ -47,14 +48,14 @@ function main() {
         }
 
         else if (_.includes(cleanArgs, 'help')) {
-            cliActions.printCliHelp();
+            Help.printCliHelp();
         }
 
         else {
             printError('');
             printError('Bad command');
             printError('');
-            cliActions.printCliHelp();
+            Help.printCliHelp();
             process.exit(1);
         }
 

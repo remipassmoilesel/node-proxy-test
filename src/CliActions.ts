@@ -4,6 +4,7 @@ import * as _ from 'lodash';
 import * as path from 'path';
 import * as readline from 'readline';
 import {Constants, packageRoot} from './common/Constants';
+import {Help} from './common/Help';
 import { printError, printInfo, printWarning } from './common/print';
 import { Utils } from './common/Utils';
 import { AbstractHttpRecordingHook } from './hooks/models/AbstractHttpRecordingHook';
@@ -25,16 +26,6 @@ export class CliActions {
         this.httpRecordingHooks = httpRecordingHook;
     }
 
-    public printCliHelp() {
-        printInfo('record:        Open a proxy and record http requests, then generate tests');
-        printInfo('generate:      Generate Typescript/Mocha tests');
-    }
-
-    public printRecordingHelp() {
-        printInfo('CTRL + C:    Stop recording and persist requests');
-        printInfo('s:           Enable/disable http recording');
-    }
-
     public recordHttpRequests() {
 
         printInfo('Starting HTTP request recorder');
@@ -47,7 +38,7 @@ export class CliActions {
         this.httpRecorder = new HttpRecorder(this.httpRecordingHooks);
         this.httpServer = new HttpProxyServer(this.httpRecorder);
         this.httpServer.listen().then(() => {
-            this.printRecordingHelp();
+            Help.printRecordingHelp();
         });
     }
 
