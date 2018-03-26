@@ -2,7 +2,8 @@ import * as assert from 'assert';
 import * as fs from 'fs';
 import * as path from 'path';
 
-const packageRoot = path.join(__dirname, '../..');
+export const packageRoot = path.join(__dirname, '../..');
+assert.ok(fs.existsSync(path.join(packageRoot, 'package.json')));
 
 export class Constants {
     public static RECORDED_DIR = path.join(packageRoot, 'recorded');

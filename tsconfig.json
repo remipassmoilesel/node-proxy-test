@@ -1,5 +1,6 @@
 {
   "compileOnSave": true,
+  "strict": true,
   "compilerOptions": {
     "target": "es6",
     "lib": ["es5", "dom", "es2015.promise"],
@@ -11,7 +12,12 @@
     "noImplicitReturns": true,
     "skipLibCheck": true,
     "noImplicitAny": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "types": [
+      "node",
+      "mocha",
+      "chai"
+    ]
   },
   "include": [
     "src/**/*"

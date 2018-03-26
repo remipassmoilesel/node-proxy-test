@@ -1,9 +1,9 @@
-// tslint:disable:no-console
+import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as _ from 'lodash';
 import * as path from 'path';
 import * as readline from 'readline';
-import { Constants } from './common/Constants';
+import {Constants, packageRoot} from './common/Constants';
 import { printError, printInfo, printWarning } from './common/print';
 import { Utils } from './common/Utils';
 import { AbstractHttpRecordingHook } from './hooks/models/AbstractHttpRecordingHook';
@@ -92,6 +92,31 @@ export class CliActions {
         });
     }
 
+    public runGeneratedTests() {
+        printInfo('Launching generated tests');
+        execSync('npm run run-generated-tests', {cwd: packageRoot, stdio: 'pipe'});
+    }
+
+    public cleanGeneratedTests() {
+        printInfo('Cleaning generated tests');
+        execSync('npm run clean-generated-tests', {cwd: packageRoot, stdio: 'pipe'});
+    }
+
+    public launchBrowser(browserName: string) {
+        printInfo(`Launching ${browserName} browser, this command must hold your terminal session.`);
+
+        const startTime = new Date().getTime();
+        execSync(`npm run launch-${browserName.toLowerCase()}`, {cwd: packageRoot, stdio: 'pipe'});
+        const endTime = new Date().getTime();
+
+        if (endTime - startTime < 1000){
+            printWarning('');
+            printWarning(` /!\\ WARNING: Your browser will not use recording proxy.`);
+            printWarning(`     You must close all windows of ${browserName} browser before launch this command.`);
+            printWarning('');
+        }
+    }
+
     private readRequests(requestsJsonPath: string): HttpRequest[] {
         return JSON.parse(fs.readFileSync(requestsJsonPath).toString());
     }
@@ -106,7 +131,10 @@ export class CliActions {
     }
 
     private handleKeyPress(str: string, key: any) {
+        // tslint:disable:no-console
         console.log(str); // log in order to let user spam Enter :)
+        // tslint:enable:no-console
+
         if (key.ctrl && key.name === 'c') {
             this.persistRequests();
             process.exit(0);

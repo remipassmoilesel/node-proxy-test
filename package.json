@@ -6,20 +6,25 @@
   "author": "remipassmoilesel",
   "license": "GPL-3.0-or-later",
   "repository": "https://github.com/remipassmoilesel/node-proxy-test.git",
+  "bin": {
+    "node-proxy-test": "build/main.js"
+  },
   "scripts": {
-    "cli": "npm run clean-compile && node build/main.js",
+    "install-cli": "npm install && npm run clean-compile && npm link",
     "cli-debug": "npm run clean-compile && DEBUG=express:* node build/main.js",
-    "clean-generated": "rm src/generated-tests/*.ts",
-    "clean": "node_modules/.bin/rimraf build",
+    "clean": "rimraf build",
     "compile": "node_modules/.bin/tsc --pretty",
     "compile-watch": "node_modules/.bin/tsc --pretty -w",
     "clean-compile": "npm run clean && npm run compile",
     "test": "npm run clean-compile && node_modules/.bin/mocha --recursive 'build/tests/**/*Test.js'",
-    "generated-tests": "npm run clean-compile && node_modules/.bin/mocha --recursive 'build/generated-tests/**/*Spec.js'",
+    "clean-generated-tests": "rimraf src/generated-tests/*.ts",
+    "run-generated-tests": "npm run clean-compile && node_modules/.bin/mocha --recursive 'build/generated-tests/**/*Spec.js'",
     "coverage": "npm run clean-compile && node_modules/.bin/nyc node_modules/.bin/mocha --full-trace --recursive 'build/manager/api/tests/**/*Test.js'",
     "coveralls": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls",
     "lint": "tslint -p .",
-    "lint-fix": "tslint -p . --fix"
+    "lint-fix": "tslint -p . --fix",
+    "launch-chrome": "./launch-chrome.sh",
+    "launch-chromium": "./launch-chromium.sh"
   },
   "dependencies": {
     "colors": "^1.1.2",

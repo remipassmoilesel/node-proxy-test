@@ -20,28 +20,32 @@ Installation:
     
     $ git clone ...
     $ cd node-proxy-test
-    $ npm i
+    $ npm run install-cli
     
 Open a proxy on port 3000 and record HTTP traffic:     
     
-    $ npm run cli record  
+    $ node-proxy-test record  
 
 Open a web browser using this proxy (selected browser should not be opened yet):
 
-    $ ./launch-chromium.sh
+    $ node-proxy-test launch-chromium
     
 Play with your API, watch logs on terminal, then press CTRL-C once to stop recording and write a JSON 
 file in `recorder` directory.     
 
 Generate Mocha Typescript tests:
 
-    $ npm run cli generate
-    $ npm run cli generate 4
-    $ npm run cli generate /path/to/file.json
+    $ node-proxy-test generate
+    $ node-proxy-test generate 4
+    $ node-proxy-test generate /path/to/file.json
     
 Play them:
 
-    $ npm run generated-tests
+    $ node-proxy-test run
+    
+Clean them:
+
+    $ node-proxy-test clean-generated    
     
 ## About hooks
 

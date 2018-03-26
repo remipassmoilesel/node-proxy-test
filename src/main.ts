@@ -20,13 +20,30 @@ const cleanArgs = _.map(process.argv.slice(2), (arg: string) => arg.trim());
 function main() {
 
     try {
-        if (_.includes(cleanArgs, 'record')) {
+
+        if (_.includes(cleanArgs, 'launch-chromium')) {
+            cliActions.launchBrowser('Chromium');
+        }
+
+        else if (_.includes(cleanArgs, 'launch-chrome')) {
+            cliActions.launchBrowser('Chrome');
+        }
+
+        else if (_.includes(cleanArgs, 'record')) {
             cliActions.recordHttpRequests();
         }
 
         else if (_.includes(cleanArgs, 'generate')) {
             const fileNameOrNumber: string = cleanArgs[1];
             cliActions.generateTests(fileNameOrNumber);
+        }
+
+        else if (_.includes(cleanArgs, 'run')) {
+            cliActions.runGeneratedTests();
+        }
+
+        else if (_.includes(cleanArgs, 'clean')) {
+            cliActions.cleanGeneratedTests();
         }
 
         else if (_.includes(cleanArgs, 'help')) {
