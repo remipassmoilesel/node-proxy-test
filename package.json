@@ -33,6 +33,7 @@
     "f-promise": "^1.2.11",
     "got": "^8.2.0",
     "http-proxy": "^1.16.2",
+    "moment": "^2.21.0",
     "mustache": "^2.3.0",
     "rimraf": "^2.6.2",
     "socksv5": "0.0.6",
