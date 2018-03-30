@@ -4,6 +4,8 @@ import * as fs from 'fs';
 import * as http from 'http';
 import {IncomingMessage, ServerResponse} from 'http';
 import * as https from 'https';
+import * as path from 'path';
+import {PACKAGE_ROOT} from '../common/Constants';
 import {printError, printInfo} from '../common/print';
 import {Utils} from '../common/Utils';
 import {HttpConnectListener} from './HttpConnectListener';
@@ -115,8 +117,8 @@ export class HttpProxyServer {
         this.httpsApp.all('*', this.proxyRequestHandler.bind(this));
 
         const options = {
-            key: fs.readFileSync('./ssl/localhost/key.pem'),
-            cert: fs.readFileSync('./ssl/localhost/cert.pem'),
+            key: fs.readFileSync(path.join(PACKAGE_ROOT, './ssl/localhost/key.pem')),
+            cert: fs.readFileSync(path.join(PACKAGE_ROOT, './ssl/localhost/cert.pem')),
         };
 
         this.httpsServer = https.createServer(options, this.httpsApp);
@@ -149,8 +151,8 @@ export class HttpProxyServer {
         }
     }
 
-    public persistRequests(path: string) {
-        this.recorder.persistRequests(path);
+    public persistRequests(pathToDestFile: string) {
+        this.recorder.persistRequests(pathToDestFile);
     }
 
     public getRequests() {

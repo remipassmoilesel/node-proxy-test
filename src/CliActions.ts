@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as _ from 'lodash';
 import * as path from 'path';
 import * as readline from 'readline';
-import {Constants, packageRoot} from './common/Constants';
+import {Constants, PACKAGE_ROOT} from './common/Constants';
 import {Help} from './common/Help';
 import { printError, printInfo, printWarning } from './common/print';
 import { Utils } from './common/Utils';
@@ -85,19 +85,19 @@ export class CliActions {
 
     public runGeneratedTests() {
         printInfo('Launching generated tests');
-        execSync('npm run run-generated-tests', {cwd: packageRoot, stdio: 'pipe'});
+        execSync('npm run run-generated-tests', {cwd: PACKAGE_ROOT, stdio: 'pipe'});
     }
 
     public cleanGeneratedTests() {
         printInfo('Cleaning generated tests');
-        execSync('npm run clean-generated-tests', {cwd: packageRoot, stdio: 'pipe'});
+        execSync('npm run clean-generated-tests', {cwd: PACKAGE_ROOT, stdio: 'pipe'});
     }
 
     public launchBrowser(browserName: string) {
         printInfo(`Launching ${browserName} browser, this command must hold your terminal session.`);
 
         const startTime = new Date().getTime();
-        execSync(`npm run launch-${browserName.toLowerCase()}`, {cwd: packageRoot, stdio: 'pipe'});
+        execSync(`npm run launch-${browserName.toLowerCase()}`, {cwd: PACKAGE_ROOT, stdio: 'pipe'});
         const endTime = new Date().getTime();
 
         if (endTime - startTime < 1000){
