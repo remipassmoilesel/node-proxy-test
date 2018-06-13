@@ -26,10 +26,6 @@ function main() {
             cliActions.launchBrowser('Chromium');
         }
 
-        else if (_.includes(cleanArgs, 'launch-chrome')) {
-            cliActions.launchBrowser('Chrome');
-        }
-
         else if (_.includes(cleanArgs, 'record')) {
             cliActions.recordHttpRequests();
         }

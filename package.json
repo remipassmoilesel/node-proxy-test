@@ -23,7 +23,6 @@
     "coveralls": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls",
     "lint": "tslint -p .",
     "lint-fix": "tslint -p . --fix",
-    "launch-chrome": "./launch-chrome.sh",
     "launch-chromium": "./launch-chromium.sh"
   },
   "dependencies": {

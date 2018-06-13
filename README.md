@@ -2,6 +2,8 @@
 
 **Utility for generating TypeScript / Mocha application tests from HTTP requests, in order to tests APIs.**
 
+This project have been tested only on Gnu/Linux Ubuntu.
+
 ![Image of Yaktocat](doc/icon.png)
 
 ## Description
@@ -28,7 +30,7 @@ Open a proxy on port 3000 and record HTTP traffic:
 
 Open a web browser using this proxy (selected browser should not be opened yet):
 
-    $ node-proxy-test launch-chromium
+    $ node-proxy-test launch-chromium    
     
 Play with your API, watch logs on terminal, then press CTRL-C once to stop recording and write a JSON 
 file in `recorder` directory.     
