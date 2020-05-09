@@ -1,11 +1,8 @@
 // tslint:disable
 import * as chai from "chai";
-import * as fmocha from "f-mocha";
 /*<#requestsImports>*/
 /*<&importLine>*/
 /*</requestsImports>*/
-
-fmocha.setup();
 
 const assert = chai.assert;
 
@@ -14,7 +11,7 @@ const assert = chai.assert;
 describe(" > Some interesting module", function() {
     this.timeout(10000);
 
-    it(" > All requests", () => {
+    it(" > All requests", async () => {
 
         /*<#variablesInit>*/
         /*<&initLine>*/

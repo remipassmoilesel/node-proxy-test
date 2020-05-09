@@ -1,23 +1,22 @@
 import * as chai from 'chai';
-import { wait } from 'f-promise';
-import * as got from 'got';
 import * as uuid from 'uuid';
 import { HttpRequest } from '../proxy-server/HttpRequest';
 import { printInfo, printWarning } from './print';
 
 const assert = chai.assert;
+const got = require('got');
 
 export class TestUtils {
 
-    public static runRequest(request: HttpRequest): any {
+    public static async runRequest<T>(request: HttpRequest): Promise<T> {
 
         printInfo(`Running request: ${request.method} - ${request.url}`);
 
         let response;
         try {
-            response = wait(got(request.url, {
+            response = await got(request.url, {
                 headers: request.request.headers,
-            }));
+            });
         } catch (e) {
             printWarning(`Error was thrown: ${e.statusCode} - ${request.method} - ${request.url}`);
             response = e;

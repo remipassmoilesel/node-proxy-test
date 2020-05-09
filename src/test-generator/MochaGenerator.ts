@@ -167,7 +167,7 @@ export class MochaGenerator {
         if (argumentsName && argumentsName.length > 0) {
             argumentsStr += argumentsName.join(', ');
         }
-        return `TestUtils.runRequest(requests.request_${methodSuffix}(${argumentsStr}));`;
+        return `await TestUtils.runRequest(requests.request_${methodSuffix}(${argumentsStr}));`;
     }
 
     private generateClassPrefix() {

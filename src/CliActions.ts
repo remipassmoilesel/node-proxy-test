@@ -26,7 +26,7 @@ export class CliActions {
         this.httpRecordingHooks = httpRecordingHook;
     }
 
-    public recordHttpRequests() {
+    public async recordHttpRequests() {
 
         printInfo('Starting HTTP request recorder');
         printInfo('');

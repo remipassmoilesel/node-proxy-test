@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-import { run } from 'f-promise';
 import * as _ from 'lodash';
 import { CliActions } from './CliActions';
 import {Help} from './common/Help';
@@ -13,12 +12,10 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 const sourceMapSupport = require('source-map-support');
 sourceMapSupport.install();
 
-Utils.checkMinimumNodeVersion(8);
-
 const cliActions = new CliActions(testGenerationHooks, httpRecordingHooks);
 const cleanArgs = _.map(process.argv.slice(2), (arg: string) => arg.trim());
 
-function main() {
+async function main(): Promise<void> {
 
     try {
 
@@ -61,6 +58,8 @@ function main() {
     }
 }
 
-run(() => {
-    main();
-});
+main()
+    .catch(err => {
+        console.error(err);
+        process.exit(1);
+    });

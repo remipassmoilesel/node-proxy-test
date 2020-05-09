@@ -7,7 +7,7 @@ const assert = chai.assert;
 export class /*<classPrefix>*/Requests {
 
     /*<#requestsMethods>*/
-    public request_/*<&nameSuffix>*/(/*<&methodArgumentsStr>*/) /*<&returnType>*/ {
+    public async request_/*<&nameSuffix>*/(/*<&methodArgumentsStr>*/) /*<&returnType>*/ {
         return /*<&returnValue>*/;
     }
     /*</requestsMethods>*/
