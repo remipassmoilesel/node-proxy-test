@@ -1,12 +1,9 @@
 import * as chai from 'chai';
-import * as fmocha from 'f-mocha';
 import {Utils} from '../common/Utils';
 import {HttpRequest} from '../proxy-server/HttpRequest';
 
 const sourceMapSupport = require('source-map-support');
 sourceMapSupport.install();
-
-fmocha.setup();
 
 const assert = chai.assert;
 

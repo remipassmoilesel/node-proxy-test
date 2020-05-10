@@ -1,13 +1,10 @@
 import * as chai from 'chai';
-import * as fmocha from 'f-mocha';
 import { IncomingMessage } from 'http';
 import { IAugmentedServerResponse } from '../proxy-server/HttpProxyServer';
 import { HttpRecorder } from '../proxy-server/HttpRecorder';
 
 const sourceMapSupport = require('source-map-support');
 sourceMapSupport.install();
-
-fmocha.setup();
 
 const assert = chai.assert;
 
